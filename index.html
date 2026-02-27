@@ -79,7 +79,6 @@
     .btn-setup:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(124,111,247,0.35); }
 
     .setup-note { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
-
     .setup-error { background: rgba(240,98,146,0.1); border: 1px solid rgba(240,98,146,0.3); border-radius: 10px; padding: 12px 16px; color: #f06292; font-size: 0.85rem; margin-bottom: 16px; display: none; }
 
     /* MAIN APP */
@@ -90,10 +89,7 @@
     .header-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(124,111,247,0.1); border: 1px solid rgba(124,111,247,0.2); border-radius: 100px; padding: 6px 16px; font-size: 0.78rem; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; margin-bottom: 20px; }
     .header-badge .dot { width: 6px; height: 6px; background: var(--accent3); border-radius: 50%; animation: pulse 2s infinite; }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
 
     h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.1; margin-bottom: 12px; background: linear-gradient(135deg, #fff 0%, #a89cf8 50%, #f06292 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .subtitle { font-size: 1rem; color: var(--muted); font-weight: 300; }
@@ -124,50 +120,32 @@
 
     .field-label { font-size: 0.78rem; font-weight: 600; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: block; }
 
-    /* TEXTAREA WITH ACTIONS */
     .textarea-wrap { position: relative; margin-bottom: 16px; }
 
     .textarea-wrap textarea {
       width: 100%; background: var(--surface2); border: 1px solid var(--border);
       border-radius: 12px; padding: 16px 100px 16px 16px; color: var(--text);
       font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
-      resize: vertical; transition: border-color 0.2s; line-height: 1.6;
-      min-height: 120px;
+      resize: vertical; transition: border-color 0.2s; line-height: 1.6; min-height: 120px;
     }
 
     .textarea-wrap textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,111,247,0.1); }
 
-    .textarea-actions {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .textarea-actions { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 6px; }
 
     .ta-btn {
-      width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--surface); color: var(--muted); cursor: pointer;
+      width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(240,98,146,0.4);
+      background: rgba(240,98,146,0.08); color: #f06292; cursor: pointer;
       font-size: 0.95rem; display: flex; align-items: center; justify-content: center;
       transition: all 0.2s; flex-shrink: 0;
     }
 
-    .ta-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(124,111,247,0.1); }
-    .ta-btn.recording { border-color: var(--accent2); color: var(--accent2); background: rgba(240,98,146,0.1); animation: micPulse 1s infinite; }
+    .ta-btn:hover { background: rgba(240,98,146,0.18); border-color: #f06292; }
+    .ta-btn.recording { border-color: #f06292; background: rgba(240,98,146,0.2); animation: micPulse 1s infinite; }
 
-    @keyframes micPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(240,98,146,0.4); }
-      50% { box-shadow: 0 0 0 6px rgba(240,98,146,0); }
-    }
+    @keyframes micPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(240,98,146,0.4); } 50% { box-shadow: 0 0 0 6px rgba(240,98,146,0); } }
 
-    select {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 12px; padding: 16px; color: var(--text);
-      font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
-      margin-bottom: 16px; transition: border-color 0.2s; cursor: pointer;
-    }
-
+    select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; color: var(--text); font-size: 0.95rem; font-family: 'DM Sans', sans-serif; margin-bottom: 16px; transition: border-color 0.2s; cursor: pointer; }
     select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,111,247,0.1); }
     select option { background: var(--surface2); }
 
@@ -181,72 +159,105 @@
     .result-box { margin-top: 20px; background: var(--surface2); border-radius: 14px; padding: 20px; border: 1px solid var(--border); white-space: pre-wrap; font-size: 0.93rem; line-height: 1.7; min-height: 80px; color: #c8c4f8; }
     .result-box.empty { color: var(--muted); font-style: italic; }
 
-    /* OPTIONS CARDS */
     .options-grid { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
-
-    .option-card {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 14px; padding: 18px; transition: border-color 0.2s;
-    }
-
+    .option-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 18px; transition: border-color 0.2s; }
     .option-card:hover { border-color: rgba(124,111,247,0.3); }
-
     .option-label { font-size: 0.72rem; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
     .option-text { color: var(--text); line-height: 1.6; font-size: 0.93rem; white-space: pre-wrap; }
     .option-copy-btn { margin-top: 12px; background: transparent; border: 1px solid rgba(124,111,247,0.25); color: var(--accent); padding: 7px 16px; border-radius: 8px; cursor: pointer; font-size: 0.80rem; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
     .option-copy-btn:hover { background: rgba(124,111,247,0.1); border-color: var(--accent); }
 
-    /* CHAT REPLY */
-    .chat-options-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    /* =====================
+       SCREENSHOT UPLOAD
+    ===================== */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface2);
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(124,111,247,0.05);
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+    .upload-text { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+    .upload-text strong { color: var(--accent); }
+
+    .preview-wrap {
+      position: relative;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .preview-wrap img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .preview-remove {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(240,98,146,0.9);
+      color: #fff;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .preview-remove:hover { background: #f06292; transform: scale(1.1); }
+
+    .chat-options-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
     .option-group { display: flex; flex-direction: column; gap: 6px; }
-
-    .chat-window { background: var(--surface2); border-radius: 14px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); min-height: 200px; max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
-    .chat-window::-webkit-scrollbar { width: 4px; }
-    .chat-window::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    .empty-chat { color: var(--muted); font-size: 0.85rem; text-align: center; margin: auto; line-height: 1.8; }
-    .bubble-wrap { display: flex; flex-direction: column; }
-    .bubble-wrap.them { align-items: flex-start; }
-    .bubble-wrap.you { align-items: flex-end; }
-    .bubble-name { font-size: 0.72rem; color: var(--muted); margin-bottom: 4px; padding: 0 4px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
-    .bubble { max-width: 78%; padding: 12px 16px; border-radius: 16px; font-size: 0.92rem; line-height: 1.5; }
-    .bubble.them { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 4px; }
-    .bubble.you { background: linear-gradient(135deg, var(--accent), #9b8ff9); color: #fff; border-bottom-right-radius: 4px; }
-
-    .suggested-section { background: rgba(67,232,176,0.05); border: 1px dashed rgba(67,232,176,0.25); border-radius: 14px; padding: 20px; margin-top: 16px; display: none; }
-    .suggested-label { font-size: 0.75rem; font-weight: 700; color: var(--accent3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-
-    .chat-input-row { display: flex; gap: 10px; align-items: flex-end; }
-
-    .chat-input-wrap { flex: 1; position: relative; }
-    .chat-input-wrap textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 80px 14px 16px; color: var(--text); font-size: 0.93rem; font-family: 'DM Sans', sans-serif; resize: none; min-height: 52px; max-height: 120px; line-height: 1.5; transition: border-color 0.2s; margin-bottom: 0; }
-    .chat-input-wrap textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,111,247,0.1); }
-
-    .chat-input-btns { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: flex; gap: 4px; }
-
-    .btn-send { background: linear-gradient(135deg, var(--accent), #9b8ff9); color: #fff; border: none; width: 34px; height: 34px; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-    .btn-send:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(124,111,247,0.4); }
-
-    .btn-mic-chat { background: transparent; border: 1px solid var(--border); color: var(--muted); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-    .btn-mic-chat:hover { border-color: var(--accent2); color: var(--accent2); }
-    .btn-mic-chat.recording { border-color: var(--accent2); color: var(--accent2); background: rgba(240,98,146,0.1); animation: micPulse 1s infinite; }
 
     .lang-toggle { display: flex; gap: 6px; flex-wrap: wrap; }
     .lang-btn { padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; font-weight: 500; }
     .lang-btn.active { background: rgba(240,98,146,0.12); border-color: var(--accent2); color: var(--accent2); font-weight: 600; }
     .lang-btn:hover:not(.active) { border-color: var(--muted); color: var(--text); }
 
+    .suggested-section { background: rgba(67,232,176,0.05); border: 1px dashed rgba(67,232,176,0.25); border-radius: 14px; padding: 20px; margin-top: 20px; display: none; }
+    .suggested-label { font-size: 0.75rem; font-weight: 700; color: var(--accent3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
     .loading-dots { display: inline-flex; gap: 4px; align-items: center; }
     .loading-dots span { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s infinite; }
     .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
     .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
 
-    @keyframes bounce {
-      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-      40% { transform: translateY(-6px); opacity: 1; }
-    }
+    @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-6px); opacity: 1; } }
 
     .hint-text { font-size: 0.75rem; color: var(--muted); margin-top: -8px; margin-bottom: 14px; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .divider span { color: var(--muted); font-size: 0.78rem; }
 
     .footer { text-align: center; margin-top: 48px; color: var(--muted); font-size: 0.78rem; }
 
@@ -306,7 +317,6 @@
   <div class="card active" id="tab-realestate">
     <div class="card-header"><div class="card-icon purple">🏠</div><h2>Real Estate VA Questions</h2></div>
     <p class="card-desc">Ask anything about real estate in English or Tagalog — terms, scripts, processes, anything!</p>
-
     <label class="field-label">Your Question (English or Tagalog)</label>
     <div class="textarea-wrap">
       <textarea id="realestate-input" rows="4" placeholder="e.g. Ano ang ibig sabihin ng cash buyer? or What is a motivated seller?"></textarea>
@@ -324,8 +334,38 @@
   <!-- CHAT REPLY COACH -->
   <div class="card" id="tab-reply">
     <div class="card-header"><div class="card-icon pink">💬</div><h2>Chat Reply Coach</h2></div>
-    <p class="card-desc">Paste what they said and get 3 casual reply options instantly.</p>
+    <p class="card-desc">Upload a screenshot of the conversation and get 3 perfect reply suggestions.</p>
 
+    <!-- SCREENSHOT UPLOAD -->
+    <label class="field-label">📸 Upload Conversation Screenshot</label>
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="screenshot-input" accept="image/*" onchange="handleScreenshot(event)" />
+      <span class="upload-icon">📷</span>
+      <div class="upload-text">
+        <strong>Click to upload</strong> or drag & drop<br>
+        PNG, JPG, WEBP supported
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-wrap" id="preview-wrap">
+      <img id="screenshot-preview" src="" alt="Screenshot preview" />
+      <button class="preview-remove" onclick="removeScreenshot()" title="Remove">✕</button>
+    </div>
+
+    <div class="divider"><span>AND / OR</span></div>
+
+    <!-- INTENTION INPUT -->
+    <label class="field-label">✍️ What do you want to say? (optional)</label>
+    <div class="textarea-wrap">
+      <textarea id="intention-input" rows="3" placeholder="e.g. I want to ask if they are still interested in selling their house..."></textarea>
+      <div class="textarea-actions">
+        <button class="ta-btn" onclick="clearField('intention-input')" title="Clear">🗑</button>
+        <button class="ta-btn" id="mic-intention" onclick="toggleMic('intention-input', 'mic-intention')" title="Speak">🎤</button>
+      </div>
+    </div>
+
+    <!-- OPTIONS ROW -->
     <div class="chat-options-row">
       <div class="option-group">
         <label class="field-label">Who are you talking to?</label>
@@ -345,26 +385,10 @@
       </div>
     </div>
 
-    <div class="chat-window" id="chat-window">
-      <div class="empty-chat">Paste their message below and hit send 👇<br><span style="font-size:0.78rem">Replies will appear here in chat format</span></div>
-    </div>
-
-    <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
-      <button class="btn-ghost" onclick="clearChat()">🗑 Clear Chat</button>
-    </div>
-
-    <div class="chat-input-row">
-      <div class="chat-input-wrap">
-        <textarea id="reply-input" rows="2" placeholder="Paste what they said here... (Enter to send)"></textarea>
-        <div class="chat-input-btns">
-          <button class="btn-mic-chat" id="mic-reply" onclick="toggleMic('reply-input', 'mic-reply')" title="Speak">🎤</button>
-          <button class="btn-send" onclick="suggestReply()" title="Send">➤</button>
-        </div>
-      </div>
-    </div>
+    <button class="btn-primary" onclick="suggestReply()">✨ Get 3 Reply Suggestions</button>
 
     <div class="suggested-section" id="reply-suggestion">
-      <div class="suggested-label">✨ Choose a Reply</div>
+      <div class="suggested-label">✨ Choose Your Reply</div>
       <div id="reply-options"></div>
     </div>
   </div>
@@ -373,7 +397,6 @@
   <div class="card" id="tab-english">
     <div class="card-header"><div class="card-icon green">✍️</div><h2>English Reviser</h2></div>
     <p class="card-desc">Paste any text and get 3 casual, natural versions to choose from.</p>
-
     <label class="field-label">Your Text</label>
     <div class="textarea-wrap">
       <textarea id="english-input" rows="7" placeholder="Type or paste anything here — messages, emails, captions, scripts..."></textarea>
@@ -391,7 +414,6 @@
   <div class="card" id="tab-chat">
     <div class="card-header"><div class="card-icon blue">🤖</div><h2>Ask Your Agent Anything</h2></div>
     <p class="card-desc">General questions, tasks, content ideas — anything related to your work and clients.</p>
-
     <label class="field-label">Your Question or Task</label>
     <div class="textarea-wrap">
       <textarea id="chat-input" rows="5" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
@@ -412,9 +434,10 @@
 
 <script>
   let API_KEY = '';
-  let chatHistory = [];
   let selectedLang = 'taglish';
   let activeRecognition = null;
+  let screenshotBase64 = null;
+  let screenshotMimeType = null;
 
   const AGENT_CONTEXT = `
     You are a personal AI assistant for a Virtual Assistant based in the Philippines.
@@ -426,30 +449,65 @@
     Always be helpful, friendly, and explain things simply like talking to a colleague.
   `;
 
-  // Load saved key
   window.addEventListener('load', () => {
     const saved = localStorage.getItem('gemini_api_key');
     if (saved) { API_KEY = saved; showApp(); }
 
-    // Enter key handlers
     document.getElementById('api-key-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveApiKey(); });
-    document.getElementById('reply-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); suggestReply(); } });
     document.getElementById('realestate-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askRealEstate(); } });
     document.getElementById('english-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); reviseEnglish(); } });
     document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAgent(); } });
+
+    // Drag and drop
+    const zone = document.getElementById('upload-zone');
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) processImage(file);
+    });
   });
+
+  // =====================
+  // SCREENSHOT HANDLING
+  // =====================
+  function handleScreenshot(event) {
+    const file = event.target.files[0];
+    if (file) processImage(file);
+  }
+
+  function processImage(file) {
+    screenshotMimeType = file.type;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target.result;
+      screenshotBase64 = result.split(',')[1];
+      document.getElementById('screenshot-preview').src = result;
+      document.getElementById('preview-wrap').style.display = 'block';
+      document.getElementById('upload-zone').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeScreenshot() {
+    screenshotBase64 = null;
+    screenshotMimeType = null;
+    document.getElementById('screenshot-input').value = '';
+    document.getElementById('preview-wrap').style.display = 'none';
+    document.getElementById('upload-zone').style.display = 'block';
+  }
 
   // =====================
   // MICROPHONE
   // =====================
   function toggleMic(targetId, btnId) {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Sorry, your browser does not support voice input. Try Chrome!');
+      alert('Voice input not supported. Please use Chrome!');
       return;
     }
-
     const btn = document.getElementById(btnId);
-
     if (activeRecognition) {
       activeRecognition.stop();
       activeRecognition = null;
@@ -457,41 +515,24 @@
       btn.textContent = '🎤';
       return;
     }
-
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     recognition.lang = 'en-PH';
     recognition.continuous = false;
     recognition.interimResults = false;
-
     btn.classList.add('recording');
     btn.textContent = '⏹';
     activeRecognition = recognition;
-
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       const textarea = document.getElementById(targetId);
       textarea.value += (textarea.value ? ' ' : '') + transcript;
     };
-
-    recognition.onend = () => {
-      btn.classList.remove('recording');
-      btn.textContent = '🎤';
-      activeRecognition = null;
-    };
-
-    recognition.onerror = () => {
-      btn.classList.remove('recording');
-      btn.textContent = '🎤';
-      activeRecognition = null;
-    };
-
+    recognition.onend = () => { btn.classList.remove('recording'); btn.textContent = '🎤'; activeRecognition = null; };
+    recognition.onerror = () => { btn.classList.remove('recording'); btn.textContent = '🎤'; activeRecognition = null; };
     recognition.start();
   }
 
-  // =====================
-  // CLEAR FIELD
-  // =====================
   function clearField(id) {
     document.getElementById(id).value = '';
     document.getElementById(id).focus();
@@ -511,42 +552,20 @@
     const key = document.getElementById('api-key-input').value.trim();
     const errorEl = document.getElementById('setup-error');
     errorEl.style.display = 'none';
-
-    if (!key || key.length < 20) {
-      errorEl.textContent = '❌ Please enter a valid API key.';
-      errorEl.style.display = 'block';
-      return;
-    }
-
+    if (!key || key.length < 20) { errorEl.textContent = '❌ Please enter a valid API key.'; errorEl.style.display = 'block'; return; }
     const btn = document.querySelector('.btn-setup');
     btn.textContent = 'Verifying key...';
     btn.disabled = true;
-
     try {
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ role: "user", parts: [{ text: "Say hi." }] }]
-          })
-        }
+        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Say hi." }] }] }) }
       );
       const data = await response.json();
-
-      if (data.error) {
-        errorEl.textContent = `❌ ${data.error.message}`;
-        errorEl.style.display = 'block';
-        btn.textContent = 'Start Using AI-VA ➤';
-        btn.disabled = false;
-        return;
-      }
-
+      if (data.error) { errorEl.textContent = `❌ ${data.error.message}`; errorEl.style.display = 'block'; btn.textContent = 'Start Using AI-VA ➤'; btn.disabled = false; return; }
       API_KEY = key;
       localStorage.setItem('gemini_api_key', key);
       showApp();
-
     } catch (err) {
       errorEl.textContent = '❌ Could not verify. Check internet and try again.';
       errorEl.style.display = 'block';
@@ -572,7 +591,7 @@
   }
 
   // =====================
-  // GEMINI API
+  // GEMINI API (text only)
   // =====================
   async function callGemini(prompt) {
     try {
@@ -589,9 +608,32 @@
       const data = await response.json();
       if (data.error) return `Error: ${data.error.message}`;
       return data.candidates?.[0]?.content?.parts?.[0]?.text || "Something went wrong.";
-    } catch (err) {
-      return "Something went wrong. Please try again.";
-    }
+    } catch (err) { return "Something went wrong. Please try again."; }
+  }
+
+  // =====================
+  // GEMINI API (with image)
+  // =====================
+  async function callGeminiWithImage(prompt, base64, mimeType) {
+    try {
+      const parts = [
+        { inline_data: { mime_type: mimeType, data: base64 } },
+        { text: prompt }
+      ];
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: parts }]
+          })
+        }
+      );
+      const data = await response.json();
+      if (data.error) return `Error: ${data.error.message}`;
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || "Something went wrong.";
+    } catch (err) { return "Something went wrong. Please try again."; }
   }
 
   function showLoading(el) {
@@ -602,7 +644,7 @@
   // =====================
   // RENDER 3 OPTIONS
   // =====================
-  function renderOptions(containerId, lines) {
+  function renderOptions(containerId, lines, copyFn) {
     const container = document.getElementById(containerId);
     container.innerHTML = `<div class="options-grid">${lines.map((line, i) => {
       const content = line.replace(/^[1-3]\.\s*/, '').trim();
@@ -610,7 +652,7 @@
         <div class="option-card">
           <div class="option-label">Option ${i + 1}</div>
           <div class="option-text">${content}</div>
-          <button class="option-copy-btn" onclick="copyText(this)">⎘ Copy</button>
+          <button class="option-copy-btn" onclick="${copyFn}(this)">⎘ Copy</button>
         </div>
       `;
     }).join('')}</div>`;
@@ -626,20 +668,7 @@
   }
 
   // =====================
-  // REAL ESTATE VA
-  // =====================
-  async function askRealEstate() {
-    const question = document.getElementById("realestate-input").value.trim();
-    const resultEl = document.getElementById("realestate-result");
-    if (!question) return;
-    showLoading(resultEl);
-    const result = await callGemini(`You are a real estate expert for a VA working in US real estate (wholesaling, leads, cold calling). Answer clearly and simply. If Tagalog, answer in Tagalog. If English, answer in English. Give practical examples.\n\nQuestion: ${question}`);
-    resultEl.classList.remove('empty');
-    resultEl.textContent = result;
-  }
-
-  // =====================
-  // CHAT REPLY COACH (3 options)
+  // CHAT REPLY COACH
   // =====================
   function setLang(lang, el) {
     selectedLang = lang;
@@ -648,14 +677,16 @@
   }
 
   async function suggestReply() {
-    const message = document.getElementById("reply-input").value.trim();
+    const intention = document.getElementById("intention-input").value.trim();
     const context = document.getElementById("reply-context").value;
     const suggestionEl = document.getElementById("reply-suggestion");
     const replyOptionsEl = document.getElementById("reply-options");
-    if (!message) return;
 
-    addBubble(message, "them");
-    document.getElementById("reply-input").value = "";
+    if (!screenshotBase64 && !intention) {
+      alert('Please upload a screenshot or type what you want to say!');
+      return;
+    }
+
     suggestionEl.style.display = "block";
     replyOptionsEl.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
 
@@ -666,27 +697,34 @@
     };
 
     const langMap = {
-      taglish: "Use a natural Taglish mix (Filipino + English), like how Filipinos normally text each other. Very casual and friendly.",
-      english: "Use English only. Keep it casual, friendly, and natural like a real text message.",
+      taglish: "Use a natural Taglish mix (Filipino + English), like how Filipinos normally text. Very casual and friendly.",
+      english: "Use English only. Casual, friendly, natural like a real text message.",
       tagalog: "Use Tagalog only. Casual and natural like how Filipinos text."
     };
 
-    const conversationContext = chatHistory.length > 0
-      ? `Previous messages:\n${chatHistory.map(m => `${m.role === 'them' ? 'Them' : 'You'}: ${m.text}`).join('\n')}\n\n`
-      : '';
+    const intentionPart = intention ? `\nWhat she wants to say or convey: "${intention}"` : '';
 
-    const prompt = `You are helping a Filipino VA reply to a chat message. She is talking to ${contextMap[context]}
-${conversationContext}Their latest message: "${message}"
+    const prompt = `${AGENT_CONTEXT}
+
+You are helping a Filipino VA reply to a conversation. She is talking to ${contextMap[context]}.${intentionPart}
 Language style: ${langMap[selectedLang]}
 
-Write 3 different short casual reply options she can choose from.
-Each should have a slightly different tone or approach but all must sound natural like a real person texting.
-Return ONLY this exact format, nothing else:
+${screenshotBase64 ? 'Look at the conversation screenshot provided and understand the full context.' : ''}
+Based on the context${screenshotBase64 ? ' in the screenshot' : ''} and what she wants to say, write 3 different short casual reply options.
+Each should have a slightly different tone but all must sound natural like a real person texting.
+
+Return ONLY this exact format:
 1. [first reply]
 2. [second reply]
 3. [third reply]`;
 
-    const result = await callGemini(prompt);
+    let result;
+    if (screenshotBase64) {
+      result = await callGeminiWithImage(prompt, screenshotBase64, screenshotMimeType);
+    } else {
+      result = await callGemini(prompt);
+    }
+
     const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
 
     if (lines.length >= 3) {
@@ -696,80 +734,44 @@ Return ONLY this exact format, nothing else:
           <div class="option-card">
             <div class="option-label">Option ${i + 1}</div>
             <div class="option-text">${content}</div>
-            <button class="option-copy-btn" onclick="copyAndBubble(this)">⎘ Use This Reply</button>
+            <button class="option-copy-btn" onclick="copyText(this)">⎘ Copy Reply</button>
           </div>
         `;
       }).join('')}</div>`;
     } else {
-      replyOptionsEl.textContent = result;
+      replyOptionsEl.innerHTML = `<div style="color: var(--text); line-height: 1.7; white-space: pre-wrap;">${result}</div>`;
     }
-
-    chatHistory.push({ role: "them", text: message });
-  }
-
-  function copyAndBubble(btn) {
-    const text = btn.previousElementSibling.textContent;
-    navigator.clipboard.writeText(text).then(() => {
-      const orig = btn.textContent;
-      btn.textContent = '✓ Copied!';
-      setTimeout(() => btn.textContent = orig, 2000);
-    });
-    addBubble(text, "you");
-    chatHistory.push({ role: "you", text: text });
-  }
-
-  function addBubble(text, role) {
-    const win = document.getElementById("chat-window");
-    const emptyEl = win.querySelector('.empty-chat');
-    if (emptyEl) emptyEl.remove();
-    const wrap = document.createElement("div");
-    wrap.className = `bubble-wrap ${role}`;
-    const name = document.createElement("div");
-    name.className = "bubble-name";
-    name.textContent = role === "them" ? "Them" : "✨ You";
-    const bubble = document.createElement("div");
-    bubble.className = `bubble ${role}`;
-    bubble.textContent = text;
-    wrap.appendChild(name);
-    wrap.appendChild(bubble);
-    win.appendChild(wrap);
-    win.scrollTop = win.scrollHeight;
-  }
-
-  function clearChat() {
-    chatHistory = [];
-    const win = document.getElementById("chat-window");
-    win.innerHTML = `<div class="empty-chat">Paste their message below and hit send 👇<br><span style="font-size:0.78rem">Replies will appear here in chat format</span></div>`;
-    document.getElementById("reply-suggestion").style.display = "none";
   }
 
   // =====================
-  // ENGLISH REVISER (3 options)
+  // ENGLISH REVISER
   // =====================
   async function reviseEnglish() {
     const text = document.getElementById("english-input").value.trim();
     const optionsEl = document.getElementById("english-options");
     if (!text) return;
-
     optionsEl.innerHTML = '<div class="loading-dots" style="margin-top:20px"><span></span><span></span><span></span></div>';
-
-    const prompt = `Revise the following text in 3 different casual ways. All versions must sound natural, friendly, and relaxed — like how a real person texts or chats. Fix grammar but keep it casual, never formal or robotic.
-
-Return ONLY this exact format:
-1. [first casual version]
-2. [second casual version]
-3. [third casual version]
-
-Text: ${text}`;
-
+    const prompt = `Revise the following text in 3 different casual ways. All must sound natural, friendly, and relaxed like how a real person texts. Fix grammar but keep it casual, never formal or robotic.\n\nReturn ONLY this exact format:\n1. [first casual version]\n2. [second casual version]\n3. [third casual version]\n\nText: ${text}`;
     const result = await callGemini(prompt);
     const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
-
     if (lines.length >= 3) {
-      renderOptions('english-options', lines);
+      renderOptions('english-options', lines, 'copyText');
     } else {
       optionsEl.innerHTML = `<div class="result-box" style="margin-top:16px">${result}</div>`;
     }
+  }
+
+  // =====================
+  // REAL ESTATE VA
+  // =====================
+  async function askRealEstate() {
+    const question = document.getElementById("realestate-input").value.trim();
+    const resultEl = document.getElementById("realestate-result");
+    if (!question) return;
+    showLoading(resultEl);
+    const result = await callGemini(`You are a real estate expert for a VA working in US real estate. Answer clearly and simply. If Tagalog, answer in Tagalog. If English, answer in English. Give practical examples.\n\nQuestion: ${question}`);
+    resultEl.classList.remove('empty');
+    resultEl.textContent = result;
   }
 
   // =====================
