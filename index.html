@@ -601,7 +601,7 @@
     const contextMap = { real_estate: "a real estate lead on Facebook. You are a real estate VA doing outreach.", client: "your client or boss. Be professional but warm.", general: "someone in a casual conversation." };
     const langMap = { taglish: "Natural Taglish (Filipino + English mix), casual like real Filipino texting.", english: "English only, casual and friendly like a real text.", tagalog: "Tagalog only, casual like how Filipinos text." };
 
-    const prompt = `You are helping a Filipino VA reply to a conversation. She is talking to ${contextMap[context]}.
+    const prompt = REALESTATE_CONTEXT + `\n\nYou are helping a Filipino VA reply to a conversation. She is talking to ${contextMap[context]}.
 ${intention ? `What she wants to say: "${intention}"` : ''}
 Language: ${langMap[selectedLang]}
 ${screenshotBase64 ? 'Study the screenshot carefully — understand the full conversation context and tone before replying.' : ''}
@@ -641,7 +641,7 @@ Return ONLY:
     const resultEl = document.getElementById("realestate-result");
     if (!question) return;
     showLoading(resultEl);
-    const result = await callGemini(`Answer this real estate question using our company knowledge and templates as reference. Be clear, simple, and practical.\n\nQuestion: ${question}`);
+    const result = await callGemini(REALESTATE_CONTEXT + `\n\nAnswer this real estate question using our company knowledge and templates. Be clear, simple, and practical.\n\nQuestion: ${question}`);
     resultEl.classList.remove('empty'); resultEl.textContent = result;
   }
 
@@ -650,7 +650,7 @@ Return ONLY:
     const resultEl = document.getElementById("chat-result");
     if (!question) return;
     showLoading(resultEl);
-    const result = await callGemini(GENERAL_CONTEXT + "\n\n" + question);    resultEl.classList.remove('empty'); resultEl.textContent = result;
+    const result = await callGemini(AGENT_CONTEXT + "\n\n" + question);    resultEl.classList.remove('empty'); resultEl.textContent = result;
   }
 
   function switchTab(tab, el) {
