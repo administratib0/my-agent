@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI-VA — Personal AI Agent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080810;
+      --surface: #0e0e1c;
+      --surface2: #13132a;
+      --accent: #7c6ff7;
+      --accent2: #f06292;
+      --accent3: #43e8b0;
+      --text: #eeeef5;
+      --muted: #5a5a7a;
+      --border: #1e1e38;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,111,247,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,111,247,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 40px 24px 60px; }
+
+    /* =====================
+       API KEY SETUP SCREEN
+    ===================== */
+    #setup-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .setup-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .setup-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .setup-card h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #fff 0%, #a89cf8 50%, #f06292 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .setup-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .setup-card a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .setup-card a:hover { text-decoration: underline; }
+
+    .key-input-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .key-input-wrap input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 50px 16px 16px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s;
+    }
+
+    .key-input-wrap input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,111,247,0.1);
+    }
+
+    .toggle-key {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+    }
+
+    .toggle-key:hover { color: var(--accent); }
+
+    .btn-setup {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #9b8ff9);
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 16px;
+    }
+
+    .btn-setup:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(124,111,247,0.35); }
+
+    .setup-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .setup-error {
+      background: rgba(240,98,146,0.1);
+      border: 1px solid rgba(240,98,146,0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #f06292;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* =====================
+       MAIN APP
+    ===================== */
+    #main-app { display: none; }
+
+    .header { text-align: center; margin-bottom: 48px; }
+
+    .header-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(124,111,247,0.1); border: 1px solid rgba(124,111,247,0.2);
+      border-radius: 100px; padding: 6px 16px; font-size: 0.78rem;
+      color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase;
+      font-weight: 600; margin-bottom: 20px;
+    }
+
+    .header-badge .dot { width: 6px; height: 6px; background: var(--accent3); border-radius: 50%; animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800; line-height: 1.1; margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff 0%, #a89cf8 50%, #f06292 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .subtitle { font-size: 1rem; color: var(--muted); font-weight: 300; }
+
+    .header-actions { margin-top: 16px; }
+
+    .btn-change-key {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 7px 16px;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-change-key:hover { border-color: var(--accent2); color: var(--accent2); }
+
+    .tabs {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; margin-bottom: 32px; background: var(--surface);
+      padding: 8px; border-radius: 16px; border: 1px solid var(--border);
+    }
+
+    .tab {
+      padding: 14px 10px; border-radius: 10px; border: none;
+      background: transparent; color: var(--muted); cursor: pointer;
+      font-size: 0.82rem; font-family: 'DM Sans', sans-serif;
+      font-weight: 500; transition: all 0.25s; text-align: center; line-height: 1.3;
+    }
+
+    .tab .tab-icon { font-size: 1.2rem; display: block; margin-bottom: 4px; }
+    .tab:hover { color: var(--text); background: var(--surface2); }
+    .tab.active { background: linear-gradient(135deg, var(--accent), #9b8ff9); color: #fff; font-weight: 600; box-shadow: 0 4px 20px rgba(124,111,247,0.3); }
+
+    .card { background: var(--surface); border-radius: 20px; padding: 36px; border: 1px solid var(--border); display: none; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card.active { display: block; }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .card-icon.purple { background: rgba(124,111,247,0.15); }
+    .card-icon.pink { background: rgba(240,98,146,0.15); }
+    .card-icon.green { background: rgba(67,232,176,0.15); }
+    .card-icon.blue { background: rgba(100,180,255,0.15); }
+    .card h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--text); }
+    .card-desc { font-size: 0.88rem; color: var(--muted); margin-bottom: 28px; margin-left: 56px; line-height: 1.5; }
+
+    .field-label { font-size: 0.78rem; font-weight: 600; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+    textarea, select {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px; color: var(--text);
+      font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+      margin-bottom: 16px; resize: vertical; transition: border-color 0.2s; line-height: 1.6;
+    }
+
+    textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,111,247,0.1); }
+    select { cursor: pointer; }
+    select option { background: var(--surface2); }
+
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #9b8ff9); color: #fff; border: none; padding: 16px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 0.95rem; font-family: 'DM Sans', sans-serif; transition: all 0.2s; width: 100%; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(124,111,247,0.35); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 9px 18px; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-copy { background: transparent; border: 1px solid rgba(124,111,247,0.3); color: var(--accent); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-family: 'DM Sans', sans-serif; transition: all 0.2s; margin-top: 12px; }
+    .btn-copy:hover { background: rgba(124,111,247,0.1); }
+
+    .result-box { margin-top: 20px; background: var(--surface2); border-radius: 14px; padding: 20px; border: 1px solid var(--border); white-space: pre-wrap; font-size: 0.93rem; line-height: 1.7; min-height: 80px; color: #c8c4f8; }
+    .result-box.empty { color: var(--muted); font-style: italic; }
+
+    .tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .tag { background: var(--surface2); border: 1px solid var(--border); color: #9990e8; padding: 7px 14px; border-radius: 100px; font-size: 0.80rem; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+    .tag:hover { background: rgba(124,111,247,0.12); border-color: var(--accent); color: var(--accent); }
+
+    .chat-options-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .option-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .chat-window { background: var(--surface2); border-radius: 14px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); min-height: 200px; max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+    .chat-window::-webkit-scrollbar { width: 4px; }
+    .chat-window::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .empty-chat { color: var(--muted); font-size: 0.85rem; text-align: center; margin: auto; line-height: 1.8; }
+    .bubble-wrap { display: flex; flex-direction: column; }
+    .bubble-wrap.them { align-items: flex-start; }
+    .bubble-wrap.you { align-items: flex-end; }
+    .bubble-name { font-size: 0.72rem; color: var(--muted); margin-bottom: 4px; padding: 0 4px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .bubble { max-width: 78%; padding: 12px 16px; border-radius: 16px; font-size: 0.92rem; line-height: 1.5; }
+    .bubble.them { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 4px; }
+    .bubble.you { background: linear-gradient(135deg, var(--accent), #9b8ff9); color: #fff; border-bottom-right-radius: 4px; }
+
+    .suggested-section { background: rgba(67,232,176,0.05); border: 1px dashed rgba(67,232,176,0.25); border-radius: 14px; padding: 20px; margin-top: 16px; display: none; }
+    .suggested-label { font-size: 0.75rem; font-weight: 700; color: var(--accent3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .suggested-text { font-size: 0.95rem; color: var(--text); line-height: 1.7; white-space: pre-wrap; }
+
+    .chat-input-row { display: flex; gap: 10px; align-items: flex-end; }
+    .chat-input-row textarea { flex: 1; margin-bottom: 0; min-height: 56px; max-height: 120px; }
+
+    .btn-send { background: linear-gradient(135deg, var(--accent), #9b8ff9); color: #fff; border: none; width: 56px; height: 56px; border-radius: 12px; font-size: 1.3rem; cursor: pointer; transition: all 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .btn-send:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,111,247,0.4); }
+
+    .lang-toggle { display: flex; gap: 6px; flex-wrap: wrap; }
+    .lang-btn { padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+    .lang-btn.active { background: rgba(240,98,146,0.12); border-color: var(--accent2); color: var(--accent2); font-weight: 600; }
+    .lang-btn:hover:not(.active) { border-color: var(--muted); color: var(--text); }
+
+    .loading-dots { display: inline-flex; gap: 4px; align-items: center; }
+    .loading-dots span { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s infinite; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    .footer { text-align: center; margin-top: 48px; color: var(--muted); font-size: 0.78rem; }
+
+    @media (max-width: 600px) {
+      .tabs { grid-template-columns: repeat(2, 1fr); }
+      .chat-options-row { grid-template-columns: 1fr; }
+      .card { padding: 24px 18px; }
+      .card-desc { margin-left: 0; margin-top: 8px; }
+      .setup-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========================
+     API KEY SETUP SCREEN
+========================= -->
+<div id="setup-screen">
+  <div class="setup-card">
+    <span class="setup-icon">🔐</span>
+    <h2>Enter Your API Key</h2>
+    <p>
+      Paste your Gemini API key below to start using your AI agent.
+      Your key is saved only in your browser — never shared or stored online.<br><br>
+      Don't have a key? Get one free at
+      <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a>
+    </p>
+
+    <div class="setup-error" id="setup-error">❌ Invalid API key. Please check and try again.</div>
+
+    <div class="key-input-wrap">
+      <input type="password" id="api-key-input" placeholder="Paste your Gemini API key here..." />
+      <button class="toggle-key" onclick="toggleKeyVisibility()" id="toggle-btn">👁</button>
+    </div>
+
+    <button class="btn-setup" onclick="saveApiKey()">Start Using AI-VA ➤</button>
+
+    <p class="setup-note">
+      🔒 Your key stays in your browser only.<br>
+      It is never sent to any server except Google's Gemini API.
+    </p>
+  </div>
+</div>
+
+<!-- ========================
+     MAIN APP
+========================= -->
+<div id="main-app">
+<div class="wrapper">
+
+  <div class="header">
+    <div class="header-badge"><span class="dot"></span>Personal AI Agent — Active</div>
+    <h1>AI-VA</h1>
+    <p class="subtitle">Real Estate • Content • English • Chat Replies</p>
+    <div class="header-actions">
+      <button class="btn-change-key" onclick="changeKey()">🔑 Change API Key</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('realestate', this)"><span class="tab-icon">🏠</span>Real Estate VA</button>
+    <button class="tab" onclick="switchTab('reply', this)"><span class="tab-icon">💬</span>Chat Reply</button>
+    <button class="tab" onclick="switchTab('english', this)"><span class="tab-icon">✍️</span>English Reviser</button>
+    <button class="tab" onclick="switchTab('chat', this)"><span class="tab-icon">🤖</span>Ask Anything</button>
+  </div>
+
+  <!-- REAL ESTATE VA -->
+  <div class="card active" id="tab-realestate">
+    <div class="card-header"><div class="card-icon purple">🏠</div><h2>Real Estate VA Questions</h2></div>
+    <p class="card-desc">Ask anything about real estate in English or Tagalog — terms, scripts, processes, anything!</p>
+    <label class="field-label">Quick Topics</label>
+    <div class="tags-wrap">
+      <span class="tag" onclick="fillQuestion('Ano ang ibig sabihin ng wholesaling sa real estate?')">Wholesaling (Tagalog)</span>
+      <span class="tag" onclick="fillQuestion('What does ARV mean in real estate?')">ARV</span>
+      <span class="tag" onclick="fillQuestion('What is a motivated seller?')">Motivated Seller</span>
+      <span class="tag" onclick="fillQuestion('Paano mag-follow up sa isang lead?')">Follow Up (Tagalog)</span>
+      <span class="tag" onclick="fillQuestion('What does under contract mean?')">Under Contract</span>
+      <span class="tag" onclick="fillQuestion('What is cold calling in real estate?')">Cold Calling</span>
+      <span class="tag" onclick="fillQuestion('What is a cash buyer in real estate?')">Cash Buyer</span>
+      <span class="tag" onclick="fillQuestion('What is an assignment of contract?')">Assignment of Contract</span>
+    </div>
+    <label class="field-label">Your Question (English or Tagalog)</label>
+    <textarea id="realestate-input" rows="4" placeholder="e.g. Ano ang ibig sabihin ng cash buyer? or What is a motivated seller?"></textarea>
+    <button class="btn-primary" onclick="askRealEstate()">Get Answer</button>
+    <div class="result-box empty" id="realestate-result">Your answer will appear here...</div>
+    <button class="btn-copy" onclick="copyResult('realestate-result')">⎘ Copy Answer</button>
+  </div>
+
+  <!-- CHAT REPLY COACH -->
+  <div class="card" id="tab-reply">
+    <div class="card-header"><div class="card-icon pink">💬</div><h2>Chat Reply Coach</h2></div>
+    <p class="card-desc">Paste what they said and get a natural, casual reply suggestion instantly.</p>
+    <div class="chat-options-row">
+      <div class="option-group">
+        <label class="field-label">Who are you talking to?</label>
+        <select id="reply-context">
+          <option value="real_estate">🏠 Real Estate Lead (Facebook)</option>
+          <option value="client">👔 Client / Boss</option>
+          <option value="general">💬 General / Anyone</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label class="field-label">Reply Language Style</label>
+        <div class="lang-toggle">
+          <button class="lang-btn active" onclick="setLang('taglish', this)">🇵🇭 Taglish</button>
+          <button class="lang-btn" onclick="setLang('english', this)">🇺🇸 English Only</button>
+          <button class="lang-btn" onclick="setLang('tagalog', this)">🇵🇭 Tagalog Only</button>
+        </div>
+      </div>
+    </div>
+    <div class="chat-window" id="chat-window">
+      <div class="empty-chat">Paste their message below and hit send 👇<br><span style="font-size:0.78rem">Replies will appear here in chat format</span></div>
+    </div>
+    <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+      <button class="btn-ghost" onclick="clearChat()">🗑 Clear Chat</button>
+    </div>
+    <div class="chat-input-row">
+      <textarea id="reply-input" rows="2" placeholder="Paste what they said here..."></textarea>
+      <button class="btn-send" onclick="suggestReply()">➤</button>
+    </div>
+    <div class="suggested-section" id="reply-suggestion">
+      <div class="suggested-label">✨ Suggested Reply</div>
+      <div class="suggested-text" id="reply-suggestion-text"></div>
+      <button class="btn-copy" onclick="copyResult('reply-suggestion-text')">⎘ Copy Reply</button>
+    </div>
+  </div>
+
+  <!-- ENGLISH REVISER -->
+  <div class="card" id="tab-english">
+    <div class="card-header"><div class="card-icon green">✍️</div><h2>English Reviser</h2></div>
+    <p class="card-desc">Paste any text and your agent will fix grammar, improve tone, and make it professional.</p>
+    <label class="field-label">Your Text</label>
+    <textarea id="english-input" rows="7" placeholder="Type or paste anything here — messages, emails, captions, scripts..."></textarea>
+    <button class="btn-primary" onclick="reviseEnglish()">Revise My English</button>
+    <div class="result-box empty" id="english-result">Your revised text will appear here...</div>
+    <button class="btn-copy" onclick="copyResult('english-result')">⎘ Copy Revised Text</button>
+  </div>
+
+  <!-- ASK ANYTHING -->
+  <div class="card" id="tab-chat">
+    <div class="card-header"><div class="card-icon blue">🤖</div><h2>Ask Your Agent Anything</h2></div>
+    <p class="card-desc">General questions, tasks, content ideas — anything related to your work and clients.</p>
+    <label class="field-label">Your Question or Task</label>
+    <textarea id="chat-input" rows="5" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
+    <button class="btn-primary" onclick="askAgent()">Ask Agent</button>
+    <div class="result-box empty" id="chat-result">Your answer will appear here...</div>
+    <button class="btn-copy" onclick="copyResult('chat-result')">⎘ Copy Answer</button>
+  </div>
+
+  <div class="footer">Built for your workflow • Powered by Gemini AI</div>
+</div>
+</div>
+
+<script>
+  let API_KEY = '';
+  let chatHistory = [];
+  let selectedLang = 'taglish';
+
+  const AGENT_CONTEXT = `
+    You are a personal AI assistant for a Virtual Assistant based in the Philippines.
+    She handles 3 clients:
+    1. Real Estate VA - finds leads on Facebook groups, saves names and numbers to Google Sheets, sends outreach messages
+    2. Social Media Manager for Barista.Paws - a pet grooming cafe and boarding business that also sells dogs
+    3. AI QA - reviews AI mistakes for Burger King drive-thru AI
+    She speaks both English and Tagalog. If she asks in Tagalog, answer in Tagalog. If in English, answer in English.
+    Always be helpful, friendly, and explain things simply like talking to a colleague.
+  `;
+
+  // Check if key already saved in browser
+  window.addEventListener('load', () => {
+    const saved = sessionStorage.getItem('gemini_api_key');
+    if (saved) {
+      API_KEY = saved;
+      showApp();
+    }
+
+    document.getElementById('reply-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); suggestReply(); }
+    });
+
+    document.getElementById('api-key-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') saveApiKey();
+    });
+  });
+
+  function toggleKeyVisibility() {
+    const input = document.getElementById('api-key-input');
+    const btn = document.getElementById('toggle-btn');
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁';
+    }
+  }
+
+async function saveApiKey() {
+    const key = document.getElementById('api-key-input').value.trim();
+    const errorEl = document.getElementById('setup-error');
+    errorEl.style.display = 'none';
+
+    if (!key || key.length < 20) {
+      errorEl.textContent = '❌ Please enter a valid API key.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    // Test the key before saving
+    const btn = document.querySelector('.btn-setup');
+    btn.textContent = 'Verifying key...';
+    btn.disabled = true;
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: "Say hello in one word." }] }]
+          })
+        }
+      );
+      const data = await response.json();
+
+      if (data.error) {
+        errorEl.textContent = `❌ ${data.error.message}`;
+        errorEl.style.display = 'block';
+        btn.textContent = 'Start Using AI-VA ➤';
+        btn.disabled = false;
+        return;
+      }
+
+      // Key works!
+      API_KEY = key;
+      sessionStorage.setItem('gemini_api_key', key);
+      showApp();
+
+    } catch (err) {
+      errorEl.textContent = '❌ Could not verify key. Check your internet and try again.';
+      errorEl.style.display = 'block';
+      btn.textContent = 'Start Using AI-VA ➤';
+      btn.disabled = false;
+    }
+  }
+
+  function showApp() {
+    document.getElementById('setup-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+  }
+
+  function changeKey() {
+    sessionStorage.removeItem('gemini_api_key');
+    API_KEY = '';
+    document.getElementById('api-key-input').value = '';
+    document.getElementById('setup-error').style.display = 'none';
+    document.querySelector('.btn-setup').textContent = 'Start Using AI-VA ➤';
+    document.querySelector('.btn-setup').disabled = false;
+    document.getElementById('setup-screen').style.display = 'flex';
+    document.getElementById('main-app').style.display = 'none';
+  }
+
+  async function callGemini(prompt) {
+    try {
+      const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            systemInstruction: { parts: [{ text: AGENT_CONTEXT }] }
+          })
+        }
+      );
+      const data = await response.json();
+      if (data.error) return `Error: ${data.error.message}`;
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || "Something went wrong. Please try again.";
+    } catch (err) {
+      return "Something went wrong. Please try again.";
+    }
+  }
+
+  function showLoading(el) {
+    el.classList.remove('empty');
+    el.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+  }
+
+  function setLang(lang, el) {
+    selectedLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  async function suggestReply() {
+    const message = document.getElementById("reply-input").value.trim();
+    const context = document.getElementById("reply-context").value;
+    const suggestionEl = document.getElementById("reply-suggestion");
+    const suggestionText = document.getElementById("reply-suggestion-text");
+    if (!message) return;
+
+    addBubble(message, "them");
+    document.getElementById("reply-input").value = "";
+    suggestionEl.style.display = "block";
+    suggestionText.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+
+    const contextMap = {
+      real_estate: "a real estate lead found on a Facebook group. You are a real estate VA doing outreach.",
+      client: "your client or boss. Be professional but warm.",
+      general: "someone you're having a casual conversation with."
+    };
+
+    const langMap = {
+      taglish: "Use a natural Taglish mix (Filipino + English), like how Filipinos normally text each other. Very casual and friendly.",
+      english: "Use English only. Keep it casual, friendly, and natural like a real text message.",
+      tagalog: "Use Tagalog only. Casual and natural like how Filipinos text."
+    };
+
+    const conversationContext = chatHistory.length > 0
+      ? `Previous messages:\n${chatHistory.map(m => `${m.role === 'them' ? 'Them' : 'You'}: ${m.text}`).join('\n')}\n\n`
+      : '';
+
+    const prompt = `You are helping a Filipino VA reply to a chat message. She is talking to ${contextMap[context]}
+${conversationContext}Their latest message: "${message}"
+Language style: ${langMap[selectedLang]}
+Write a short, casual reply. Sound like a real person texting. Keep it brief. Just give the reply text only, no quotes.`;
+
+    const result = await callGemini(prompt);
+    suggestionText.textContent = result;
+    chatHistory.push({ role: "them", text: message });
+    chatHistory.push({ role: "you", text: result });
+    addBubble(result, "you");
+  }
+
+  function addBubble(text, role) {
+    const win = document.getElementById("chat-window");
+    const emptyEl = win.querySelector('.empty-chat');
+    if (emptyEl) emptyEl.remove();
+    const wrap = document.createElement("div");
+    wrap.className = `bubble-wrap ${role}`;
+    const name = document.createElement("div");
+    name.className = "bubble-name";
+    name.textContent = role === "them" ? "Them" : "✨ Suggested";
+    const bubble = document.createElement("div");
+    bubble.className = `bubble ${role}`;
+    bubble.textContent = text;
+    wrap.appendChild(name);
+    wrap.appendChild(bubble);
+    win.appendChild(wrap);
+    win.scrollTop = win.scrollHeight;
+  }
+
+  function clearChat() {
+    chatHistory = [];
+    const win = document.getElementById("chat-window");
+    win.innerHTML = `<div class="empty-chat">Paste their message below and hit send 👇<br><span style="font-size:0.78rem">Replies will appear here in chat format</span></div>`;
+    document.getElementById("reply-suggestion").style.display = "none";
+  }
+
+  async function askRealEstate() {
+    const question = document.getElementById("realestate-input").value.trim();
+    const resultEl = document.getElementById("realestate-result");
+    if (!question) { resultEl.textContent = "Please type a question first."; return; }
+    showLoading(resultEl);
+    const result = await callGemini(`You are a real estate expert for a VA working in US real estate. Answer clearly and simply. If Tagalog, answer in Tagalog. If English, answer in English. Give practical examples.\n\nQuestion: ${question}`);
+    resultEl.classList.remove('empty');
+    resultEl.textContent = result;
+  }
+
+  async function reviseEnglish() {
+    const text = document.getElementById("english-input").value.trim();
+    const resultEl = document.getElementById("english-result");
+    if (!text) { resultEl.textContent = "Please enter some text to revise."; return; }
+    showLoading(resultEl);
+    const result = await callGemini(`Revise the following text. Fix grammar, improve clarity, make it sound natural and professional. Keep the original meaning. Return only the revised version.\n\nText: ${text}`);
+    resultEl.classList.remove('empty');
+    resultEl.textContent = result;
+  }
+
+  async function askAgent() {
+    const question = document.getElementById("chat-input").value.trim();
+    const resultEl = document.getElementById("chat-result");
+    if (!question) { resultEl.textContent = "Please type a question or task."; return; }
+    showLoading(resultEl);
+    const result = await callGemini(question);
+    resultEl.classList.remove('empty');
+    resultEl.textContent = result;
+  }
+
+  function fillQuestion(text) {
+    document.getElementById("realestate-input").value = text;
+    document.getElementById("realestate-input").focus();
+  }
+
+  function switchTab(tab, el) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    el.classList.add('active');
+  }
+
+  function copyResult(id) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      const original = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = original, 2000);
+    });
+  }
+</script>
+</body>
+</html>
