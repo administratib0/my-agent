@@ -630,7 +630,7 @@ Return ONLY:
     const optionsEl = document.getElementById("english-options");
     if (!text) return;
     optionsEl.innerHTML = '<div class="loading-dots" style="margin-top:16px"><span></span><span></span><span></span></div>';
-    const result = await callGemini(`Revise the following text in 3 different casual ways. Natural, friendly, relaxed like real texting. Fix grammar but keep it casual.\n\nReturn ONLY:\n1. [version]\n2. [version]\n3. [version]\n\nText: ${text}`);
+    const result = await callGemini(REVISER_CONTEXT + `\n\nRevise the following text in 3 different casual ways. Natural, friendly, relaxed like real texting. Fix grammar but keep it casual.\n\nReturn ONLY:\n1. [version]\n2. [version]\n3. [version]\n\nText: ${text}`);
     const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
     if (lines.length >= 3) renderOptions('english-options', lines);
     else optionsEl.innerHTML = `<div class="result-box" style="margin-top:14px">${result}</div>`;
@@ -650,8 +650,7 @@ Return ONLY:
     const resultEl = document.getElementById("chat-result");
     if (!question) return;
     showLoading(resultEl);
-    const result = await callGemini(question);
-    resultEl.classList.remove('empty'); resultEl.textContent = result;
+    const result = await callGemini(GENERAL_CONTEXT + "\n\n" + question);    resultEl.classList.remove('empty'); resultEl.textContent = result;
   }
 
   function switchTab(tab, el) {
