@@ -682,14 +682,42 @@ Write a short, casual reply. Sound like a real person texting. Keep it brief. Ju
     resultEl.textContent = result;
   }
 
-  async function reviseEnglish() {
+async function reviseEnglish() {
     const text = document.getElementById("english-input").value.trim();
     const resultEl = document.getElementById("english-result");
     if (!text) { resultEl.textContent = "Please enter some text to revise."; return; }
     showLoading(resultEl);
-    const result = await callGemini(`Revise the following text. Fix grammar, improve clarity, make it sound natural and professional. Keep the original meaning. Return only the revised version.\n\nText: ${text}`);
-    resultEl.classList.remove('empty');
-    resultEl.textContent = result;
+
+    const prompt = `Revise the following text 3 different ways. All versions must sound casual, natural, and friendly — like how a real person texts or chats. Fix any grammar issues but keep it relaxed, not formal or robotic.
+
+Return ONLY this exact format, nothing else:
+1. [first casual version]
+2. [second casual version]
+3. [third casual version]
+
+Text: ${text}`;
+
+    const result = await callGemini(prompt);
+    
+    // Parse the 3 versions
+    const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
+    
+    if (lines.length >= 3) {
+      resultEl.classList.remove('empty');
+      resultEl.innerHTML = lines.map((line, i) => {
+        const content = line.replace(/^[1-3]\.\s*/, '');
+        return `
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 10px;">
+            <div style="font-size: 0.72rem; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;">Option ${i + 1}</div>
+            <div style="color: var(--text); line-height: 1.6; font-size: 0.93rem;">${content}</div>
+            <button onclick="copyText('${content.replace(/'/g, "\\'")}', this)" style="margin-top: 10px; background: transparent; border: 1px solid rgba(124,111,247,0.3); color: var(--accent); padding: 7px 16px; border-radius: 8px; cursor: pointer; font-size: 0.80rem; font-family: DM Sans, sans-serif; transition: all 0.2s;">⎘ Copy</button>
+          </div>
+        `;
+      }).join('');
+    } else {
+      resultEl.classList.remove('empty');
+      resultEl.textContent = result;
+    }
   }
 
   async function askAgent() {
@@ -723,6 +751,15 @@ Write a short, casual reply. Sound like a real person texting. Keep it brief. Ju
       setTimeout(() => btn.textContent = original, 2000);
     });
   }
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = original, 2000);
+    });
+  }
+
 </script>
 </body>
 </html>
