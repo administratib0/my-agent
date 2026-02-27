@@ -484,8 +484,7 @@
 
   // Check if key already saved in browser
   window.addEventListener('load', () => {
-    const saved = sessionStorage.getItem('gemini_api_key');
-    if (saved) {
+  const saved = localStorage.getItem('gemini_api_key');    if (saved) {
       API_KEY = saved;
       showApp();
     }
@@ -550,7 +549,7 @@ async function saveApiKey() {
 
       // Key works!
       API_KEY = key;
-      sessionStorage.setItem('gemini_api_key', key);
+      localStorage.setItem('gemini_api_key', key);
       showApp();
 
     } catch (err) {
@@ -567,7 +566,7 @@ async function saveApiKey() {
   }
 
   function changeKey() {
-    sessionStorage.removeItem('gemini_api_key');
+    localStorage.removeItem('gemini_api_key');
     API_KEY = '';
     document.getElementById('api-key-input').value = '';
     document.getElementById('setup-error').style.display = 'none';
