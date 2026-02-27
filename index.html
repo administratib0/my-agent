@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI-VA — Personal AI Agent</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎭</text></svg>">
   <!-- Load templates and agent context from separate file -->
   <script src="templates.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -348,7 +349,7 @@
     <div class="textarea-wrap">
       <textarea id="realestate-input" rows="4" placeholder="e.g. How do I reply to someone asking about creative deals?"></textarea>
       <div class="textarea-actions">
-        <button class="ta-btn" onclick="clearField('realestate-input')" title="Clear">🗑</button>
+        <button class="ta-btn" onclick="clearField('realestate-input')" title="Clear">✕</button>
         <button class="ta-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Speak">🎤</button>
       </div>
     </div>
@@ -381,7 +382,7 @@
     <div class="textarea-wrap">
       <textarea id="intention-input" rows="3" placeholder="e.g. I want to ask if they are still interested in selling their house..."></textarea>
       <div class="textarea-actions">
-        <button class="ta-btn" onclick="clearField('intention-input')" title="Clear">🗑</button>
+        <button class="ta-btn" onclick="clearField('intention-input')" title="Clear">✕</button>
         <button class="ta-btn" id="mic-intention" onclick="toggleMic('intention-input', 'mic-intention')" title="Speak">🎤</button>
       </div>
     </div>
@@ -421,7 +422,7 @@
     <div class="textarea-wrap">
       <textarea id="english-input" rows="7" placeholder="Type or paste anything here — messages, emails, captions, scripts..."></textarea>
       <div class="textarea-actions">
-        <button class="ta-btn" onclick="clearField('english-input')" title="Clear">🗑</button>
+        <button class="ta-btn" onclick="clearField('english-input')" title="Clear">✕</button>
         <button class="ta-btn" id="mic-english" onclick="toggleMic('english-input', 'mic-english')" title="Speak">🎤</button>
       </div>
     </div>
@@ -438,7 +439,7 @@
     <div class="textarea-wrap">
       <textarea id="chat-input" rows="5" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
       <div class="textarea-actions">
-        <button class="ta-btn" onclick="clearField('chat-input')" title="Clear">🗑</button>
+        <button class="ta-btn" onclick="clearField('chat-input')" title="Clear">✕</button>
         <button class="ta-btn" id="mic-chat" onclick="toggleMic('chat-input', 'mic-chat')" title="Speak">🎤</button>
       </div>
     </div>
