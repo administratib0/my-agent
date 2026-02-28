@@ -532,6 +532,12 @@
 
   function toggleMic(targetId, btnId) {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert('Use Chrome for voice input!'); return; }
+    
+    // Check if the button's textarea is in the active tab
+    const textarea = document.getElementById(targetId);
+    const parentCard = textarea.closest('.card');
+    if (!parentCard.classList.contains('active')) return;
+    
     const btn = document.getElementById(btnId);
     if (activeRecognition) { activeRecognition.stop(); activeRecognition = null; btn.classList.remove('recording'); btn.textContent = '🎤'; return; }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
