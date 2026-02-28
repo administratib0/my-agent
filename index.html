@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI-VA — Personal AI Agent</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎭</text></svg>">
-  <!-- Load templates and agent context from separate file -->
   <script src="templates.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -13,10 +12,8 @@
       --bg: #020b02;
       --surface: #040f04;
       --surface2: #071007;
-      --surface3: #0a160a;
       --accent: #00ff41;
       --accent2: #00cc33;
-      --accent3: #39ff14;
       --accent-dim: rgba(0,255,65,0.15);
       --accent-glow: rgba(0,255,65,0.4);
       --text: #ccffcc;
@@ -26,6 +23,8 @@
       --border2: #1a4a1a;
       --red: #ff3333;
       --red-dim: rgba(255,51,51,0.15);
+      --paw: #ff9944;
+      --paw-dim: rgba(255,153,68,0.15);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,69 +40,47 @@
     body::before {
       content: '';
       position: fixed; inset: 0;
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px
-      );
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px);
       pointer-events: none; z-index: 9999;
     }
 
     body::after {
       content: '';
       position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px);
       background-size: 32px 32px;
       pointer-events: none; z-index: 0;
     }
 
-    .wrapper { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 40px 24px 60px; }
+    .wrapper { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; }
 
-    /* SETUP SCREEN */
+    /* SETUP */
     #setup-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
 
     .setup-card {
-      background: var(--surface); border: 1px solid var(--border2);
-      border-radius: 4px; padding: 48px 40px; max-width: 480px; width: 100%; text-align: center;
-      box-shadow: 0 0 40px rgba(0,255,65,0.08), inset 0 0 40px rgba(0,0,0,0.5); position: relative;
+      background: var(--surface); border: 1px solid var(--border2); border-radius: 4px;
+      padding: 48px 40px; max-width: 480px; width: 100%; text-align: center;
+      box-shadow: 0 0 40px rgba(0,255,65,0.08); position: relative;
     }
 
     .setup-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
 
     .setup-icon { font-size: 2.5rem; margin-bottom: 20px; display: block; }
 
-    .setup-card h2 {
-      font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: 400;
-      margin-bottom: 10px; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow);
-      letter-spacing: 2px; text-transform: uppercase;
-    }
+    .setup-card h2 { font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: 400; margin-bottom: 10px; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); letter-spacing: 2px; text-transform: uppercase; }
 
     .setup-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.7; margin-bottom: 28px; }
     .setup-card a { color: var(--accent); text-decoration: none; }
-    .setup-card a:hover { text-shadow: 0 0 8px var(--accent); }
 
     .key-input-wrap { position: relative; margin-bottom: 16px; }
 
-    .key-input-wrap input {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 4px; padding: 14px 50px 14px 16px; color: var(--accent);
-      font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; letter-spacing: 1px;
-    }
-
-    .key-input-wrap input::placeholder { color: var(--muted); letter-spacing: 0; font-family: 'DM Sans', sans-serif; }
+    .key-input-wrap input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 14px 50px 14px 16px; color: var(--accent); font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; }
+    .key-input-wrap input::placeholder { color: var(--muted); font-family: 'DM Sans', sans-serif; }
     .key-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 12px rgba(0,255,65,0.2); }
 
     .toggle-key { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
-    .toggle-key:hover { color: var(--accent); }
 
-    .btn-setup {
-      width: 100%; background: transparent; color: var(--accent); border: 1px solid var(--accent);
-      padding: 14px; border-radius: 4px; font-size: 0.95rem; font-weight: 600;
-      font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s;
-      margin-bottom: 16px; letter-spacing: 2px; text-transform: uppercase;
-    }
-
+    .btn-setup { width: 100%; background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px; border-radius: 4px; font-size: 0.95rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; letter-spacing: 2px; text-transform: uppercase; }
     .btn-setup:hover { background: var(--accent-dim); box-shadow: 0 0 20px rgba(0,255,65,0.25); }
 
     .setup-note { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
@@ -114,121 +91,69 @@
 
     .header { text-align: center; margin-bottom: 48px; }
 
-    .header-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--accent-dim); border: 1px solid rgba(0,255,65,0.25);
-      border-radius: 2px; padding: 5px 14px; font-size: 0.72rem; color: var(--accent);
-      letter-spacing: 2px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; margin-bottom: 20px;
-    }
-
+    .header-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-dim); border: 1px solid rgba(0,255,65,0.25); border-radius: 2px; padding: 5px 14px; font-size: 0.72rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; margin-bottom: 20px; }
     .header-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; box-shadow: 0 0 6px var(--accent); }
 
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    h1 {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 400; line-height: 1.1; margin-bottom: 12px;
-      color: var(--accent); text-shadow: 0 0 30px rgba(0,255,65,0.5), 0 0 60px rgba(0,255,65,0.2);
-      letter-spacing: 8px; text-transform: uppercase;
-    }
-
+    h1 { font-family: 'Share Tech Mono', monospace; font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 400; line-height: 1.1; margin-bottom: 12px; color: var(--accent); text-shadow: 0 0 30px rgba(0,255,65,0.5), 0 0 60px rgba(0,255,65,0.2); letter-spacing: 8px; text-transform: uppercase; }
     .subtitle { font-size: 0.85rem; color: var(--text2); letter-spacing: 3px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; }
     .header-actions { margin-top: 20px; }
-
-    .btn-change-key {
-      background: transparent; border: 1px solid var(--border2); color: var(--muted);
-      padding: 6px 16px; border-radius: 2px; font-size: 0.75rem;
-      font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
-    }
-
+    .btn-change-key { background: transparent; border: 1px solid var(--border2); color: var(--muted); padding: 6px 16px; border-radius: 2px; font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
     .btn-change-key:hover { border-color: var(--accent); color: var(--accent); }
 
-    .tabs {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 2px; margin-bottom: 24px; background: var(--border);
-      border: 1px solid var(--border2); border-radius: 4px; padding: 4px;
-    }
+    /* TABS — 5 columns now */
+    .tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-bottom: 24px; background: var(--border); border: 1px solid var(--border2); border-radius: 4px; padding: 4px; }
 
-    .tab {
-      padding: 12px 8px; border-radius: 2px; border: none;
-      background: transparent; color: var(--muted); cursor: pointer;
-      font-size: 0.75rem; font-family: 'Share Tech Mono', monospace;
-      transition: all 0.2s; text-align: center; line-height: 1.4;
-      letter-spacing: 0.5px; text-transform: uppercase;
-    }
-
+    .tab { padding: 12px 6px; border-radius: 2px; border: none; background: transparent; color: var(--muted); cursor: pointer; font-size: 0.70rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; text-align: center; line-height: 1.4; letter-spacing: 0.5px; text-transform: uppercase; }
     .tab .tab-icon { font-size: 1rem; display: block; margin-bottom: 4px; }
     .tab:hover { color: var(--accent); background: var(--accent-dim); }
     .tab.active { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(0,255,65,0.3); box-shadow: 0 0 12px rgba(0,255,65,0.1); }
+    .tab.paw-tab.active { background: var(--paw-dim); color: var(--paw); border: 1px solid rgba(255,153,68,0.3); box-shadow: 0 0 12px rgba(255,153,68,0.1); }
+    .tab.paw-tab:hover { color: var(--paw); background: var(--paw-dim); }
 
-    .card {
-      background: var(--surface); border-radius: 4px; padding: 36px;
-      border: 1px solid var(--border2); display: none;
-      animation: fadeIn 0.25s ease; position: relative;
-    }
-
+    /* CARDS */
+    .card { background: var(--surface); border-radius: 4px; padding: 36px; border: 1px solid var(--border2); display: none; animation: fadeIn 0.25s ease; position: relative; }
     .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,255,65,0.4), transparent); }
+    .card.paw-card::before { background: linear-gradient(90deg, transparent, rgba(255,153,68,0.5), transparent); }
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
     .card.active { display: block; }
     .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 
-    .card-icon {
-      width: 40px; height: 40px; border-radius: 2px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; flex-shrink: 0;
-      background: var(--accent-dim); border: 1px solid rgba(0,255,65,0.2);
-    }
+    .card-icon { width: 40px; height: 40px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; background: var(--accent-dim); border: 1px solid rgba(0,255,65,0.2); }
+    .card-icon.paw { background: var(--paw-dim); border: 1px solid rgba(255,153,68,0.3); }
 
     .card h2 { font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; font-weight: 400; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+    .card h2.paw { color: var(--paw); }
+
     .card-desc { font-size: 0.85rem; color: var(--text2); margin-bottom: 24px; margin-left: 52px; line-height: 1.6; }
 
-    .field-label { font-size: 0.70rem; font-weight: 400; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; display: block; font-family: 'Share Tech Mono', monospace; }
+    .field-label { font-size: 0.70rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; display: block; font-family: 'Share Tech Mono', monospace; }
+    .field-label.paw { color: var(--paw); }
 
+    /* TEXTAREA */
     .textarea-wrap { position: relative; margin-bottom: 12px; }
 
-    .textarea-wrap textarea {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 4px; padding: 14px 100px 14px 14px; color: var(--text);
-      font-size: 0.93rem; font-family: 'DM Sans', sans-serif; resize: vertical;
-      transition: all 0.2s; line-height: 1.6; min-height: 110px;
-    }
-
+    .textarea-wrap textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 14px; color: var(--text); font-size: 0.93rem; font-family: 'DM Sans', sans-serif; resize: vertical; transition: all 0.2s; line-height: 1.6; min-height: 110px; }
     .textarea-wrap textarea::placeholder { color: var(--muted); }
     .textarea-wrap textarea:focus { outline: none; border-color: var(--accent2); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
+    .textarea-wrap textarea.paw-focus:focus { border-color: var(--paw); box-shadow: 0 0 10px rgba(255,153,68,0.15); }
 
-    .textarea-actions { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 6px; }
+    /* CLEAR BUTTON */
+    .textarea-wrap { position: relative; }
+    .btn-clear { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border-radius: 4px; border: 1px solid rgba(255,51,51,0.4); background: rgba(255,51,51,0.08); color: #ff5555; cursor: pointer; font-size: 0.80rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .btn-clear:hover { background: rgba(255,51,51,0.18); border-color: #ff5555; }
 
-    .ta-btn {
-      width: 32px; height: 32px; border-radius: 4px;
-      border: 1px solid rgba(255,51,51,0.4); background: rgba(255,51,51,0.08); color: #ff5555;
-      cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-    }
-
-    .ta-btn:hover { background: rgba(255,51,51,0.18); border-color: #ff5555; box-shadow: 0 0 8px rgba(255,51,51,0.3); }
-    .ta-btn.recording { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); animation: micPulse 1s infinite; }
-
-    @keyframes micPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,65,0.4); } 50% { box-shadow: 0 0 0 6px rgba(0,255,65,0); } }
-
-    select {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 4px; padding: 12px 14px; color: var(--text);
-      font-size: 0.88rem; font-family: 'DM Sans', sans-serif;
-      margin-bottom: 14px; cursor: pointer; transition: all 0.2s;
-    }
-
+    select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 12px 14px; color: var(--text); font-size: 0.88rem; font-family: 'DM Sans', sans-serif; margin-bottom: 14px; cursor: pointer; transition: all 0.2s; }
     select:focus { outline: none; border-color: var(--accent2); }
     select option { background: var(--surface2); }
 
-    .btn-primary {
-      background: transparent; color: var(--accent); border: 1px solid var(--accent);
-      padding: 14px 28px; border-radius: 4px; font-weight: 400; cursor: pointer;
-      font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s;
-      width: 100%; letter-spacing: 2px; text-transform: uppercase;
-    }
-
+    .btn-primary { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px 28px; border-radius: 4px; cursor: pointer; font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; width: 100%; letter-spacing: 2px; text-transform: uppercase; }
     .btn-primary:hover { background: var(--accent-dim); box-shadow: 0 0 20px rgba(0,255,65,0.2); }
+    .btn-primary.paw { color: var(--paw); border-color: var(--paw); }
+    .btn-primary.paw:hover { background: var(--paw-dim); box-shadow: 0 0 20px rgba(255,153,68,0.2); }
 
     .btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--muted); padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.78rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; letter-spacing: 1px; }
     .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
@@ -239,21 +164,28 @@
     .result-box { margin-top: 16px; background: var(--surface2); border-radius: 4px; padding: 18px; border: 1px solid var(--border2); white-space: pre-wrap; font-size: 0.90rem; line-height: 1.8; min-height: 80px; color: var(--text); }
     .result-box.empty { color: var(--muted); font-family: 'Share Tech Mono', monospace; font-size: 0.80rem; }
 
+    /* OPTIONS */
     .options-grid { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 
     .option-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 16px; transition: all 0.2s; position: relative; }
     .option-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent2); border-radius: 4px 0 0 4px; opacity: 0.5; }
-    .option-card:hover { border-color: rgba(0,255,65,0.3); box-shadow: 0 0 12px rgba(0,255,65,0.06); }
+    .option-card.paw-option::before { background: var(--paw); }
+    .option-card:hover { border-color: rgba(0,255,65,0.3); }
     .option-card:hover::before { opacity: 1; }
+    .option-card.paw-option:hover { border-color: rgba(255,153,68,0.3); }
 
     .option-label { font-size: 0.68rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Share Tech Mono', monospace; }
+    .option-label.paw { color: var(--paw); }
     .option-text { color: var(--text); line-height: 1.7; font-size: 0.90rem; white-space: pre-wrap; }
 
     .option-copy-btn { margin-top: 10px; background: transparent; border: 1px solid rgba(0,255,65,0.2); color: var(--accent2); padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; letter-spacing: 1px; }
     .option-copy-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+    .option-copy-btn.paw { border-color: rgba(255,153,68,0.3); color: var(--paw); }
+    .option-copy-btn.paw:hover { background: var(--paw-dim); border-color: var(--paw); }
 
+    /* UPLOAD */
     .upload-zone { border: 1px dashed var(--border2); border-radius: 4px; padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface2); margin-bottom: 14px; position: relative; }
-    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent2); background: var(--accent-dim); box-shadow: 0 0 16px rgba(0,255,65,0.08); }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent2); background: var(--accent-dim); }
     .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
     .upload-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
     .upload-text { color: var(--text2); font-size: 0.85rem; line-height: 1.6; }
@@ -262,18 +194,27 @@
     .preview-wrap { position: relative; margin-bottom: 14px; display: none; }
     .preview-wrap img { width: 100%; max-height: 300px; object-fit: contain; border-radius: 4px; border: 1px solid var(--border2); background: var(--surface2); }
     .preview-remove { position: absolute; top: 8px; right: 8px; background: rgba(255,51,51,0.85); color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .preview-remove:hover { background: #ff3333; transform: scale(1.1); }
+    .preview-remove:hover { background: #ff3333; }
 
-    .chat-options-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    .option-group { display: flex; flex-direction: column; gap: 6px; }
+    /* CHAT OPTIONS ROW */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .col-group { display: flex; flex-direction: column; gap: 6px; }
 
     .lang-toggle { display: flex; gap: 6px; flex-wrap: wrap; }
     .lang-btn { padding: 7px 12px; border-radius: 2px; border: 1px solid var(--border2); background: transparent; color: var(--muted); font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; }
     .lang-btn.active { background: var(--accent-dim); border-color: var(--accent2); color: var(--accent); }
-    .lang-btn:hover:not(.active) { border-color: var(--muted); color: var(--text2); }
+    .lang-btn:hover:not(.active) { color: var(--text2); }
+
+    /* TOGGLE GROUP — for Barista vibe selector */
+    .vibe-toggle { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .vibe-btn { padding: 8px 14px; border-radius: 2px; border: 1px solid var(--border2); background: transparent; color: var(--muted); font-size: 0.78rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px; }
+    .vibe-btn.active { background: var(--paw-dim); border-color: var(--paw); color: var(--paw); }
+    .vibe-btn:hover:not(.active) { color: var(--text2); border-color: var(--muted); }
 
     .suggested-section { background: rgba(0,255,65,0.03); border: 1px solid rgba(0,255,65,0.15); border-radius: 4px; padding: 20px; margin-top: 18px; display: none; }
+    .suggested-section.paw { background: rgba(255,153,68,0.03); border-color: rgba(255,153,68,0.2); }
     .suggested-label { font-size: 0.70rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; }
+    .suggested-label.paw { color: var(--paw); }
 
     .divider { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
     .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
@@ -286,13 +227,24 @@
 
     @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-6px); opacity: 1; } }
 
-    .hint-text { font-size: 0.72rem; color: var(--muted); margin-top: -4px; margin-bottom: 12px; font-family: 'Share Tech Mono', monospace; letter-spacing: 0.5px; }
+    .hint-text { font-size: 0.72rem; color: var(--muted); margin-top: -4px; margin-bottom: 12px; font-family: 'Share Tech Mono', monospace; }
+
+    /* BARISTA PAWS — sub tabs */
+    .sub-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 24px; }
+
+    .sub-tab { padding: 10px 6px; border-radius: 2px; border: 1px solid var(--border2); background: transparent; color: var(--muted); cursor: pointer; font-size: 0.70rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; text-align: center; line-height: 1.4; text-transform: uppercase; }
+    .sub-tab:hover { color: var(--paw); background: var(--paw-dim); border-color: var(--paw); }
+    .sub-tab.active { background: var(--paw-dim); color: var(--paw); border-color: var(--paw); }
+
+    .sub-panel { display: none; animation: fadeIn 0.2s ease; }
+    .sub-panel.active { display: block; }
 
     .footer { text-align: center; margin-top: 48px; color: var(--muted); font-size: 0.72rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
 
-    @media (max-width: 600px) {
-      .tabs { grid-template-columns: repeat(2, 1fr); }
-      .chat-options-row { grid-template-columns: 1fr; }
+    @media (max-width: 640px) {
+      .tabs { grid-template-columns: repeat(3, 1fr); }
+      .two-col { grid-template-columns: 1fr; }
+      .sub-tabs { grid-template-columns: repeat(2, 1fr); }
       .card { padding: 22px 16px; }
       .card-desc { margin-left: 0; margin-top: 8px; }
       .setup-card { padding: 32px 20px; }
@@ -306,18 +258,14 @@
   <div class="setup-card">
     <span class="setup-icon">🎭</span>
     <h2>// ACCESS REQUIRED</h2>
-    <p>
-      Enter your Gemini API key to initialize the agent.<br>
-      Key is stored locally in your browser only — never transmitted to any third-party server.<br><br>
-      No key? Get one free at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a>
-    </p>
+    <p>Enter your Gemini API key to initialize the agent.<br>Key is stored locally — never shared with anyone.<br><br>No key? Get one free at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></p>
     <div class="setup-error" id="setup-error"></div>
     <div class="key-input-wrap">
       <input type="password" id="api-key-input" placeholder="Paste your Gemini API key here..." />
       <button class="toggle-key" onclick="toggleKeyVisibility()" id="toggle-btn">👁</button>
     </div>
     <button class="btn-setup" onclick="saveApiKey()">[ INITIALIZE AGENT ]</button>
-    <p class="setup-note">🔒 Key stored in localStorage — your device only.</p>
+    <p class="setup-note">🔒 Stored in localStorage — your device only.</p>
   </div>
 </div>
 
@@ -328,7 +276,7 @@
   <div class="header">
     <div class="header-badge"><span class="dot"></span>SYSTEM ONLINE // AGENT ACTIVE</div>
     <h1>AI-VA</h1>
-    <p class="subtitle">Real Estate // Chat // English // General</p>
+    <p class="subtitle">Real Estate // Chat // English // Barista.Paws // General</p>
     <div class="header-actions">
       <button class="btn-change-key" onclick="changeKey()">[ CHANGE KEY ]</button>
     </div>
@@ -338,27 +286,18 @@
     <button class="tab active" onclick="switchTab('realestate', this)"><span class="tab-icon">🏠</span>Real Estate</button>
     <button class="tab" onclick="switchTab('reply', this)"><span class="tab-icon">💬</span>Chat Reply</button>
     <button class="tab" onclick="switchTab('english', this)"><span class="tab-icon">✍️</span>Reviser</button>
+    <button class="tab paw-tab" onclick="switchTab('barista', this)"><span class="tab-icon">🐾</span>Barista.Paws</button>
     <button class="tab" onclick="switchTab('chat', this)"><span class="tab-icon">🤖</span>Ask Agent</button>
   </div>
 
-  <!-- REAL ESTATE VA -->
+  <!-- ======================== REAL ESTATE VA ======================== -->
   <div class="card active" id="tab-realestate">
     <div class="card-header"><div class="card-icon">🏠</div><h2>// Real Estate VA</h2></div>
-    <p class="card-desc">Ask anything about real estate — terms, scripts, processes. Uses your actual templates.</p>
+    <p class="card-desc">Ask anything about real estate — uses your actual company templates and tone.</p>
     <label class="field-label">&gt; Input query</label>
     <div class="textarea-wrap">
       <textarea id="realestate-input" rows="4" placeholder="e.g. How do I reply to someone asking about creative deals?"></textarea>
-      <div class="textarea-actions">
-        <button class="ta-btn" onclick="clearField('realestate-input')" title="Clear">✕</button>
-        <button class="ta-btn mic-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Voice">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-    <line x1="12" y1="19" x2="12" y2="23"/>
-    <line x1="8" y1="23" x2="16" y2="23"/>
-  </svg>
-</button>
-      </div>
+      <button class="btn-clear" onclick="clearField('realestate-input')" title="Clear">✕</button>
     </div>
     <p class="hint-text">&gt; Press Enter to execute</p>
     <button class="btn-primary" onclick="askRealEstate()">[ RUN QUERY ]</button>
@@ -366,10 +305,10 @@
     <button class="btn-copy" onclick="copyResult('realestate-result')">[ COPY OUTPUT ]</button>
   </div>
 
-  <!-- CHAT REPLY COACH -->
+  <!-- ======================== CHAT REPLY COACH ======================== -->
   <div class="card" id="tab-reply">
     <div class="card-header"><div class="card-icon">💬</div><h2>// Chat Reply Coach</h2></div>
-    <p class="card-desc">Upload a screenshot of the conversation and get 3 reply suggestions.</p>
+    <p class="card-desc">Upload a screenshot and get 3 reply suggestions based on your templates.</p>
 
     <label class="field-label">&gt; Upload screenshot</label>
     <div class="upload-zone" id="upload-zone">
@@ -380,29 +319,19 @@
 
     <div class="preview-wrap" id="preview-wrap">
       <img id="screenshot-preview" src="" alt="Screenshot preview" />
-      <button class="preview-remove" onclick="removeScreenshot()" title="Remove">✕</button>
+      <button class="preview-remove" onclick="removeScreenshot()">✕</button>
     </div>
 
     <div class="divider"><span>AND / OR</span></div>
 
     <label class="field-label">&gt; What do you want to say? (optional)</label>
     <div class="textarea-wrap">
-      <textarea id="intention-input" rows="3" placeholder="e.g. I want to ask if they are still interested in selling their house..."></textarea>
-      <div class="textarea-actions">
-        <button class="ta-btn" onclick="clearField('intention-input')" title="Clear">✕</button>
-        <button class="ta-btn mic-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Voice">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-    <line x1="12" y1="19" x2="12" y2="23"/>
-    <line x1="8" y1="23" x2="16" y2="23"/>
-  </svg>
-</button>
-      </div>
+      <textarea id="intention-input" rows="3" placeholder="e.g. I want to ask if they are still interested in selling..."></textarea>
+      <button class="btn-clear" onclick="clearField('intention-input')" title="Clear">✕</button>
     </div>
 
-    <div class="chat-options-row">
-      <div class="option-group">
+    <div class="two-col">
+      <div class="col-group">
         <label class="field-label">&gt; Context</label>
         <select id="reply-context">
           <option value="real_estate">🏠 Real Estate Lead (Facebook)</option>
@@ -410,7 +339,7 @@
           <option value="general">💬 General / Anyone</option>
         </select>
       </div>
-      <div class="option-group">
+      <div class="col-group">
         <label class="field-label">&gt; Language style</label>
         <div class="lang-toggle">
           <button class="lang-btn active" onclick="setLang('taglish', this)">🇵🇭 Taglish</button>
@@ -428,48 +357,147 @@
     </div>
   </div>
 
-  <!-- ENGLISH REVISER -->
+  <!-- ======================== ENGLISH REVISER ======================== -->
   <div class="card" id="tab-english">
     <div class="card-header"><div class="card-icon">✍️</div><h2>// English Reviser</h2></div>
     <p class="card-desc">Paste any text and get 3 casual, natural versions to choose from.</p>
     <label class="field-label">&gt; Input text</label>
     <div class="textarea-wrap">
-      <textarea id="english-input" rows="7" placeholder="Type or paste anything here — messages, emails, captions, scripts..."></textarea>
-      <div class="textarea-actions">
-        <button class="ta-btn" onclick="clearField('english-input')" title="Clear">✕</button>
-        <button class="ta-btn mic-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Voice">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-    <line x1="12" y1="19" x2="12" y2="23"/>
-    <line x1="8" y1="23" x2="16" y2="23"/>
-  </svg>
-</button>
-      </div>
+      <textarea id="english-input" rows="7" placeholder="Type or paste anything — messages, emails, captions, scripts..."></textarea>
+      <button class="btn-clear" onclick="clearField('english-input')" title="Clear">✕</button>
     </div>
     <p class="hint-text">&gt; Press Enter to execute</p>
     <button class="btn-primary" onclick="reviseEnglish()">[ REVISE TEXT ]</button>
     <div id="english-options"></div>
   </div>
 
-  <!-- ASK ANYTHING -->
+  <!-- ======================== BARISTA PAWS ======================== -->
+  <div class="card paw-card" id="tab-barista">
+    <div class="card-header"><div class="card-icon paw">🐾</div><h2 class="paw">// Barista.Paws</h2></div>
+    <p class="card-desc">Social media tools for Barista.Paws — captions, scripts, post ideas, and DM replies.</p>
+
+    <!-- Sub tabs -->
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchSubTab('caption', this)">📸 Caption</button>
+      <button class="sub-tab" onclick="switchSubTab('script', this)">🎬 Video Script</button>
+      <button class="sub-tab" onclick="switchSubTab('ideas', this)">📅 Post Ideas</button>
+      <button class="sub-tab" onclick="switchSubTab('dm', this)">💬 DM Reply</button>
+    </div>
+
+    <!-- CAPTION GENERATOR -->
+    <div class="sub-panel active" id="sub-caption">
+      <label class="field-label paw">&gt; Describe the photo or moment</label>
+      <div class="textarea-wrap">
+        <textarea id="caption-input" rows="4" placeholder="e.g. A golden retriever getting a bath and looking grumpy 😄" class="paw-focus"></textarea>
+        <button class="btn-clear" onclick="clearField('caption-input')" title="Clear">✕</button>
+      </div>
+      <label class="field-label paw">&gt; Vibe</label>
+      <div class="vibe-toggle">
+        <button class="vibe-btn active" onclick="setVibe('cute', this)">🥰 Cute & Funny</button>
+        <button class="vibe-btn" onclick="setVibe('heartwarming', this)">💖 Heartwarming</button>
+        <button class="vibe-btn" onclick="setVibe('promo', this)">📣 Promotional</button>
+        <button class="vibe-btn" onclick="setVibe('educational', this)">💡 Educational</button>
+      </div>
+      <p class="hint-text">&gt; Press Enter to generate</p>
+      <button class="btn-primary paw" onclick="generateCaption()">[ GENERATE CAPTIONS ]</button>
+      <div id="caption-options"></div>
+    </div>
+
+    <!-- VIDEO SCRIPT -->
+    <div class="sub-panel" id="sub-script">
+      <label class="field-label paw">&gt; What is the video about?</label>
+      <div class="textarea-wrap">
+        <textarea id="script-input" rows="4" placeholder="e.g. A dog getting groomed for the first time, nervous at first then relaxed" class="paw-focus"></textarea>
+        <button class="btn-clear" onclick="clearField('script-input')" title="Clear">✕</button>
+      </div>
+      <label class="field-label paw">&gt; Platform</label>
+      <select id="script-platform">
+        <option value="reels">📱 Instagram Reels / TikTok (15-30 sec)</option>
+        <option value="youtube">▶️ YouTube Shorts (60 sec)</option>
+        <option value="story">💫 Instagram Story</option>
+      </select>
+      <button class="btn-primary paw" onclick="generateScript()">[ GENERATE SCRIPT ]</button>
+      <div class="result-box empty" id="script-result">_ awaiting input...</div>
+      <button class="btn-copy" onclick="copyResult('script-result')" style="border-color:rgba(255,153,68,0.3);color:var(--paw)">[ COPY SCRIPT ]</button>
+    </div>
+
+    <!-- POST IDEAS -->
+    <div class="sub-panel" id="sub-ideas">
+      <label class="field-label paw">&gt; What kind of content do you need?</label>
+      <select id="ideas-theme">
+        <option value="weekly">📅 Weekly Content Plan (7 ideas)</option>
+        <option value="promo">📣 Promotional Posts</option>
+        <option value="educational">💡 Educational / Tips</option>
+        <option value="cute">🥰 Cute / Fun Posts</option>
+        <option value="event">🎉 Event / Holiday Posts</option>
+        <option value="engagement">💬 Engagement / Questions</option>
+      </select>
+      <label class="field-label paw">&gt; Any specific focus? (optional)</label>
+      <div class="textarea-wrap">
+        <textarea id="ideas-input" rows="3" placeholder="e.g. Focus on our boarding service this week, or upcoming Valentine's Day promo..." class="paw-focus"></textarea>
+        <button class="btn-clear" onclick="clearField('ideas-input')" title="Clear">✕</button>
+      </div>
+      <button class="btn-primary paw" onclick="generateIdeas()">[ GENERATE IDEAS ]</button>
+      <div class="result-box empty" id="ideas-result">_ awaiting input...</div>
+      <button class="btn-copy" onclick="copyResult('ideas-result')" style="border-color:rgba(255,153,68,0.3);color:var(--paw)">[ COPY IDEAS ]</button>
+    </div>
+
+    <!-- DM REPLY -->
+    <div class="sub-panel" id="sub-dm">
+      <label class="field-label paw">&gt; Upload DM screenshot (optional)</label>
+      <div class="upload-zone" id="dm-upload-zone" style="border-color:rgba(255,153,68,0.25)">
+        <input type="file" id="dm-screenshot-input" accept="image/*" onchange="handleDmScreenshot(event)" />
+        <span class="upload-icon">📷</span>
+        <div class="upload-text"><strong>Click to upload</strong> DM screenshot<br>PNG, JPG, WEBP supported</div>
+      </div>
+      <div class="preview-wrap" id="dm-preview-wrap">
+        <img id="dm-screenshot-preview" src="" alt="DM preview" />
+        <button class="preview-remove" onclick="removeDmScreenshot()">✕</button>
+      </div>
+      <div class="divider"><span>AND / OR</span></div>
+      <label class="field-label paw">&gt; Paste the DM message</label>
+      <div class="textarea-wrap">
+        <textarea id="dm-input" rows="4" placeholder="e.g. Hi! How much for grooming a shih tzu? Do you do boarding too?" class="paw-focus"></textarea>
+        <button class="btn-clear" onclick="clearField('dm-input')" title="Clear">✕</button>
+      </div>
+      <div class="two-col">
+        <div class="col-group">
+          <label class="field-label paw">&gt; Topic</label>
+          <select id="dm-topic">
+            <option value="grooming">✂️ Grooming inquiry</option>
+            <option value="boarding">🏠 Boarding inquiry</option>
+            <option value="dogs">🐶 Dogs for sale</option>
+            <option value="price">💰 Price / rates</option>
+            <option value="appointment">📅 Appointment</option>
+            <option value="general">💬 General</option>
+          </select>
+        </div>
+        <div class="col-group">
+          <label class="field-label paw">&gt; Language</label>
+          <div class="lang-toggle">
+            <button class="lang-btn active" id="dm-lang-taglish" onclick="setDmLang('taglish', this)">🇵🇭 Taglish</button>
+            <button class="lang-btn" onclick="setDmLang('english', this)">🇺🇸 English</button>
+            <button class="lang-btn" onclick="setDmLang('tagalog', this)">🇵🇭 Tagalog</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary paw" onclick="generateDmReply()">[ GENERATE REPLIES ]</button>
+      <div class="suggested-section paw" id="dm-suggestion" style="margin-top:18px">
+        <div class="suggested-label paw">// Choose your reply</div>
+        <div id="dm-options"></div>
+      </div>
+    </div>
+
+  </div><!-- end barista card -->
+
+  <!-- ======================== ASK ANYTHING ======================== -->
   <div class="card" id="tab-chat">
     <div class="card-header"><div class="card-icon">🤖</div><h2>// Ask Agent</h2></div>
-    <p class="card-desc">General questions, tasks, content ideas — anything related to your work and clients.</p>
+    <p class="card-desc">General questions, tasks, content ideas — anything related to your work.</p>
     <label class="field-label">&gt; Input query</label>
     <div class="textarea-wrap">
       <textarea id="chat-input" rows="5" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
-      <div class="textarea-actions">
-        <button class="ta-btn" onclick="clearField('chat-input')" title="Clear">✕</button>
-        <button class="ta-btn mic-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Voice">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-    <line x1="12" y1="19" x2="12" y2="23"/>
-    <line x1="8" y1="23" x2="16" y2="23"/>
-  </svg>
-</button>
-      </div>
+      <button class="btn-clear" onclick="clearField('chat-input')" title="Clear">✕</button>
     </div>
     <p class="hint-text">&gt; Press Enter to execute</p>
     <button class="btn-primary" onclick="askAgent()">[ RUN QUERY ]</button>
@@ -477,18 +505,19 @@
     <button class="btn-copy" onclick="copyResult('chat-result')">[ COPY OUTPUT ]</button>
   </div>
 
-  <div class="footer">// AI-VA v2.0 — POWERED BY GEMINI // BUILT FOR YOUR WORKFLOW</div>
+  <div class="footer">// AI-VA v3.0 — POWERED BY GEMINI // BUILT FOR YOUR WORKFLOW</div>
 </div>
 </div>
 
 <script>
   let API_KEY = '';
   let selectedLang = 'taglish';
-  let activeRecognition = null;
+  let selectedVibe = 'cute';
+  let selectedDmLang = 'taglish';
   let screenshotBase64 = null;
   let screenshotMimeType = null;
-
-  // AGENT_CONTEXT is loaded from templates.js
+  let dmScreenshotBase64 = null;
+  let dmScreenshotMimeType = null;
 
   window.addEventListener('load', () => {
     const saved = localStorage.getItem('gemini_api_key');
@@ -498,27 +527,35 @@
     document.getElementById('realestate-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askRealEstate(); } });
     document.getElementById('english-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); reviseEnglish(); } });
     document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAgent(); } });
+    document.getElementById('caption-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generateCaption(); } });
 
+    // Drag and drop for chat reply
     const zone = document.getElementById('upload-zone');
     zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
     zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', e => {
-      e.preventDefault(); zone.classList.remove('dragover');
-      const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) processImage(file);
-    });
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) processImage(f, 'main'); });
   });
 
-  function handleScreenshot(e) { if (e.target.files[0]) processImage(e.target.files[0]); }
+  // ===================== SCREENSHOT HANDLING =====================
+  function handleScreenshot(e) { if (e.target.files[0]) processImage(e.target.files[0], 'main'); }
+  function handleDmScreenshot(e) { if (e.target.files[0]) processImage(e.target.files[0], 'dm'); }
 
-  function processImage(file) {
-    screenshotMimeType = file.type;
+  function processImage(file, type) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      screenshotBase64 = e.target.result.split(',')[1];
-      document.getElementById('screenshot-preview').src = e.target.result;
-      document.getElementById('preview-wrap').style.display = 'block';
-      document.getElementById('upload-zone').style.display = 'none';
+      const result = e.target.result;
+      const b64 = result.split(',')[1];
+      if (type === 'main') {
+        screenshotBase64 = b64; screenshotMimeType = file.type;
+        document.getElementById('screenshot-preview').src = result;
+        document.getElementById('preview-wrap').style.display = 'block';
+        document.getElementById('upload-zone').style.display = 'none';
+      } else {
+        dmScreenshotBase64 = b64; dmScreenshotMimeType = file.type;
+        document.getElementById('dm-screenshot-preview').src = result;
+        document.getElementById('dm-preview-wrap').style.display = 'block';
+        document.getElementById('dm-upload-zone').style.display = 'none';
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -530,43 +567,16 @@
     document.getElementById('upload-zone').style.display = 'block';
   }
 
-  function toggleMic(targetId, btnId) {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert('Use Chrome for voice input!'); return; }
-    
-    // Check if the button's textarea is in the active tab
-    const textarea = document.getElementById(targetId);
-    const parentCard = textarea.closest('.card');
-    if (!parentCard.classList.contains('active')) return;
-    
-    const btn = document.getElementById(btnId);
-    if (activeRecognition) { activeRecognition.stop(); activeRecognition = null; btn.classList.remove('recording'); btn.textContent = '🎤'; return; }
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const r = new SR();
-    r.lang = 'en-PH'; r.continuous = true; r.interimResults = true;
-    btn.classList.add('recording'); btn.textContent = '⏹'; activeRecognition = r;
-    r.onresult = (e) => {
-  let transcript = '';
-  for (let i = e.resultIndex; i < e.results.length; i++) {
-    if (e.results[i].isFinal) {
-      transcript += e.results[i][0].transcript;
-    }
-  }
-  if (transcript) {
-    const ta = document.getElementById(targetId);
-    ta.value += (ta.value ? ' ' : '') + transcript;
-  }
-};
-    r.onend = () => { btn.classList.remove('recording');
-btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`;
-activeRecognition = null; };
-    r.onerror = () => { btn.classList.remove('recording');
-btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`;
-activeRecognition = null; };
-    r.start();
+  function removeDmScreenshot() {
+    dmScreenshotBase64 = null; dmScreenshotMimeType = null;
+    document.getElementById('dm-screenshot-input').value = '';
+    document.getElementById('dm-preview-wrap').style.display = 'none';
+    document.getElementById('dm-upload-zone').style.display = 'block';
   }
 
   function clearField(id) { document.getElementById(id).value = ''; document.getElementById(id).focus(); }
 
+  // ===================== API KEY =====================
   function toggleKeyVisibility() {
     const input = document.getElementById('api-key-input');
     input.type = input.type === 'password' ? 'text' : 'password';
@@ -601,10 +611,11 @@ activeRecognition = null; };
     document.getElementById('main-app').style.display = 'none';
   }
 
+  // ===================== GEMINI API =====================
   async function callGemini(prompt) {
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: AGENT_CONTEXT + "\n\n" + prompt }] }] }) });
+        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }] }) });
       const data = await res.json();
       if (data.error) return `Error: ${data.error.message}`;
       return data.candidates?.[0]?.content?.parts?.[0]?.text || "Something went wrong.";
@@ -623,10 +634,15 @@ activeRecognition = null; };
 
   function showLoading(el) { el.classList.remove('empty'); el.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>'; }
 
-  function renderOptions(containerId, lines) {
+  // ===================== RENDER OPTIONS =====================
+  function renderOptions(containerId, lines, isPaw) {
     document.getElementById(containerId).innerHTML = `<div class="options-grid">${lines.map((line, i) => {
       const content = line.replace(/^[1-3]\.\s*/, '').trim();
-      return `<div class="option-card"><div class="option-label">// Option ${i + 1}</div><div class="option-text">${content}</div><button class="option-copy-btn" onclick="copyText(this)">[ COPY ]</button></div>`;
+      return `<div class="option-card ${isPaw ? 'paw-option' : ''}">
+        <div class="option-label ${isPaw ? 'paw' : ''}">// Option ${i + 1}</div>
+        <div class="option-text">${content}</div>
+        <button class="option-copy-btn ${isPaw ? 'paw' : ''}" onclick="copyText(this)">[ COPY ]</button>
+      </div>`;
     }).join('')}</div>`;
   }
 
@@ -636,8 +652,37 @@ activeRecognition = null; };
     });
   }
 
-  function setLang(lang, el) { selectedLang = lang; document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+  // ===================== TAB SWITCHING =====================
+  function switchTab(tab, el) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    el.classList.add('active');
+  }
 
+  function switchSubTab(sub, el) {
+    document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('sub-' + sub).classList.add('active');
+    el.classList.add('active');
+  }
+
+  // ===================== LANGUAGE / VIBE =====================
+  function setLang(lang, el) { selectedLang = lang; document.querySelectorAll('.lang-toggle .lang-btn').forEach(b => { if (!b.id?.startsWith('dm-')) b.classList.remove('active'); }); el.classList.add('active'); }
+  function setDmLang(lang, el) { selectedDmLang = lang; document.querySelectorAll('#sub-dm .lang-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+  function setVibe(vibe, el) { selectedVibe = vibe; document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+
+  // ===================== REAL ESTATE VA =====================
+  async function askRealEstate() {
+    const q = document.getElementById("realestate-input").value.trim();
+    const resultEl = document.getElementById("realestate-result");
+    if (!q) return;
+    showLoading(resultEl);
+    const result = await callGemini(REALESTATE_CONTEXT + `\n\nAnswer this question using our company knowledge and templates. Be clear, simple, and practical.\n\nQuestion: ${q}`);
+    resultEl.classList.remove('empty'); resultEl.textContent = result;
+  }
+
+  // ===================== CHAT REPLY COACH =====================
   async function suggestReply() {
     const intention = document.getElementById("intention-input").value.trim();
     const context = document.getElementById("reply-context").value;
@@ -647,14 +692,14 @@ activeRecognition = null; };
     suggestionEl.style.display = "block";
     replyOptionsEl.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
 
-    const contextMap = { real_estate: "a real estate lead on Facebook. You are a real estate VA doing outreach.", client: "your client or boss. Be professional but warm.", general: "someone in a casual conversation." };
-    const langMap = { taglish: "Natural Taglish (Filipino + English mix), casual like real Filipino texting.", english: "English only, casual and friendly like a real text.", tagalog: "Tagalog only, casual like how Filipinos text." };
+    const contextMap = { real_estate: "a real estate lead on Facebook. You are a real estate VA.", client: "your client or boss. Professional but warm.", general: "someone in a casual conversation." };
+    const langMap = { taglish: "Natural Taglish (Filipino + English), casual like real Filipino texting.", english: "English only, casual and friendly.", tagalog: "Tagalog only, casual like how Filipinos text." };
 
-    const prompt = REALESTATE_CONTEXT + `\n\nYou are helping a Filipino VA reply to a conversation. She is talking to ${contextMap[context]}.
+    const prompt = REALESTATE_CONTEXT + `\n\nHelp a Filipino VA reply to a conversation. She is talking to ${contextMap[context]}.
 ${intention ? `What she wants to say: "${intention}"` : ''}
 Language: ${langMap[selectedLang]}
-${screenshotBase64 ? 'Study the screenshot carefully — understand the full conversation context and tone before replying.' : ''}
-Using our company templates and tone as reference, write 3 different short casual reply options.
+${screenshotBase64 ? 'Study the screenshot carefully for full context.' : ''}
+Write 3 different short casual reply options using our templates as reference.
 
 Return ONLY:
 1. [reply]
@@ -663,52 +708,123 @@ Return ONLY:
 
     const result = screenshotBase64 ? await callGeminiWithImage(prompt, screenshotBase64, screenshotMimeType) : await callGemini(prompt);
     const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
-
     if (lines.length >= 3) {
-      replyOptionsEl.innerHTML = `<div class="options-grid">${lines.map((line, i) => {
-        const content = line.replace(/^[1-3]\.\s*/, '').trim();
-        return `<div class="option-card"><div class="option-label">// Option ${i + 1}</div><div class="option-text">${content}</div><button class="option-copy-btn" onclick="copyText(this)">[ COPY REPLY ]</button></div>`;
+      replyOptionsEl.innerHTML = `<div class="options-grid">${lines.map((l, i) => {
+        const c = l.replace(/^[1-3]\.\s*/, '').trim();
+        return `<div class="option-card"><div class="option-label">// Option ${i+1}</div><div class="option-text">${c}</div><button class="option-copy-btn" onclick="copyText(this)">[ COPY REPLY ]</button></div>`;
       }).join('')}</div>`;
-    } else {
-      replyOptionsEl.innerHTML = `<div style="color:var(--text);line-height:1.7;white-space:pre-wrap;">${result}</div>`;
-    }
+    } else { replyOptionsEl.innerHTML = `<div style="color:var(--text);line-height:1.7;white-space:pre-wrap">${result}</div>`; }
   }
 
+  // ===================== ENGLISH REVISER =====================
   async function reviseEnglish() {
     const text = document.getElementById("english-input").value.trim();
     const optionsEl = document.getElementById("english-options");
     if (!text) return;
     optionsEl.innerHTML = '<div class="loading-dots" style="margin-top:16px"><span></span><span></span><span></span></div>';
-    const result = await callGemini(REVISER_CONTEXT + `\n\nRevise the following text in 3 different casual ways. Natural, friendly, relaxed like real texting. Fix grammar but keep it casual.\n\nReturn ONLY:\n1. [version]\n2. [version]\n3. [version]\n\nText: ${text}`);
+    const result = await callGemini(REVISER_CONTEXT + `\n\nRevise in 3 casual ways. Natural, friendly, like real texting. Fix grammar but keep it casual.\n\nReturn ONLY:\n1. [version]\n2. [version]\n3. [version]\n\nText: ${text}`);
     const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
-    if (lines.length >= 3) renderOptions('english-options', lines);
+    if (lines.length >= 3) renderOptions('english-options', lines, false);
     else optionsEl.innerHTML = `<div class="result-box" style="margin-top:14px">${result}</div>`;
   }
 
-  async function askRealEstate() {
-    const question = document.getElementById("realestate-input").value.trim();
-    const resultEl = document.getElementById("realestate-result");
-    if (!question) return;
+  // ===================== BARISTA PAWS — CAPTION =====================
+  async function generateCaption() {
+    const desc = document.getElementById("caption-input").value.trim();
+    const optionsEl = document.getElementById("caption-options");
+    if (!desc) return;
+    optionsEl.innerHTML = '<div class="loading-dots" style="margin-top:16px"><span></span><span></span><span></span></div>';
+    const vibeMap = { cute: "cute, funny, and playful", heartwarming: "heartwarming and emotional", promo: "promotional and exciting, highlighting services", educational: "educational and helpful for pet owners" };
+    const result = await callGemini(BARISTA_PAWS_CONTEXT + `\n\nWrite 3 different Instagram/Facebook captions for this post.
+Vibe: ${vibeMap[selectedVibe]}
+Description: ${desc}
+Each caption must include relevant hashtags at the end.
+Make each one different — different length, angle, or tone.
+
+Return ONLY:
+1. [caption with hashtags]
+2. [caption with hashtags]
+3. [caption with hashtags]`);
+    const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
+    if (lines.length >= 3) renderOptions('caption-options', lines, true);
+    else optionsEl.innerHTML = `<div class="result-box" style="margin-top:14px">${result}</div>`;
+  }
+
+  // ===================== BARISTA PAWS — VIDEO SCRIPT =====================
+  async function generateScript() {
+    const idea = document.getElementById("script-input").value.trim();
+    const platform = document.getElementById("script-platform").value;
+    const resultEl = document.getElementById("script-result");
+    if (!idea) return;
     showLoading(resultEl);
-    const result = await callGemini(REALESTATE_CONTEXT + `\n\nAnswer this real estate question using our company knowledge and templates. Be clear, simple, and practical.\n\nQuestion: ${question}`);
+    const platformMap = { reels: "Instagram Reels / TikTok (15-30 seconds, fast-paced, hook in first 2 seconds)", youtube: "YouTube Shorts (up to 60 seconds, slightly more detail)", story: "Instagram Story (10-15 seconds per slide, casual)" };
+    const result = await callGemini(BARISTA_PAWS_CONTEXT + `\n\nWrite a short video script for ${platformMap[platform]}.
+Video idea: ${idea}
+Format: Hook → Middle (story/showcase) → Call to Action
+Keep it fun, natural, and pet-loving. Include suggested on-screen text or captions where helpful.`);
     resultEl.classList.remove('empty'); resultEl.textContent = result;
   }
 
-  async function askAgent() {
-    const question = document.getElementById("chat-input").value.trim();
-    const resultEl = document.getElementById("chat-result");
-    if (!question) return;
+  // ===================== BARISTA PAWS — POST IDEAS =====================
+  async function generateIdeas() {
+    const theme = document.getElementById("ideas-theme").value;
+    const focus = document.getElementById("ideas-input").value.trim();
+    const resultEl = document.getElementById("ideas-result");
     showLoading(resultEl);
-    const result = await callGemini(AGENT_CONTEXT + "\n\n" + question);    resultEl.classList.remove('empty'); resultEl.textContent = result;
+    const themeMap = { weekly: "a full week of content (7 post ideas, one per day)", promo: "promotional posts highlighting services or offers", educational: "educational tips and advice for pet owners", cute: "cute and fun posts that show the personality of the pets", event: "event or holiday themed posts", engagement: "engagement posts with questions, polls, or calls to action" };
+    const result = await callGemini(BARISTA_PAWS_CONTEXT + `\n\nGenerate ${themeMap[theme]} for Barista.Paws social media.
+${focus ? `Focus on: ${focus}` : ''}
+For each idea include: post type, caption idea, and suggested hashtags.
+Make them varied, creative, and on-brand.`);
+    resultEl.classList.remove('empty'); resultEl.textContent = result;
   }
 
-  function switchTab(tab, el) {
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    el.classList.add('active');
+  // ===================== BARISTA PAWS — DM REPLY =====================
+  async function generateDmReply() {
+    const message = document.getElementById("dm-input").value.trim();
+    const topic = document.getElementById("dm-topic").value;
+    const suggestionEl = document.getElementById("dm-suggestion");
+    const dmOptionsEl = document.getElementById("dm-options");
+    if (!dmScreenshotBase64 && !message) { alert('Upload a screenshot or paste the DM message!'); return; }
+    suggestionEl.style.display = "block";
+    dmOptionsEl.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+
+    const topicMap = { grooming: "asking about grooming services", boarding: "asking about pet boarding", dogs: "asking about dogs for sale", price: "asking about prices or rates", appointment: "wanting to book an appointment", general: "sending a general inquiry" };
+    const langMap = { taglish: "Natural Taglish (Filipino + English), warm and friendly.", english: "English only, warm and friendly.", tagalog: "Tagalog only, warm and friendly." };
+
+    const prompt = BARISTA_PAWS_CONTEXT + `\n\nWrite 3 different warm friendly DM reply options for Barista.Paws.
+The customer is ${topicMap[topic]}.
+${message ? `Their message: "${message}"` : ''}
+${dmScreenshotBase64 ? 'Study the screenshot for full context.' : ''}
+Language: ${langMap[selectedDmLang]}
+Keep replies short, friendly, and helpful. End with a question or next step.
+
+Return ONLY:
+1. [reply]
+2. [reply]
+3. [reply]`;
+
+    const result = dmScreenshotBase64 ? await callGeminiWithImage(prompt, dmScreenshotBase64, dmScreenshotMimeType) : await callGemini(prompt);
+    const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
+    if (lines.length >= 3) {
+      dmOptionsEl.innerHTML = `<div class="options-grid">${lines.map((l, i) => {
+        const c = l.replace(/^[1-3]\.\s*/, '').trim();
+        return `<div class="option-card paw-option"><div class="option-label paw">// Option ${i+1}</div><div class="option-text">${c}</div><button class="option-copy-btn paw" onclick="copyText(this)">[ COPY REPLY ]</button></div>`;
+      }).join('')}</div>`;
+    } else { dmOptionsEl.innerHTML = `<div style="color:var(--text);line-height:1.7;white-space:pre-wrap">${result}</div>`; }
   }
 
+  // ===================== ASK ANYTHING =====================
+  async function askAgent() {
+    const q = document.getElementById("chat-input").value.trim();
+    const resultEl = document.getElementById("chat-result");
+    if (!q) return;
+    showLoading(resultEl);
+    const result = await callGemini(AGENT_CONTEXT + "\n\n" + q);
+    resultEl.classList.remove('empty'); resultEl.textContent = result;
+  }
+
+  // ===================== HELPERS =====================
   function copyResult(id) {
     navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => {
       const btn = event.target; const orig = btn.textContent;
