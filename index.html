@@ -350,7 +350,14 @@
       <textarea id="realestate-input" rows="4" placeholder="e.g. How do I reply to someone asking about creative deals?"></textarea>
       <div class="textarea-actions">
         <button class="ta-btn" onclick="clearField('realestate-input')" title="Clear">✕</button>
-        <button class="ta-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Speak">🎤</button>
+        <button class="ta-btn mic-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Voice">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+    <line x1="12" y1="19" x2="12" y2="23"/>
+    <line x1="8" y1="23" x2="16" y2="23"/>
+  </svg>
+</button>
       </div>
     </div>
     <p class="hint-text">&gt; Press Enter to execute</p>
@@ -383,7 +390,14 @@
       <textarea id="intention-input" rows="3" placeholder="e.g. I want to ask if they are still interested in selling their house..."></textarea>
       <div class="textarea-actions">
         <button class="ta-btn" onclick="clearField('intention-input')" title="Clear">✕</button>
-        <button class="ta-btn" id="mic-intention" onclick="toggleMic('intention-input', 'mic-intention')" title="Speak">🎤</button>
+        <button class="ta-btn mic-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Voice">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+    <line x1="12" y1="19" x2="12" y2="23"/>
+    <line x1="8" y1="23" x2="16" y2="23"/>
+  </svg>
+</button>
       </div>
     </div>
 
@@ -423,7 +437,14 @@
       <textarea id="english-input" rows="7" placeholder="Type or paste anything here — messages, emails, captions, scripts..."></textarea>
       <div class="textarea-actions">
         <button class="ta-btn" onclick="clearField('english-input')" title="Clear">✕</button>
-        <button class="ta-btn" id="mic-english" onclick="toggleMic('english-input', 'mic-english')" title="Speak">🎤</button>
+        <button class="ta-btn mic-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Voice">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+    <line x1="12" y1="19" x2="12" y2="23"/>
+    <line x1="8" y1="23" x2="16" y2="23"/>
+  </svg>
+</button>
       </div>
     </div>
     <p class="hint-text">&gt; Press Enter to execute</p>
@@ -440,7 +461,14 @@
       <textarea id="chat-input" rows="5" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
       <div class="textarea-actions">
         <button class="ta-btn" onclick="clearField('chat-input')" title="Clear">✕</button>
-        <button class="ta-btn" id="mic-chat" onclick="toggleMic('chat-input', 'mic-chat')" title="Speak">🎤</button>
+        <button class="ta-btn mic-btn" id="mic-realestate" onclick="toggleMic('realestate-input', 'mic-realestate')" title="Voice">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+    <line x1="12" y1="19" x2="12" y2="23"/>
+    <line x1="8" y1="23" x2="16" y2="23"/>
+  </svg>
+</button>
       </div>
     </div>
     <p class="hint-text">&gt; Press Enter to execute</p>
@@ -508,11 +536,26 @@
     if (activeRecognition) { activeRecognition.stop(); activeRecognition = null; btn.classList.remove('recording'); btn.textContent = '🎤'; return; }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const r = new SR();
-    r.lang = 'en-PH'; r.continuous = false; r.interimResults = false;
+    r.lang = 'en-PH'; r.continuous = true; r.interimResults = true;
     btn.classList.add('recording'); btn.textContent = '⏹'; activeRecognition = r;
-    r.onresult = (e) => { const t = e.results[0][0].transcript; const ta = document.getElementById(targetId); ta.value += (ta.value ? ' ' : '') + t; };
-    r.onend = () => { btn.classList.remove('recording'); btn.textContent = '🎤'; activeRecognition = null; };
-    r.onerror = () => { btn.classList.remove('recording'); btn.textContent = '🎤'; activeRecognition = null; };
+    r.onresult = (e) => {
+  let transcript = '';
+  for (let i = e.resultIndex; i < e.results.length; i++) {
+    if (e.results[i].isFinal) {
+      transcript += e.results[i][0].transcript;
+    }
+  }
+  if (transcript) {
+    const ta = document.getElementById(targetId);
+    ta.value += (ta.value ? ' ' : '') + transcript;
+  }
+};
+    r.onend = () => { btn.classList.remove('recording');
+btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`;
+activeRecognition = null; };
+    r.onerror = () => { btn.classList.remove('recording');
+btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`;
+activeRecognition = null; };
     r.start();
   }
 
