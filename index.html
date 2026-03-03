@@ -4,294 +4,456 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI-VA — Personal AI Agent</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎭</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎀</text></svg>">
   <script src="templates.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #020b02; --surface: #040f04; --surface2: #071007;
-      --accent: #00ff41; --accent2: #00cc33;
-      --accent-dim: rgba(0,255,65,0.15); --accent-glow: rgba(0,255,65,0.4);
-      --text: #ccffcc; --text2: #88bb88; --muted: #2d5c2d;
-      --border: #0d2b0d; --border2: #1a4a1a;
-      --red: #ff3333; --red-dim: rgba(255,51,51,0.15);
+      --bg: #0d0009;
+      --surface: #160010;
+      --surface2: #1e0018;
+      --accent: #ff69b4;
+      --accent2: #ff1493;
+      --accent-dim: rgba(255,105,180,0.12);
+      --accent-glow: rgba(255,105,180,0.5);
+      --text: #ffd6f0;
+      --text2: #cc88b0;
+      --muted: #6b3358;
+      --border: #2a0020;
+      --border2: #4a1040;
+      --red: #ff4466;
+      --red-dim: rgba(255,68,102,0.15);
+      --purple: #c084fc;
+      --purple-dim: rgba(192,132,252,0.12);
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-    body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px); pointer-events: none; z-index: 9999; }
-    body::after { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; z-index: 0; }
-    .wrapper { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; }
 
-    /* SETUP */
+    /* Scanline effect — pink tint */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,105,180,0.012) 2px, rgba(255,105,180,0.012) 4px);
+      pointer-events: none; z-index: 9999;
+    }
+    /* Grid lines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(255,105,180,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,105,180,0.025) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none; z-index: 0;
+    }
+
+    .wrapper { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ==================== SETUP ==================== */
     #setup-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
-    .setup-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; padding: 48px 40px; max-width: 480px; width: 100%; text-align: center; box-shadow: 0 0 40px rgba(0,255,65,0.08); position: relative; }
-    .setup-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
-    .setup-icon { font-size: 2.5rem; margin-bottom: 20px; display: block; }
-    .setup-card h2 { font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: 400; margin-bottom: 10px; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); letter-spacing: 2px; text-transform: uppercase; }
-    .setup-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.7; margin-bottom: 28px; }
+
+    .setup-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 52px 44px;
+      max-width: 480px; width: 100%;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(255,105,180,0.1), 0 0 120px rgba(255,20,147,0.05);
+      position: relative;
+    }
+    .setup-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent2), var(--accent), var(--purple), transparent);
+      border-radius: 12px 12px 0 0;
+    }
+    .setup-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+    .setup-card h2 {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.4rem; font-weight: 400; margin-bottom: 10px;
+      color: var(--accent);
+      text-shadow: 0 0 20px var(--accent-glow);
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+    .setup-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.75; margin-bottom: 28px; }
     .setup-card a { color: var(--accent); text-decoration: none; }
-    .key-input-wrap { position: relative; margin-bottom: 16px; }
-    .key-input-wrap input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 14px 50px 14px 16px; color: var(--accent); font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; }
+    .setup-card a:hover { text-shadow: 0 0 8px var(--accent-glow); }
+
+    .key-input-wrap { position: relative; margin-bottom: 14px; }
+    .key-input-wrap input {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 8px; padding: 14px 50px 14px 16px;
+      color: var(--accent); font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s;
+    }
     .key-input-wrap input::placeholder { color: var(--muted); font-family: 'DM Sans', sans-serif; }
-    .key-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 12px rgba(0,255,65,0.2); }
+    .key-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 16px rgba(255,105,180,0.2); }
     .toggle-key { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
-    .btn-setup { width: 100%; background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px; border-radius: 4px; font-size: 0.95rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; letter-spacing: 2px; text-transform: uppercase; }
-    .btn-setup:hover { background: var(--accent-dim); box-shadow: 0 0 20px rgba(0,255,65,0.25); }
+
+    .btn-setup {
+      width: 100%; background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #fff; border: none; padding: 14px; border-radius: 8px;
+      font-size: 0.92rem; font-family: 'Share Tech Mono', monospace; cursor: pointer;
+      transition: all 0.3s; margin-bottom: 16px; letter-spacing: 2px; text-transform: uppercase;
+      box-shadow: 0 4px 20px rgba(255,20,147,0.3);
+    }
+    .btn-setup:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(255,20,147,0.45); }
+    .btn-setup:active { transform: translateY(0); }
+
     .setup-note { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
-    .setup-error { background: var(--red-dim); border: 1px solid rgba(255,51,51,0.3); border-radius: 4px; padding: 12px 16px; color: var(--red); font-size: 0.85rem; margin-bottom: 16px; display: none; }
+    .setup-error {
+      background: var(--red-dim); border: 1px solid rgba(255,68,102,0.35);
+      border-radius: 8px; padding: 12px 16px; color: var(--red);
+      font-size: 0.85rem; margin-bottom: 14px; display: none;
+    }
 
-    /* MAIN APP */
+    /* ==================== MAIN APP ==================== */
     #main-app { display: none; }
+
     .header { text-align: center; margin-bottom: 48px; }
-    .header-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-dim); border: 1px solid rgba(0,255,65,0.25); border-radius: 2px; padding: 5px 14px; font-size: 0.72rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; margin-bottom: 20px; }
-    .header-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; box-shadow: 0 0 6px var(--accent); }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    h1 { font-family: 'Share Tech Mono', monospace; font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 400; line-height: 1.1; margin-bottom: 12px; color: var(--accent); text-shadow: 0 0 30px rgba(0,255,65,0.5), 0 0 60px rgba(0,255,65,0.2); letter-spacing: 8px; text-transform: uppercase; }
-    .subtitle { font-size: 0.85rem; color: var(--text2); letter-spacing: 3px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; }
+    .header-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-dim); border: 1px solid rgba(255,105,180,0.3);
+      border-radius: 20px; padding: 6px 18px;
+      font-size: 0.70rem; color: var(--accent);
+      letter-spacing: 2px; text-transform: uppercase;
+      font-family: 'Share Tech Mono', monospace; margin-bottom: 20px;
+    }
+    .header-badge .dot {
+      width: 7px; height: 7px; background: var(--accent2);
+      border-radius: 50%; animation: pulse 1.5s infinite;
+      box-shadow: 0 0 8px var(--accent2);
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+
+    h1 {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(2.8rem, 7vw, 4.5rem);
+      font-weight: 400; line-height: 1.1; margin-bottom: 10px;
+      background: linear-gradient(135deg, #ff69b4, #ff1493, #c084fc);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(255,105,180,0.4));
+      letter-spacing: 10px; text-transform: uppercase;
+    }
+    .subtitle { font-size: 0.82rem; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; }
+
     .header-actions { margin-top: 20px; }
-    .btn-change-key { background: transparent; border: 1px solid var(--border2); color: var(--muted); padding: 6px 16px; border-radius: 2px; font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
-    .btn-change-key:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-change-key {
+      background: transparent; border: 1px solid var(--border2); color: var(--muted);
+      padding: 7px 18px; border-radius: 20px;
+      font-size: 0.73rem; font-family: 'Share Tech Mono', monospace;
+      cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+    }
+    .btn-change-key:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 10px rgba(255,105,180,0.15); }
 
-    /* TABS */
-    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-bottom: 24px; background: var(--border); border: 1px solid var(--border2); border-radius: 4px; padding: 4px; }
-    .tab { padding: 12px 6px; border-radius: 2px; border: none; background: transparent; color: var(--muted); cursor: pointer; font-size: 0.70rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; text-align: center; line-height: 1.4; letter-spacing: 0.5px; text-transform: uppercase; }
-    .tab .tab-icon { font-size: 1rem; display: block; margin-bottom: 4px; }
-    .tab:hover { color: var(--accent); background: var(--accent-dim); }
-    .tab.active { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(0,255,65,0.3); box-shadow: 0 0 12px rgba(0,255,65,0.1); }
+    /* ==================== TABS ==================== */
+    .tabs {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 6px; margin-bottom: 20px;
+    }
+    .tab {
+      padding: 14px 8px; border-radius: 10px; border: 1px solid var(--border2);
+      background: var(--surface); color: var(--muted);
+      cursor: pointer; font-size: 0.68rem; font-family: 'Share Tech Mono', monospace;
+      transition: all 0.25s; text-align: center; line-height: 1.5;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .tab .tab-icon { font-size: 1.3rem; display: block; margin-bottom: 5px; }
+    .tab:hover { color: var(--accent); background: var(--accent-dim); border-color: rgba(255,105,180,0.3); }
+    .tab.active {
+      background: linear-gradient(135deg, rgba(255,20,147,0.15), rgba(255,105,180,0.1));
+      color: var(--accent); border-color: rgba(255,105,180,0.5);
+      box-shadow: 0 0 16px rgba(255,105,180,0.1), inset 0 0 12px rgba(255,105,180,0.05);
+    }
 
-    /* CARDS */
-    .card { background: var(--surface); border-radius: 4px; padding: 36px; border: 1px solid var(--border2); display: none; animation: fadeIn 0.25s ease; position: relative; }
-    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,255,65,0.4), transparent); }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    /* ==================== CARDS ==================== */
+    .card {
+      background: var(--surface); border-radius: 14px; padding: 32px;
+      border: 1px solid var(--border2); display: none;
+      animation: fadeIn 0.25s ease; position: relative;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,105,180,0.5), transparent);
+      border-radius: 14px 14px 0 0;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .card.active { display: block; }
-    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-    .card-icon { width: 40px; height: 40px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; background: var(--accent-dim); border: 1px solid rgba(0,255,65,0.2); }
-    .card h2 { font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; font-weight: 400; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
-    .card-desc { font-size: 0.85rem; color: var(--text2); margin-bottom: 24px; margin-left: 52px; line-height: 1.6; }
-    .field-label { font-size: 0.70rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; display: block; font-family: 'Share Tech Mono', monospace; }
 
-    /* TEXTAREA */
-    .textarea-wrap { position: relative; margin-bottom: 12px; }
-    .textarea-wrap textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 14px; color: var(--text); font-size: 0.93rem; font-family: 'DM Sans', sans-serif; resize: vertical; transition: all 0.2s; line-height: 1.6; min-height: 110px; }
+    .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+    .card-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(255,20,147,0.2), rgba(255,105,180,0.15));
+      border: 1px solid rgba(255,105,180,0.25);
+    }
+    .card h2 {
+      font-family: 'Share Tech Mono', monospace; font-size: 1.05rem;
+      font-weight: 400; color: var(--accent);
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .card-desc { font-size: 0.84rem; color: var(--text2); margin-bottom: 22px; margin-left: 56px; line-height: 1.65; }
+
+    .field-label {
+      font-size: 0.68rem; color: var(--accent2);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 8px; display: block;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    /* ==================== INPUTS ==================== */
+    .textarea-wrap { position: relative; margin-bottom: 14px; }
+    .textarea-wrap textarea {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 10px; padding: 14px 46px 14px 16px;
+      color: var(--text); font-size: 0.92rem; font-family: 'DM Sans', sans-serif;
+      resize: vertical; transition: all 0.2s; line-height: 1.65; min-height: 110px;
+    }
     .textarea-wrap textarea::placeholder { color: var(--muted); }
-    .textarea-wrap textarea:focus { outline: none; border-color: var(--accent2); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
-    .btn-clear { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border-radius: 4px; border: 1px solid rgba(255,51,51,0.4); background: rgba(255,51,51,0.08); color: #ff5555; cursor: pointer; font-size: 0.80rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .btn-clear:hover { background: rgba(255,51,51,0.18); border-color: #ff5555; }
+    .textarea-wrap textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 14px rgba(255,105,180,0.15); }
 
-    select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 12px 14px; color: var(--text); font-size: 0.88rem; font-family: 'DM Sans', sans-serif; margin-bottom: 14px; cursor: pointer; transition: all 0.2s; }
-    select:focus { outline: none; border-color: var(--accent2); }
-    select option { background: var(--surface2); }
+    .btn-clear {
+      position: absolute; top: 10px; right: 10px;
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 1px solid rgba(255,68,102,0.35); background: rgba(255,68,102,0.08);
+      color: #ff6688; cursor: pointer; font-size: 0.80rem;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .btn-clear:hover { background: rgba(255,68,102,0.2); border-color: #ff4466; }
 
-    .btn-primary { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px 28px; border-radius: 4px; cursor: pointer; font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; width: 100%; letter-spacing: 2px; text-transform: uppercase; }
-    .btn-primary:hover { background: var(--accent-dim); box-shadow: 0 0 20px rgba(0,255,65,0.2); }
-    .btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--muted); padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.78rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; letter-spacing: 1px; }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-    .btn-copy { background: transparent; border: 1px solid rgba(0,255,65,0.25); color: var(--accent2); padding: 8px 18px; border-radius: 4px; cursor: pointer; font-size: 0.80rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; margin-top: 12px; letter-spacing: 1px; }
-    .btn-copy:hover { background: var(--accent-dim); border-color: var(--accent); }
+    select {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 10px; padding: 12px 14px; color: var(--text);
+      font-size: 0.88rem; font-family: 'DM Sans', sans-serif;
+      margin-bottom: 14px; cursor: pointer; transition: all 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ff69b4' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+      padding-right: 36px;
+    }
+    select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(255,105,180,0.15); }
+    select option { background: #1e0018; }
 
-    .result-box { margin-top: 16px; background: var(--surface2); border-radius: 4px; padding: 18px; border: 1px solid var(--border2); white-space: pre-wrap; font-size: 0.90rem; line-height: 1.8; min-height: 80px; color: var(--text); }
-    .result-box.empty { color: var(--muted); font-family: 'Share Tech Mono', monospace; font-size: 0.80rem; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #fff; border: none; padding: 14px 28px;
+      border-radius: 10px; cursor: pointer; font-size: 0.88rem;
+      font-family: 'Share Tech Mono', monospace; transition: all 0.3s;
+      width: 100%; letter-spacing: 2px; text-transform: uppercase;
+      box-shadow: 0 4px 18px rgba(255,20,147,0.25);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,20,147,0.4); }
+    .btn-primary:active { transform: translateY(0); }
 
-    /* OPTIONS */
-    .options-grid { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .option-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 16px; transition: all 0.2s; position: relative; }
-    .option-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent2); border-radius: 4px 0 0 4px; opacity: 0.5; }
-    .option-card:hover { border-color: rgba(0,255,65,0.3); }
+    .btn-copy {
+      background: transparent; border: 1px solid rgba(255,105,180,0.3);
+      color: var(--accent); padding: 9px 20px; border-radius: 8px;
+      cursor: pointer; font-size: 0.78rem; font-family: 'Share Tech Mono', monospace;
+      transition: all 0.2s; margin-top: 12px; letter-spacing: 1px;
+    }
+    .btn-copy:hover { background: var(--accent-dim); border-color: var(--accent); box-shadow: 0 0 10px rgba(255,105,180,0.15); }
+
+    .result-box {
+      margin-top: 16px; background: var(--surface2); border-radius: 10px;
+      padding: 18px; border: 1px solid var(--border2);
+      white-space: pre-wrap; font-size: 0.90rem; line-height: 1.85;
+      min-height: 80px; color: var(--text);
+    }
+    .result-box.empty { color: var(--muted); font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; }
+
+    /* ==================== OPTIONS ==================== */
+    .options-grid { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .option-card {
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 10px; padding: 18px; transition: all 0.2s; position: relative;
+    }
+    .option-card::before {
+      content: ''; position: absolute; left: 0; top: 12px; bottom: 12px;
+      width: 3px; background: linear-gradient(180deg, var(--accent2), var(--accent));
+      border-radius: 0 2px 2px 0; opacity: 0.6;
+    }
+    .option-card:hover { border-color: rgba(255,105,180,0.4); box-shadow: 0 2px 16px rgba(255,105,180,0.08); }
     .option-card:hover::before { opacity: 1; }
-    .option-label { font-size: 0.68rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Share Tech Mono', monospace; }
-    .option-text { color: var(--text); line-height: 1.7; font-size: 0.90rem; white-space: pre-wrap; }
-    .option-copy-btn { margin-top: 10px; background: transparent; border: 1px solid rgba(0,255,65,0.2); color: var(--accent2); padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; letter-spacing: 1px; }
+    .option-label { font-size: 0.67rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; font-family: 'Share Tech Mono', monospace; }
+    .option-text { color: var(--text); line-height: 1.75; font-size: 0.90rem; white-space: pre-wrap; padding-left: 12px; }
+    .option-copy-btn {
+      margin-top: 12px; background: transparent;
+      border: 1px solid rgba(255,105,180,0.25); color: var(--accent2);
+      padding: 6px 16px; border-radius: 6px; cursor: pointer;
+      font-size: 0.73rem; font-family: 'Share Tech Mono', monospace;
+      transition: all 0.2s; letter-spacing: 1px;
+    }
     .option-copy-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
-    /* UPLOAD */
-    .upload-zone { border: 1px dashed var(--border2); border-radius: 4px; padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface2); margin-bottom: 14px; position: relative; }
-    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent2); background: var(--accent-dim); }
+    /* ==================== UPLOAD ==================== */
+    .upload-zone {
+      border: 2px dashed var(--border2); border-radius: 12px;
+      padding: 32px 20px; text-align: center; cursor: pointer;
+      transition: all 0.2s; background: var(--surface2); margin-bottom: 14px; position: relative;
+    }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: var(--accent-dim); }
     .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .upload-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
-    .upload-text { color: var(--text2); font-size: 0.85rem; line-height: 1.6; }
+    .upload-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+    .upload-text { color: var(--text2); font-size: 0.84rem; line-height: 1.65; }
     .upload-text strong { color: var(--accent); }
     .preview-wrap { position: relative; margin-bottom: 14px; display: none; }
-    .preview-wrap img { width: 100%; max-height: 300px; object-fit: contain; border-radius: 4px; border: 1px solid var(--border2); background: var(--surface2); }
-    .preview-remove { position: absolute; top: 8px; right: 8px; background: rgba(255,51,51,0.85); color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .preview-remove:hover { background: #ff3333; }
+    .preview-wrap img { width: 100%; max-height: 300px; object-fit: contain; border-radius: 10px; border: 1px solid var(--border2); background: var(--surface2); }
+    .preview-remove {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(255,68,102,0.85); color: #fff; border: none;
+      width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+      font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .preview-remove:hover { background: #ff4466; }
 
-    /* LAYOUT */
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    .col-group { display: flex; flex-direction: column; gap: 6px; }
+    /* ==================== LAYOUT ==================== */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+    .col-group { display: flex; flex-direction: column; gap: 8px; }
     .lang-toggle { display: flex; gap: 6px; flex-wrap: wrap; }
-    .lang-btn { padding: 7px 12px; border-radius: 2px; border: 1px solid var(--border2); background: transparent; color: var(--muted); font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; }
-    .lang-btn.active { background: var(--accent-dim); border-color: var(--accent2); color: var(--accent); }
-    .lang-btn:hover:not(.active) { color: var(--text2); }
+    .lang-btn {
+      padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border2);
+      background: transparent; color: var(--muted); font-size: 0.73rem;
+      font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s;
+    }
+    .lang-btn.active { background: var(--accent-dim); border-color: rgba(255,105,180,0.4); color: var(--accent); }
+    .lang-btn:hover:not(.active) { color: var(--text2); border-color: var(--muted); }
 
-    .suggested-section { background: rgba(0,255,65,0.03); border: 1px solid rgba(0,255,65,0.15); border-radius: 4px; padding: 20px; margin-top: 18px; display: none; }
-    .suggested-label { font-size: 0.70rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; }
-    .divider { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
+    .suggested-section {
+      background: rgba(255,105,180,0.04); border: 1px solid rgba(255,105,180,0.18);
+      border-radius: 10px; padding: 20px; margin-top: 18px; display: none;
+    }
+    .suggested-label {
+      font-size: 0.68rem; color: var(--accent);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
     .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
-    .divider span { color: var(--muted); font-size: 0.72rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
+    .divider span { color: var(--muted); font-size: 0.70rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; }
 
-    /* LOADING */
-    .loading-dots { display: inline-flex; gap: 4px; align-items: center; }
-    .loading-dots span { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s infinite; box-shadow: 0 0 6px var(--accent); }
+    /* ==================== LOADING ==================== */
+    .loading-dots { display: inline-flex; gap: 5px; align-items: center; }
+    .loading-dots span { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s infinite; box-shadow: 0 0 8px var(--accent); }
     .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
     .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-6px); opacity: 1; } }
+    @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-7px); opacity: 1; } }
 
-    .hint-text { font-size: 0.72rem; color: var(--muted); margin-top: -4px; margin-bottom: 12px; font-family: 'Share Tech Mono', monospace; }
-    .footer { text-align: center; margin-top: 48px; color: var(--muted); font-size: 0.72rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
+    .hint-text { font-size: 0.70rem; color: var(--muted); margin-top: 6px; margin-bottom: 0; font-family: 'Share Tech Mono', monospace; }
+    .footer { text-align: center; margin-top: 52px; color: var(--muted); font-size: 0.70rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
+    .footer span { color: var(--accent2); }
 
-    /* ===================== CHAT HISTORY UI ===================== */
+    /* ==================== CHAT HISTORY ==================== */
     .chat-history {
-      min-height: 120px;
-      max-height: 480px;
+      min-height: 200px;
+      max-height: 420px;
       overflow-y: auto;
       margin-bottom: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      padding-right: 4px;
+      gap: 14px;
+      padding: 4px 2px 4px 0;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 16px;
     }
     .chat-history:empty::before {
-      content: '_ start the conversation...';
+      content: '✨ Start the conversation...';
       color: var(--muted);
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.80rem;
+      font-size: 0.78rem;
       display: block;
-      padding: 16px 0;
+      text-align: center;
+      padding: 24px 0;
     }
-    /* Scrollbar styling */
     .chat-history::-webkit-scrollbar { width: 4px; }
     .chat-history::-webkit-scrollbar-track { background: transparent; }
     .chat-history::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
     .chat-history::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-    .chat-bubble {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      animation: fadeIn 0.2s ease;
-    }
+    .chat-bubble { display: flex; flex-direction: column; gap: 4px; animation: fadeIn 0.2s ease; }
     .chat-bubble.user { align-items: flex-end; }
     .chat-bubble.ai { align-items: flex-start; }
 
-    .bubble-label {
-      font-size: 0.65rem;
-      font-family: 'Share Tech Mono', monospace;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
+    .bubble-label { font-size: 0.63rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; text-transform: uppercase; }
     .chat-bubble.user .bubble-label { color: var(--muted); }
     .chat-bubble.ai .bubble-label { color: var(--accent2); }
 
     .bubble-text {
-      max-width: 85%;
+      max-width: 82%;
       padding: 12px 16px;
-      border-radius: 4px;
-      font-size: 0.90rem;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      word-break: break-word;
+      font-size: 0.90rem; line-height: 1.75;
+      white-space: pre-wrap; word-break: break-word;
     }
     .chat-bubble.user .bubble-text {
-      background: var(--accent-dim);
-      border: 1px solid rgba(0,255,65,0.25);
+      background: linear-gradient(135deg, rgba(255,20,147,0.18), rgba(255,105,180,0.12));
+      border: 1px solid rgba(255,105,180,0.3);
       color: var(--text);
-      border-radius: 4px 4px 0 4px;
+      border-radius: 14px 14px 4px 14px;
     }
     .chat-bubble.ai .bubble-text {
-      background: var(--surface2);
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border2);
       color: var(--text);
-      border-radius: 4px 4px 4px 0;
+      border-radius: 14px 14px 14px 4px;
     }
-
     .bubble-copy {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 0.70rem;
+      background: transparent; border: none;
+      color: var(--muted); font-size: 0.68rem;
       font-family: 'Share Tech Mono', monospace;
-      cursor: pointer;
-      padding: 2px 4px;
-      letter-spacing: 1px;
-      transition: color 0.2s;
+      cursor: pointer; padding: 2px 6px; letter-spacing: 1px; transition: color 0.2s;
     }
     .bubble-copy:hover { color: var(--accent); }
 
-    /* Chat input row */
-    .chat-input-row {
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-    }
+    /* Chat input area */
+    .chat-input-area { margin-top: 14px; }
+    .chat-input-row { display: flex; gap: 10px; align-items: flex-end; }
     .chat-input-row textarea {
-      flex: 1;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      padding: 12px 14px;
-      color: var(--text);
-      font-size: 0.93rem;
-      font-family: 'DM Sans', sans-serif;
-      resize: none;
-      transition: all 0.2s;
-      line-height: 1.6;
-      min-height: 52px;
-      max-height: 160px;
+      flex: 1; background: var(--surface2);
+      border: 1px solid var(--border2); border-radius: 12px;
+      padding: 13px 16px; color: var(--text);
+      font-size: 0.92rem; font-family: 'DM Sans', sans-serif;
+      resize: none; transition: all 0.2s; line-height: 1.6;
+      min-height: 50px; max-height: 160px;
     }
     .chat-input-row textarea::placeholder { color: var(--muted); }
-    .chat-input-row textarea:focus { outline: none; border-color: var(--accent2); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
+    .chat-input-row textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 14px rgba(255,105,180,0.15); }
 
     .btn-send {
-      background: var(--accent-dim);
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      padding: 12px 18px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.2s;
-      flex-shrink: 0;
-      height: 52px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      border: none; color: #fff;
+      padding: 0 18px; border-radius: 12px; cursor: pointer;
+      font-size: 1.1rem; transition: all 0.25s; flex-shrink: 0;
+      height: 50px; min-width: 52px;
+      box-shadow: 0 3px 14px rgba(255,20,147,0.3);
+      display: flex; align-items: center; justify-content: center;
     }
-    .btn-send:hover { background: rgba(0,255,65,0.25); box-shadow: 0 0 12px rgba(0,255,65,0.2); }
-    .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-send:hover { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(255,20,147,0.45); }
+    .btn-send:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
     .chat-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
     }
-    .chat-toolbar-label {
-      font-size: 0.68rem;
-      color: var(--muted);
-      font-family: 'Share Tech Mono', monospace;
-      letter-spacing: 1px;
-    }
+    .chat-toolbar-label { font-size: 0.67rem; color: var(--muted); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
     .btn-clear-chat {
-      background: transparent;
-      border: 1px solid rgba(255,51,51,0.3);
-      color: rgba(255,51,51,0.6);
-      padding: 4px 12px;
-      border-radius: 2px;
-      font-size: 0.68rem;
-      font-family: 'Share Tech Mono', monospace;
-      cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: 1px;
+      background: transparent; border: 1px solid rgba(255,68,102,0.3);
+      color: rgba(255,68,102,0.7); padding: 5px 14px; border-radius: 8px;
+      font-size: 0.67rem; font-family: 'Share Tech Mono', monospace;
+      cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
     }
     .btn-clear-chat:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
-
-    /* Typing indicator inside bubble */
-    .bubble-typing .loading-dots span { background: var(--accent2); box-shadow: none; }
 
     @media (max-width: 640px) {
       .tabs { grid-template-columns: repeat(2, 1fr); }
       .two-col { grid-template-columns: 1fr; }
       .card { padding: 22px 16px; }
       .card-desc { margin-left: 0; margin-top: 8px; }
-      .setup-card { padding: 32px 20px; }
-      .bubble-text { max-width: 95%; }
+      .setup-card { padding: 36px 22px; }
+      .bubble-text { max-width: 92%; }
+      h1 { letter-spacing: 5px; }
     }
   </style>
 </head>
@@ -300,15 +462,15 @@
 <!-- SETUP SCREEN -->
 <div id="setup-screen">
   <div class="setup-card">
-    <span class="setup-icon">🎭</span>
-    <h2>// ACCESS REQUIRED</h2>
-    <p>Enter your Gemini API key to initialize the agent.<br>Key is stored locally — never shared with anyone.<br><br>No key? Get one free at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></p>
+    <span class="setup-icon">🎀</span>
+    <h2>// Access Required</h2>
+    <p>Enter your Gemini API key to initialize the agent.<br>Your key is stored locally — never shared.<br><br>No key yet? Get one at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> ✨</p>
     <div class="setup-error" id="setup-error"></div>
     <div class="key-input-wrap">
       <input type="password" id="api-key-input" placeholder="Paste your Gemini API key here..." />
       <button class="toggle-key" onclick="toggleKeyVisibility()" id="toggle-btn">👁</button>
     </div>
-    <button class="btn-setup" onclick="saveApiKey()">[ INITIALIZE AGENT ]</button>
+    <button class="btn-setup" onclick="saveApiKey()">✨ INITIALIZE AGENT ✨</button>
     <p class="setup-note">🔒 Stored in localStorage — your device only.</p>
   </div>
 </div>
@@ -318,46 +480,62 @@
 <div class="wrapper">
 
   <div class="header">
-    <div class="header-badge"><span class="dot"></span>SYSTEM ONLINE // AGENT ACTIVE</div>
+    <div class="header-badge"><span class="dot"></span>SYSTEM ONLINE &nbsp;·&nbsp; AGENT ACTIVE</div>
     <h1>AI-VA</h1>
-    <p class="subtitle">Real Estate // Chat // English // General</p>
+    <p class="subtitle">Real Estate &nbsp;·&nbsp; Chat Reply &nbsp;·&nbsp; Reviser &nbsp;·&nbsp; Ask Agent</p>
     <div class="header-actions">
-      <button class="btn-change-key" onclick="changeKey()">[ CHANGE KEY ]</button>
+      <button class="btn-change-key" onclick="changeKey()">🔑 Change Key</button>
     </div>
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('realestate', this)"><span class="tab-icon">🏠</span>Real Estate</button>
-    <button class="tab" onclick="switchTab('reply', this)"><span class="tab-icon">💬</span>Chat Reply</button>
-    <button class="tab" onclick="switchTab('english', this)"><span class="tab-icon">✍️</span>Reviser</button>
-    <button class="tab" onclick="switchTab('chat', this)"><span class="tab-icon">🤖</span>Ask Agent</button>
+    <button class="tab active" onclick="switchTab('realestate', this)">
+      <span class="tab-icon">🏠</span>Real Estate
+    </button>
+    <button class="tab" onclick="switchTab('reply', this)">
+      <span class="tab-icon">💬</span>Chat Reply
+    </button>
+    <button class="tab" onclick="switchTab('english', this)">
+      <span class="tab-icon">✍️</span>Reviser
+    </button>
+    <button class="tab" onclick="switchTab('chat', this)">
+      <span class="tab-icon">🤖</span>Ask Agent
+    </button>
   </div>
 
-  <!-- ======================== REAL ESTATE VA — CHAT HISTORY ======================== -->
+  <!-- ======================== REAL ESTATE VA ======================== -->
   <div class="card active" id="tab-realestate">
-    <div class="card-header"><div class="card-icon">🏠</div><h2>// Real Estate VA</h2></div>
-    <p class="card-desc">Ask anything about real estate — AI remembers your conversation this session.</p>
+    <div class="card-header">
+      <div class="card-icon">🏠</div>
+      <h2>// Real Estate VA</h2>
+    </div>
+    <p class="card-desc">Ask anything about real estate — AI remembers your full conversation this session.</p>
 
     <div class="chat-toolbar">
-      <span class="chat-toolbar-label">// Conversation history (session only)</span>
-      <button class="btn-clear-chat" onclick="clearHistory('re')">[ CLEAR CHAT ]</button>
+      <span class="chat-toolbar-label">💬 Conversation — clears when browser closes</span>
+      <button class="btn-clear-chat" onclick="clearHistory('re')">🗑 Clear Chat</button>
     </div>
 
     <div class="chat-history" id="re-history"></div>
 
-    <div class="chat-input-row">
-      <textarea id="realestate-input" rows="1" placeholder="Ask about real estate, templates, how to reply..."></textarea>
-      <button class="btn-send" id="re-send-btn" onclick="askRealEstate()" title="Send">➤</button>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea id="realestate-input" rows="1" placeholder="Ask about real estate, templates, how to reply to leads..."></textarea>
+        <button class="btn-send" id="re-send-btn" onclick="askRealEstate()" title="Send">➤</button>
+      </div>
+      <p class="hint-text">↵ Enter to send &nbsp;·&nbsp; Shift+Enter for new line</p>
     </div>
-    <p class="hint-text">&gt; Enter to send &nbsp;|&nbsp; Shift+Enter for new line</p>
   </div>
 
   <!-- ======================== CHAT REPLY COACH ======================== -->
   <div class="card" id="tab-reply">
-    <div class="card-header"><div class="card-icon">💬</div><h2>// Chat Reply Coach</h2></div>
-    <p class="card-desc">Upload a screenshot and get 3 reply suggestions based on your templates.</p>
+    <div class="card-header">
+      <div class="card-icon">💬</div>
+      <h2>// Chat Reply Coach</h2>
+    </div>
+    <p class="card-desc">Upload a screenshot or paste a message — get 3 ready-to-send reply options.</p>
 
-    <label class="field-label">&gt; Upload screenshot</label>
+    <label class="field-label">📷 Upload screenshot</label>
     <div class="upload-zone" id="upload-zone">
       <input type="file" id="screenshot-input" accept="image/*" onchange="handleScreenshot(event)" />
       <span class="upload-icon">📷</span>
@@ -368,9 +546,9 @@
       <button class="preview-remove" onclick="removeScreenshot()">✕</button>
     </div>
 
-    <div class="divider"><span>AND / OR</span></div>
+    <div class="divider"><span>— AND / OR —</span></div>
 
-    <label class="field-label">&gt; What do you want to say? (optional)</label>
+    <label class="field-label">💭 What do you want to say? (optional)</label>
     <div class="textarea-wrap">
       <textarea id="intention-input" rows="3" placeholder="e.g. I want to ask if they are still interested in selling..."></textarea>
       <button class="btn-clear" onclick="clearField('intention-input')" title="Clear">✕</button>
@@ -378,7 +556,7 @@
 
     <div class="two-col">
       <div class="col-group">
-        <label class="field-label">&gt; Context</label>
+        <label class="field-label">🎯 Context</label>
         <select id="reply-context">
           <option value="real_estate">🏠 Real Estate Lead (Facebook)</option>
           <option value="client">👔 Client / Boss</option>
@@ -386,7 +564,7 @@
         </select>
       </div>
       <div class="col-group">
-        <label class="field-label">&gt; Language style</label>
+        <label class="field-label">🌐 Language style</label>
         <div class="lang-toggle">
           <button class="lang-btn active" onclick="setLang('taglish', this)">🇵🇭 Taglish</button>
           <button class="lang-btn" onclick="setLang('english', this)">🇺🇸 English</button>
@@ -395,47 +573,57 @@
       </div>
     </div>
 
-    <button class="btn-primary" onclick="suggestReply()">[ GENERATE REPLIES ]</button>
+    <button class="btn-primary" onclick="suggestReply()">✨ Generate Replies</button>
     <div class="suggested-section" id="reply-suggestion">
-      <div class="suggested-label">// Choose your reply</div>
+      <div class="suggested-label">💌 Choose your reply</div>
       <div id="reply-options"></div>
     </div>
   </div>
 
   <!-- ======================== ENGLISH REVISER ======================== -->
   <div class="card" id="tab-english">
-    <div class="card-header"><div class="card-icon">✍️</div><h2>// English Reviser</h2></div>
-    <p class="card-desc">Paste any text — auto-fixes spelling & grammar, then gives 3 casual natural versions to choose from.</p>
-    <label class="field-label">&gt; Input text</label>
+    <div class="card-header">
+      <div class="card-icon">✍️</div>
+      <h2>// English Reviser</h2>
+    </div>
+    <p class="card-desc">Auto-fixes spelling & grammar, then gives you 3 casual natural versions to choose from.</p>
+
+    <label class="field-label">📝 Input text</label>
     <div class="textarea-wrap">
       <textarea id="english-input" rows="7" placeholder="Type or paste anything — messages, emails, captions, scripts..."></textarea>
       <button class="btn-clear" onclick="clearField('english-input')" title="Clear">✕</button>
     </div>
-    <p class="hint-text">&gt; Press Enter to execute</p>
-    <button class="btn-primary" onclick="reviseEnglish()">[ REVISE TEXT ]</button>
+    <p class="hint-text">↵ Enter to execute</p>
+    <br>
+    <button class="btn-primary" onclick="reviseEnglish()">✨ Revise Text</button>
     <div id="english-options"></div>
   </div>
 
-  <!-- ======================== ASK AGENT — CHAT HISTORY ======================== -->
+  <!-- ======================== ASK AGENT ======================== -->
   <div class="card" id="tab-chat">
-    <div class="card-header"><div class="card-icon">🤖</div><h2>// Ask Agent</h2></div>
-    <p class="card-desc">General questions, tasks, content ideas — AI remembers your conversation this session.</p>
+    <div class="card-header">
+      <div class="card-icon">🤖</div>
+      <h2>// Ask Agent</h2>
+    </div>
+    <p class="card-desc">General questions, tasks, content ideas — AI remembers your full conversation this session.</p>
 
     <div class="chat-toolbar">
-      <span class="chat-toolbar-label">// Conversation history (session only)</span>
-      <button class="btn-clear-chat" onclick="clearHistory('ag')">[ CLEAR CHAT ]</button>
+      <span class="chat-toolbar-label">💬 Conversation — clears when browser closes</span>
+      <button class="btn-clear-chat" onclick="clearHistory('ag')">🗑 Clear Chat</button>
     </div>
 
     <div class="chat-history" id="ag-history"></div>
 
-    <div class="chat-input-row">
-      <textarea id="chat-input" rows="1" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
-      <button class="btn-send" id="ag-send-btn" onclick="askAgent()" title="Send">➤</button>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea id="chat-input" rows="1" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
+        <button class="btn-send" id="ag-send-btn" onclick="askAgent()" title="Send">➤</button>
+      </div>
+      <p class="hint-text">↵ Enter to send &nbsp;·&nbsp; Shift+Enter for new line</p>
     </div>
-    <p class="hint-text">&gt; Enter to send &nbsp;|&nbsp; Shift+Enter for new line</p>
   </div>
 
-  <div class="footer">// AI-VA v3.2 — POWERED BY GEMINI // BUILT FOR YOUR WORKFLOW</div>
+  <div class="footer">// AI-VA v3.2 — Powered by <span>Gemini</span> &nbsp;·&nbsp; Built with 🩷 for your workflow</div>
 </div>
 </div>
 
@@ -445,11 +633,8 @@
   let screenshotBase64 = null;
   let screenshotMimeType = null;
 
-  // Conversation histories — stored in sessionStorage (clears on browser close)
-  // Format: [{role:'user'|'model', parts:[{text:'...'}]}]
   let reHistory = [];
   let agHistory = [];
-
   const SESSION_KEY_RE = 'aiva_re_history';
   const SESSION_KEY_AG = 'aiva_ag_history';
 
@@ -457,7 +642,6 @@
     const saved = localStorage.getItem('gemini_api_key');
     if (saved) { API_KEY = saved; showApp(); }
 
-    // Restore histories from sessionStorage
     try {
       const re = sessionStorage.getItem(SESSION_KEY_RE);
       const ag = sessionStorage.getItem(SESSION_KEY_AG);
@@ -465,11 +649,9 @@
       if (ag) { agHistory = JSON.parse(ag); agHistory.forEach(m => renderBubble('ag-history', m.role, m.parts[0].text, false)); }
     } catch(e) {}
 
-    // Key listeners
     document.getElementById('api-key-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveApiKey(); });
     document.getElementById('english-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); reviseEnglish(); } });
 
-    // Chat inputs — Enter sends, Shift+Enter = new line
     document.getElementById('realestate-input').addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askRealEstate(); }
     });
@@ -477,13 +659,11 @@
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAgent(); }
     });
 
-    // Auto-resize textareas
     ['realestate-input', 'chat-input'].forEach(id => {
       const el = document.getElementById(id);
       el.addEventListener('input', () => { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; });
     });
 
-    // Drag and drop
     const zone = document.getElementById('upload-zone');
     zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
     zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
@@ -523,32 +703,31 @@
     errorEl.style.display = 'none';
     if (!key || key.length < 20) { errorEl.textContent = '❌ Please enter a valid API key.'; errorEl.style.display = 'block'; return; }
     const btn = document.querySelector('.btn-setup');
-    btn.textContent = '[ VERIFYING... ]'; btn.disabled = true;
+    btn.textContent = '⏳ Verifying...'; btn.disabled = true;
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
         { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Say hi." }] }] }) });
       const data = await res.json();
-      if (data.error) { errorEl.textContent = `❌ ${data.error.message}`; errorEl.style.display = 'block'; btn.textContent = '[ INITIALIZE AGENT ]'; btn.disabled = false; return; }
+      if (data.error) { errorEl.textContent = `❌ ${data.error.message}`; errorEl.style.display = 'block'; btn.textContent = '✨ INITIALIZE AGENT ✨'; btn.disabled = false; return; }
       API_KEY = key; localStorage.setItem('gemini_api_key', key); showApp();
-    } catch { errorEl.textContent = '❌ Could not verify. Check internet.'; errorEl.style.display = 'block'; btn.textContent = '[ INITIALIZE AGENT ]'; btn.disabled = false; }
+    } catch { errorEl.textContent = '❌ Could not verify. Check your internet.'; errorEl.style.display = 'block'; btn.textContent = '✨ INITIALIZE AGENT ✨'; btn.disabled = false; }
   }
   function showApp() { document.getElementById('setup-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; }
   function changeKey() {
     localStorage.removeItem('gemini_api_key'); API_KEY = '';
     document.getElementById('api-key-input').value = '';
     document.getElementById('setup-error').style.display = 'none';
-    document.querySelector('.btn-setup').textContent = '[ INITIALIZE AGENT ]';
+    document.querySelector('.btn-setup').textContent = '✨ INITIALIZE AGENT ✨';
     document.querySelector('.btn-setup').disabled = false;
     document.getElementById('setup-screen').style.display = 'flex';
     document.getElementById('main-app').style.display = 'none';
   }
 
-  // ===================== GEMINI API — with history support =====================
+  // ===================== GEMINI =====================
   async function callGeminiWithHistory(systemPrompt, history) {
-    // Build contents: system context as first user turn, then full history
     const contents = [
-      { role: 'user', parts: [{ text: systemPrompt + '\n\n[Understood. I am ready to help.]' }] },
-      { role: 'model', parts: [{ text: 'Understood. I am ready to help.' }] },
+      { role: 'user', parts: [{ text: systemPrompt + '\n\n[Understood. Ready to help.]' }] },
+      { role: 'model', parts: [{ text: 'Understood. Ready to help.' }] },
       ...history
     ];
     try {
@@ -580,16 +759,16 @@
     } catch { return "Something went wrong. Please try again."; }
   }
 
-  // ===================== CHAT BUBBLE RENDERER =====================
+  // ===================== BUBBLES =====================
   function renderBubble(containerId, role, text, scroll = true) {
     const container = document.getElementById(containerId);
     const isUser = role === 'user';
     const bubble = document.createElement('div');
     bubble.className = `chat-bubble ${isUser ? 'user' : 'ai'}`;
     bubble.innerHTML = `
-      <span class="bubble-label">${isUser ? '// You' : '// Agent'}</span>
+      <span class="bubble-label">${isUser ? '👤 You' : '🤖 Agent'}</span>
       <div class="bubble-text">${escapeHtml(text)}</div>
-      ${!isUser ? `<button class="bubble-copy" onclick="copyBubble(this)">[ copy ]</button>` : ''}
+      ${!isUser ? `<button class="bubble-copy" onclick="copyBubble(this)">📋 copy</button>` : ''}
     `;
     container.appendChild(bubble);
     if (scroll) container.scrollTop = container.scrollHeight;
@@ -599,15 +778,14 @@
   function renderTypingIndicator(containerId) {
     const container = document.getElementById(containerId);
     const bubble = document.createElement('div');
-    bubble.className = 'chat-bubble ai bubble-typing';
+    bubble.className = 'chat-bubble ai';
     bubble.id = 'typing-' + containerId;
     bubble.innerHTML = `
-      <span class="bubble-label">// Agent</span>
+      <span class="bubble-label">🤖 Agent</span>
       <div class="bubble-text"><div class="loading-dots"><span></span><span></span><span></span></div></div>
     `;
     container.appendChild(bubble);
     container.scrollTop = container.scrollHeight;
-    return bubble;
   }
 
   function removeTypingIndicator(containerId) {
@@ -622,24 +800,21 @@
   function copyBubble(btn) {
     const text = btn.previousElementSibling.textContent;
     navigator.clipboard.writeText(text).then(() => {
-      const orig = btn.textContent; btn.textContent = '[ copied ✓ ]';
+      const orig = btn.textContent; btn.textContent = '✅ Copied!';
       setTimeout(() => btn.textContent = orig, 2000);
     });
   }
 
-  // ===================== HISTORY MANAGEMENT =====================
+  // ===================== HISTORY =====================
   function saveHistory(key, history) {
     try { sessionStorage.setItem(key, JSON.stringify(history)); } catch(e) {}
   }
-
   function clearHistory(tab) {
     if (tab === 're') {
-      reHistory = [];
-      document.getElementById('re-history').innerHTML = '';
+      reHistory = []; document.getElementById('re-history').innerHTML = '';
       sessionStorage.removeItem(SESSION_KEY_RE);
     } else {
-      agHistory = [];
-      document.getElementById('ag-history').innerHTML = '';
+      agHistory = []; document.getElementById('ag-history').innerHTML = '';
       sessionStorage.removeItem(SESSION_KEY_AG);
     }
   }
@@ -652,45 +827,36 @@
     el.classList.add('active');
   }
 
-  // ===================== LANGUAGE =====================
   function setLang(lang, el) { selectedLang = lang; document.querySelectorAll('.lang-toggle .lang-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
 
-  // ===================== REAL ESTATE VA — with memory =====================
+  // ===================== REAL ESTATE =====================
   async function askRealEstate() {
     const input = document.getElementById('realestate-input');
     const q = input.value.trim();
     if (!q) return;
-
     const sendBtn = document.getElementById('re-send-btn');
     sendBtn.disabled = true;
-    input.value = '';
-    input.style.height = 'auto';
+    input.value = ''; input.style.height = 'auto';
 
-    // Add user message
     reHistory.push({ role: 'user', parts: [{ text: q }] });
     renderBubble('re-history', 'user', q);
     saveHistory(SESSION_KEY_RE, reHistory);
-
-    // Typing indicator
     renderTypingIndicator('re-history');
 
     const reply = await callGeminiWithHistory(
-      REALESTATE_CONTEXT + '\n\nAnswer questions using our company knowledge and templates. Be clear, simple, and practical. Keep replies conversational and remember the full conversation context.',
+      REALESTATE_CONTEXT + '\n\nAnswer using company knowledge and templates. Be clear, practical, and conversational. Remember full context.',
       reHistory
     );
 
     removeTypingIndicator('re-history');
-
-    // Add AI reply
     reHistory.push({ role: 'model', parts: [{ text: reply }] });
     renderBubble('re-history', 'model', reply);
     saveHistory(SESSION_KEY_RE, reHistory);
-
     sendBtn.disabled = false;
     input.focus();
   }
 
-  // ===================== CHAT REPLY COACH — unchanged =====================
+  // ===================== CHAT REPLY =====================
   async function suggestReply() {
     const intention = document.getElementById("intention-input").value.trim();
     const context = document.getElementById("reply-context").value;
@@ -698,7 +864,7 @@
     const replyOptionsEl = document.getElementById("reply-options");
     if (!screenshotBase64 && !intention) { alert('Upload a screenshot or type what you want to say!'); return; }
     suggestionEl.style.display = "block";
-    replyOptionsEl.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+    replyOptionsEl.innerHTML = '<div class="loading-dots" style="padding:16px 0"><span></span><span></span><span></span></div>';
 
     const contextMap = { real_estate: "a real estate lead on Facebook. You are a real estate VA.", client: "your client or boss. Professional but warm.", general: "someone in a casual conversation." };
     const langMap = { taglish: "Natural Taglish (Filipino + English), casual like real Filipino texting.", english: "English only, casual and friendly.", tagalog: "Tagalog only, casual like how Filipinos text." };
@@ -708,7 +874,6 @@ ${intention ? `What she wants to say: "${intention}"` : ''}
 Language: ${langMap[selectedLang]}
 ${screenshotBase64 ? 'Study the screenshot carefully for full context.' : ''}
 Write 3 different short casual reply options using our templates as reference.
-
 Return ONLY:
 1. [reply]
 2. [reply]
@@ -719,54 +884,46 @@ Return ONLY:
     if (lines.length >= 3) {
       replyOptionsEl.innerHTML = `<div class="options-grid">${lines.map((l, i) => {
         const c = l.replace(/^[1-3]\.\s*/, '').trim();
-        return `<div class="option-card"><div class="option-label">// Option ${i+1}</div><div class="option-text">${c}</div><button class="option-copy-btn" onclick="copyText(this)">[ COPY REPLY ]</button></div>`;
+        return `<div class="option-card"><div class="option-label">💌 Option ${i+1}</div><div class="option-text">${c}</div><button class="option-copy-btn" onclick="copyText(this)">📋 Copy Reply</button></div>`;
       }).join('')}</div>`;
-    } else { replyOptionsEl.innerHTML = `<div style="color:var(--text);line-height:1.7;white-space:pre-wrap">${result}</div>`; }
+    } else { replyOptionsEl.innerHTML = `<div style="color:var(--text);line-height:1.75;white-space:pre-wrap;padding-left:12px">${result}</div>`; }
   }
 
-  // ===================== ENGLISH REVISER — unchanged =====================
+  // ===================== REVISER =====================
   async function reviseEnglish() {
     const text = document.getElementById("english-input").value.trim();
     const optionsEl = document.getElementById("english-options");
     if (!text) return;
-    optionsEl.innerHTML = '<div class="loading-dots" style="margin-top:16px"><span></span><span></span><span></span></div>';
-    const result = await callGemini(REVISER_CONTEXT + `\n\nFirst automatically fix all spelling errors and typos in the text. Then revise it in 3 different casual, natural ways. Keep it friendly like real texting. Fix grammar but never make it formal or robotic.\n\nReturn ONLY:\n1. [version]\n2. [version]\n3. [version]\n\nText: ${text}`);
+    optionsEl.innerHTML = '<div class="loading-dots" style="margin-top:20px;padding:8px 0"><span></span><span></span><span></span></div>';
+    const result = await callGemini(REVISER_CONTEXT + `\n\nFirst automatically fix all spelling errors and typos. Then revise in 3 different casual, natural ways. Friendly like real texting. Fix grammar but never make it formal.\n\nReturn ONLY:\n1. [version]\n2. [version]\n3. [version]\n\nText: ${text}`);
     const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
     if (lines.length >= 3) renderOptions('english-options', lines);
-    else optionsEl.innerHTML = `<div class="result-box" style="margin-top:14px">${result}</div>`;
+    else optionsEl.innerHTML = `<div class="result-box" style="margin-top:16px">${result}</div>`;
   }
 
-  // ===================== ASK AGENT — with memory =====================
+  // ===================== ASK AGENT =====================
   async function askAgent() {
     const input = document.getElementById('chat-input');
     const q = input.value.trim();
     if (!q) return;
-
     const sendBtn = document.getElementById('ag-send-btn');
     sendBtn.disabled = true;
-    input.value = '';
-    input.style.height = 'auto';
+    input.value = ''; input.style.height = 'auto';
 
-    // Add user message
     agHistory.push({ role: 'user', parts: [{ text: q }] });
     renderBubble('ag-history', 'user', q);
     saveHistory(SESSION_KEY_AG, agHistory);
-
-    // Typing indicator
     renderTypingIndicator('ag-history');
 
     const reply = await callGeminiWithHistory(
-      AGENT_CONTEXT + '\n\nRemember the full conversation and give relevant, contextual answers. Keep responses helpful and clear.',
+      AGENT_CONTEXT + '\n\nRemember the full conversation and give relevant, contextual answers.',
       agHistory
     );
 
     removeTypingIndicator('ag-history');
-
-    // Add AI reply
     agHistory.push({ role: 'model', parts: [{ text: reply }] });
     renderBubble('ag-history', 'model', reply);
     saveHistory(SESSION_KEY_AG, agHistory);
-
     sendBtn.disabled = false;
     input.focus();
   }
@@ -775,20 +932,21 @@ Return ONLY:
   function renderOptions(containerId, lines) {
     document.getElementById(containerId).innerHTML = `<div class="options-grid">${lines.map((line, i) => {
       const content = line.replace(/^[1-3]\.\s*/, '').trim();
-      return `<div class="option-card"><div class="option-label">// Option ${i + 1}</div><div class="option-text">${content}</div><button class="option-copy-btn" onclick="copyText(this)">[ COPY ]</button></div>`;
+      return `<div class="option-card"><div class="option-label">✨ Version ${i + 1}</div><div class="option-text">${content}</div><button class="option-copy-btn" onclick="copyText(this)">📋 Copy</button></div>`;
     }).join('')}</div>`;
   }
 
   function copyText(btn) {
     navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => {
-      const orig = btn.textContent; btn.textContent = '[ COPIED ✓ ]'; setTimeout(() => btn.textContent = orig, 2000);
+      const orig = btn.textContent; btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = orig, 2000);
     });
   }
 
   function copyResult(id) {
     navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => {
       const btn = event.target; const orig = btn.textContent;
-      btn.textContent = '[ COPIED ✓ ]'; setTimeout(() => btn.textContent = orig, 2000);
+      btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = orig, 2000);
     });
   }
 </script>
