@@ -9,100 +9,51 @@
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #020b02;
-      --surface: #040f04;
-      --surface2: #071007;
-      --accent: #00ff41;
-      --accent2: #00cc33;
-      --accent-dim: rgba(0,255,65,0.15);
-      --accent-glow: rgba(0,255,65,0.4);
-      --text: #ccffcc;
-      --text2: #88bb88;
-      --muted: #2d5c2d;
-      --border: #0d2b0d;
-      --border2: #1a4a1a;
-      --red: #ff3333;
-      --red-dim: rgba(255,51,51,0.15);
+      --bg: #020b02; --surface: #040f04; --surface2: #071007;
+      --accent: #00ff41; --accent2: #00cc33;
+      --accent-dim: rgba(0,255,65,0.15); --accent-glow: rgba(0,255,65,0.4);
+      --text: #ccffcc; --text2: #88bb88; --muted: #2d5c2d;
+      --border: #0d2b0d; --border2: #1a4a1a;
+      --red: #ff3333; --red-dim: rgba(255,51,51,0.15);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px);
-      pointer-events: none; z-index: 9999;
-    }
-
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none; z-index: 0;
-    }
-
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px); pointer-events: none; z-index: 9999; }
+    body::after { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; z-index: 0; }
     .wrapper { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; }
 
     /* SETUP */
     #setup-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
-
-    .setup-card {
-      background: var(--surface); border: 1px solid var(--border2); border-radius: 4px;
-      padding: 48px 40px; max-width: 480px; width: 100%; text-align: center;
-      box-shadow: 0 0 40px rgba(0,255,65,0.08); position: relative;
-    }
-
+    .setup-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; padding: 48px 40px; max-width: 480px; width: 100%; text-align: center; box-shadow: 0 0 40px rgba(0,255,65,0.08); position: relative; }
     .setup-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
-
     .setup-icon { font-size: 2.5rem; margin-bottom: 20px; display: block; }
-
     .setup-card h2 { font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: 400; margin-bottom: 10px; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); letter-spacing: 2px; text-transform: uppercase; }
-
     .setup-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.7; margin-bottom: 28px; }
     .setup-card a { color: var(--accent); text-decoration: none; }
-
     .key-input-wrap { position: relative; margin-bottom: 16px; }
-
     .key-input-wrap input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 14px 50px 14px 16px; color: var(--accent); font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; }
     .key-input-wrap input::placeholder { color: var(--muted); font-family: 'DM Sans', sans-serif; }
     .key-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 12px rgba(0,255,65,0.2); }
-
     .toggle-key { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
-
     .btn-setup { width: 100%; background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px; border-radius: 4px; font-size: 0.95rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; letter-spacing: 2px; text-transform: uppercase; }
     .btn-setup:hover { background: var(--accent-dim); box-shadow: 0 0 20px rgba(0,255,65,0.25); }
-
     .setup-note { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
     .setup-error { background: var(--red-dim); border: 1px solid rgba(255,51,51,0.3); border-radius: 4px; padding: 12px 16px; color: var(--red); font-size: 0.85rem; margin-bottom: 16px; display: none; }
 
     /* MAIN APP */
     #main-app { display: none; }
-
     .header { text-align: center; margin-bottom: 48px; }
-
     .header-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-dim); border: 1px solid rgba(0,255,65,0.25); border-radius: 2px; padding: 5px 14px; font-size: 0.72rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; margin-bottom: 20px; }
     .header-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; box-shadow: 0 0 6px var(--accent); }
-
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
     h1 { font-family: 'Share Tech Mono', monospace; font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 400; line-height: 1.1; margin-bottom: 12px; color: var(--accent); text-shadow: 0 0 30px rgba(0,255,65,0.5), 0 0 60px rgba(0,255,65,0.2); letter-spacing: 8px; text-transform: uppercase; }
     .subtitle { font-size: 0.85rem; color: var(--text2); letter-spacing: 3px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; }
     .header-actions { margin-top: 20px; }
     .btn-change-key { background: transparent; border: 1px solid var(--border2); color: var(--muted); padding: 6px 16px; border-radius: 2px; font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
     .btn-change-key:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* TABS — 4 columns */
+    /* TABS */
     .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-bottom: 24px; background: var(--border); border: 1px solid var(--border2); border-radius: 4px; padding: 4px; }
-
     .tab { padding: 12px 6px; border-radius: 2px; border: none; background: transparent; color: var(--muted); cursor: pointer; font-size: 0.70rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; text-align: center; line-height: 1.4; letter-spacing: 0.5px; text-transform: uppercase; }
     .tab .tab-icon { font-size: 1rem; display: block; margin-bottom: 4px; }
     .tab:hover { color: var(--accent); background: var(--accent-dim); }
@@ -111,28 +62,19 @@
     /* CARDS */
     .card { background: var(--surface); border-radius: 4px; padding: 36px; border: 1px solid var(--border2); display: none; animation: fadeIn 0.25s ease; position: relative; }
     .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,255,65,0.4), transparent); }
-
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
     .card.active { display: block; }
     .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-
     .card-icon { width: 40px; height: 40px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; background: var(--accent-dim); border: 1px solid rgba(0,255,65,0.2); }
-
     .card h2 { font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; font-weight: 400; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
-
     .card-desc { font-size: 0.85rem; color: var(--text2); margin-bottom: 24px; margin-left: 52px; line-height: 1.6; }
-
     .field-label { font-size: 0.70rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; display: block; font-family: 'Share Tech Mono', monospace; }
 
     /* TEXTAREA */
     .textarea-wrap { position: relative; margin-bottom: 12px; }
-
     .textarea-wrap textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 14px; color: var(--text); font-size: 0.93rem; font-family: 'DM Sans', sans-serif; resize: vertical; transition: all 0.2s; line-height: 1.6; min-height: 110px; }
     .textarea-wrap textarea::placeholder { color: var(--muted); }
     .textarea-wrap textarea:focus { outline: none; border-color: var(--accent2); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
-
-    /* CLEAR BUTTON */
     .btn-clear { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border-radius: 4px; border: 1px solid rgba(255,51,51,0.4); background: rgba(255,51,51,0.08); color: #ff5555; cursor: pointer; font-size: 0.80rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
     .btn-clear:hover { background: rgba(255,51,51,0.18); border-color: #ff5555; }
 
@@ -142,10 +84,8 @@
 
     .btn-primary { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px 28px; border-radius: 4px; cursor: pointer; font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; width: 100%; letter-spacing: 2px; text-transform: uppercase; }
     .btn-primary:hover { background: var(--accent-dim); box-shadow: 0 0 20px rgba(0,255,65,0.2); }
-
     .btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--muted); padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.78rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; letter-spacing: 1px; }
     .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-
     .btn-copy { background: transparent; border: 1px solid rgba(0,255,65,0.25); color: var(--accent2); padding: 8px 18px; border-radius: 4px; cursor: pointer; font-size: 0.80rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; margin-top: 12px; letter-spacing: 1px; }
     .btn-copy:hover { background: var(--accent-dim); border-color: var(--accent); }
 
@@ -154,15 +94,12 @@
 
     /* OPTIONS */
     .options-grid { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-
     .option-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 16px; transition: all 0.2s; position: relative; }
     .option-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent2); border-radius: 4px 0 0 4px; opacity: 0.5; }
     .option-card:hover { border-color: rgba(0,255,65,0.3); }
     .option-card:hover::before { opacity: 1; }
-
     .option-label { font-size: 0.68rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Share Tech Mono', monospace; }
     .option-text { color: var(--text); line-height: 1.7; font-size: 0.90rem; white-space: pre-wrap; }
-
     .option-copy-btn { margin-top: 10px; background: transparent; border: 1px solid rgba(0,255,65,0.2); color: var(--accent2); padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s; letter-spacing: 1px; }
     .option-copy-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
@@ -173,16 +110,14 @@
     .upload-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
     .upload-text { color: var(--text2); font-size: 0.85rem; line-height: 1.6; }
     .upload-text strong { color: var(--accent); }
-
     .preview-wrap { position: relative; margin-bottom: 14px; display: none; }
     .preview-wrap img { width: 100%; max-height: 300px; object-fit: contain; border-radius: 4px; border: 1px solid var(--border2); background: var(--surface2); }
     .preview-remove { position: absolute; top: 8px; right: 8px; background: rgba(255,51,51,0.85); color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
     .preview-remove:hover { background: #ff3333; }
 
-    /* CHAT OPTIONS ROW */
+    /* LAYOUT */
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
     .col-group { display: flex; flex-direction: column; gap: 6px; }
-
     .lang-toggle { display: flex; gap: 6px; flex-wrap: wrap; }
     .lang-btn { padding: 7px 12px; border-radius: 2px; border: 1px solid var(--border2); background: transparent; color: var(--muted); font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; }
     .lang-btn.active { background: var(--accent-dim); border-color: var(--accent2); color: var(--accent); }
@@ -190,21 +125,165 @@
 
     .suggested-section { background: rgba(0,255,65,0.03); border: 1px solid rgba(0,255,65,0.15); border-radius: 4px; padding: 20px; margin-top: 18px; display: none; }
     .suggested-label { font-size: 0.70rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; }
-
     .divider { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
     .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
     .divider span { color: var(--muted); font-size: 0.72rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
 
+    /* LOADING */
     .loading-dots { display: inline-flex; gap: 4px; align-items: center; }
     .loading-dots span { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s infinite; box-shadow: 0 0 6px var(--accent); }
     .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
     .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-
     @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-6px); opacity: 1; } }
 
     .hint-text { font-size: 0.72rem; color: var(--muted); margin-top: -4px; margin-bottom: 12px; font-family: 'Share Tech Mono', monospace; }
-
     .footer { text-align: center; margin-top: 48px; color: var(--muted); font-size: 0.72rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
+
+    /* ===================== CHAT HISTORY UI ===================== */
+    .chat-history {
+      min-height: 120px;
+      max-height: 480px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 4px;
+    }
+    .chat-history:empty::before {
+      content: '_ start the conversation...';
+      color: var(--muted);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.80rem;
+      display: block;
+      padding: 16px 0;
+    }
+    /* Scrollbar styling */
+    .chat-history::-webkit-scrollbar { width: 4px; }
+    .chat-history::-webkit-scrollbar-track { background: transparent; }
+    .chat-history::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    .chat-history::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    .chat-bubble {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      animation: fadeIn 0.2s ease;
+    }
+    .chat-bubble.user { align-items: flex-end; }
+    .chat-bubble.ai { align-items: flex-start; }
+
+    .bubble-label {
+      font-size: 0.65rem;
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .chat-bubble.user .bubble-label { color: var(--muted); }
+    .chat-bubble.ai .bubble-label { color: var(--accent2); }
+
+    .bubble-text {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 0.90rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .chat-bubble.user .bubble-text {
+      background: var(--accent-dim);
+      border: 1px solid rgba(0,255,65,0.25);
+      color: var(--text);
+      border-radius: 4px 4px 0 4px;
+    }
+    .chat-bubble.ai .bubble-text {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      border-radius: 4px 4px 4px 0;
+    }
+
+    .bubble-copy {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 0.70rem;
+      font-family: 'Share Tech Mono', monospace;
+      cursor: pointer;
+      padding: 2px 4px;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .bubble-copy:hover { color: var(--accent); }
+
+    /* Chat input row */
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .chat-input-row textarea {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 0.93rem;
+      font-family: 'DM Sans', sans-serif;
+      resize: none;
+      transition: all 0.2s;
+      line-height: 1.6;
+      min-height: 52px;
+      max-height: 160px;
+    }
+    .chat-input-row textarea::placeholder { color: var(--muted); }
+    .chat-input-row textarea:focus { outline: none; border-color: var(--accent2); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
+
+    .btn-send {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 12px 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      height: 52px;
+    }
+    .btn-send:hover { background: rgba(0,255,65,0.25); box-shadow: 0 0 12px rgba(0,255,65,0.2); }
+    .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .chat-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .chat-toolbar-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 1px;
+    }
+    .btn-clear-chat {
+      background: transparent;
+      border: 1px solid rgba(255,51,51,0.3);
+      color: rgba(255,51,51,0.6);
+      padding: 4px 12px;
+      border-radius: 2px;
+      font-size: 0.68rem;
+      font-family: 'Share Tech Mono', monospace;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 1px;
+    }
+    .btn-clear-chat:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+
+    /* Typing indicator inside bubble */
+    .bubble-typing .loading-dots span { background: var(--accent2); box-shadow: none; }
 
     @media (max-width: 640px) {
       .tabs { grid-template-columns: repeat(2, 1fr); }
@@ -212,6 +291,7 @@
       .card { padding: 22px 16px; }
       .card-desc { margin-left: 0; margin-top: 8px; }
       .setup-card { padding: 32px 20px; }
+      .bubble-text { max-width: 95%; }
     }
   </style>
 </head>
@@ -253,19 +333,23 @@
     <button class="tab" onclick="switchTab('chat', this)"><span class="tab-icon">🤖</span>Ask Agent</button>
   </div>
 
-  <!-- ======================== REAL ESTATE VA ======================== -->
+  <!-- ======================== REAL ESTATE VA — CHAT HISTORY ======================== -->
   <div class="card active" id="tab-realestate">
     <div class="card-header"><div class="card-icon">🏠</div><h2>// Real Estate VA</h2></div>
-    <p class="card-desc">Ask anything about real estate — uses your actual company templates and tone.</p>
-    <label class="field-label">&gt; Input query</label>
-    <div class="textarea-wrap">
-      <textarea id="realestate-input" rows="4" placeholder="e.g. How do I reply to someone asking about creative deals?"></textarea>
-      <button class="btn-clear" onclick="clearField('realestate-input')" title="Clear">✕</button>
+    <p class="card-desc">Ask anything about real estate — AI remembers your conversation this session.</p>
+
+    <div class="chat-toolbar">
+      <span class="chat-toolbar-label">// Conversation history (session only)</span>
+      <button class="btn-clear-chat" onclick="clearHistory('re')">[ CLEAR CHAT ]</button>
     </div>
-    <p class="hint-text">&gt; Press Enter to execute</p>
-    <button class="btn-primary" onclick="askRealEstate()">[ RUN QUERY ]</button>
-    <div class="result-box empty" id="realestate-result">_ awaiting input...</div>
-    <button class="btn-copy" onclick="copyResult('realestate-result')">[ COPY OUTPUT ]</button>
+
+    <div class="chat-history" id="re-history"></div>
+
+    <div class="chat-input-row">
+      <textarea id="realestate-input" rows="1" placeholder="Ask about real estate, templates, how to reply..."></textarea>
+      <button class="btn-send" id="re-send-btn" onclick="askRealEstate()" title="Send">➤</button>
+    </div>
+    <p class="hint-text">&gt; Enter to send &nbsp;|&nbsp; Shift+Enter for new line</p>
   </div>
 
   <!-- ======================== CHAT REPLY COACH ======================== -->
@@ -279,7 +363,6 @@
       <span class="upload-icon">📷</span>
       <div class="upload-text"><strong>Click to upload</strong> or drag & drop<br>PNG, JPG, WEBP supported</div>
     </div>
-
     <div class="preview-wrap" id="preview-wrap">
       <img id="screenshot-preview" src="" alt="Screenshot preview" />
       <button class="preview-remove" onclick="removeScreenshot()">✕</button>
@@ -313,7 +396,6 @@
     </div>
 
     <button class="btn-primary" onclick="suggestReply()">[ GENERATE REPLIES ]</button>
-
     <div class="suggested-section" id="reply-suggestion">
       <div class="suggested-label">// Choose your reply</div>
       <div id="reply-options"></div>
@@ -334,22 +416,26 @@
     <div id="english-options"></div>
   </div>
 
-  <!-- ======================== ASK ANYTHING ======================== -->
+  <!-- ======================== ASK AGENT — CHAT HISTORY ======================== -->
   <div class="card" id="tab-chat">
     <div class="card-header"><div class="card-icon">🤖</div><h2>// Ask Agent</h2></div>
-    <p class="card-desc">General questions, tasks, content ideas — anything related to your work.</p>
-    <label class="field-label">&gt; Input query</label>
-    <div class="textarea-wrap">
-      <textarea id="chat-input" rows="5" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
-      <button class="btn-clear" onclick="clearField('chat-input')" title="Clear">✕</button>
+    <p class="card-desc">General questions, tasks, content ideas — AI remembers your conversation this session.</p>
+
+    <div class="chat-toolbar">
+      <span class="chat-toolbar-label">// Conversation history (session only)</span>
+      <button class="btn-clear-chat" onclick="clearHistory('ag')">[ CLEAR CHAT ]</button>
     </div>
-    <p class="hint-text">&gt; Press Enter to execute</p>
-    <button class="btn-primary" onclick="askAgent()">[ RUN QUERY ]</button>
-    <div class="result-box empty" id="chat-result">_ awaiting input...</div>
-    <button class="btn-copy" onclick="copyResult('chat-result')">[ COPY OUTPUT ]</button>
+
+    <div class="chat-history" id="ag-history"></div>
+
+    <div class="chat-input-row">
+      <textarea id="chat-input" rows="1" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
+      <button class="btn-send" id="ag-send-btn" onclick="askAgent()" title="Send">➤</button>
+    </div>
+    <p class="hint-text">&gt; Enter to send &nbsp;|&nbsp; Shift+Enter for new line</p>
   </div>
 
-  <div class="footer">// AI-VA v3.1 — POWERED BY GEMINI // BUILT FOR YOUR WORKFLOW</div>
+  <div class="footer">// AI-VA v3.2 — POWERED BY GEMINI // BUILT FOR YOUR WORKFLOW</div>
 </div>
 </div>
 
@@ -359,45 +445,70 @@
   let screenshotBase64 = null;
   let screenshotMimeType = null;
 
+  // Conversation histories — stored in sessionStorage (clears on browser close)
+  // Format: [{role:'user'|'model', parts:[{text:'...'}]}]
+  let reHistory = [];
+  let agHistory = [];
+
+  const SESSION_KEY_RE = 'aiva_re_history';
+  const SESSION_KEY_AG = 'aiva_ag_history';
+
   window.addEventListener('load', () => {
     const saved = localStorage.getItem('gemini_api_key');
     if (saved) { API_KEY = saved; showApp(); }
 
-    document.getElementById('api-key-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveApiKey(); });
-    document.getElementById('realestate-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askRealEstate(); } });
-    document.getElementById('english-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); reviseEnglish(); } });
-    document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAgent(); } });
+    // Restore histories from sessionStorage
+    try {
+      const re = sessionStorage.getItem(SESSION_KEY_RE);
+      const ag = sessionStorage.getItem(SESSION_KEY_AG);
+      if (re) { reHistory = JSON.parse(re); reHistory.forEach(m => renderBubble('re-history', m.role, m.parts[0].text, false)); }
+      if (ag) { agHistory = JSON.parse(ag); agHistory.forEach(m => renderBubble('ag-history', m.role, m.parts[0].text, false)); }
+    } catch(e) {}
 
-    // Drag and drop for chat reply
+    // Key listeners
+    document.getElementById('api-key-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveApiKey(); });
+    document.getElementById('english-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); reviseEnglish(); } });
+
+    // Chat inputs — Enter sends, Shift+Enter = new line
+    document.getElementById('realestate-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askRealEstate(); }
+    });
+    document.getElementById('chat-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAgent(); }
+    });
+
+    // Auto-resize textareas
+    ['realestate-input', 'chat-input'].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('input', () => { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; });
+    });
+
+    // Drag and drop
     const zone = document.getElementById('upload-zone');
     zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
     zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) processImage(f, 'main'); });
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) processImage(f); });
   });
 
-  // ===================== SCREENSHOT HANDLING =====================
-  function handleScreenshot(e) { if (e.target.files[0]) processImage(e.target.files[0], 'main'); }
-
-  function processImage(file, type) {
+  // ===================== SCREENSHOT =====================
+  function handleScreenshot(e) { if (e.target.files[0]) processImage(e.target.files[0]); }
+  function processImage(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target.result;
-      const b64 = result.split(',')[1];
-      screenshotBase64 = b64; screenshotMimeType = file.type;
+      screenshotBase64 = result.split(',')[1]; screenshotMimeType = file.type;
       document.getElementById('screenshot-preview').src = result;
       document.getElementById('preview-wrap').style.display = 'block';
       document.getElementById('upload-zone').style.display = 'none';
     };
     reader.readAsDataURL(file);
   }
-
   function removeScreenshot() {
     screenshotBase64 = null; screenshotMimeType = null;
     document.getElementById('screenshot-input').value = '';
     document.getElementById('preview-wrap').style.display = 'none';
     document.getElementById('upload-zone').style.display = 'block';
   }
-
   function clearField(id) { document.getElementById(id).value = ''; document.getElementById(id).focus(); }
 
   // ===================== API KEY =====================
@@ -406,7 +517,6 @@
     input.type = input.type === 'password' ? 'text' : 'password';
     document.getElementById('toggle-btn').textContent = input.type === 'password' ? '👁' : '🙈';
   }
-
   async function saveApiKey() {
     const key = document.getElementById('api-key-input').value.trim();
     const errorEl = document.getElementById('setup-error');
@@ -422,9 +532,7 @@
       API_KEY = key; localStorage.setItem('gemini_api_key', key); showApp();
     } catch { errorEl.textContent = '❌ Could not verify. Check internet.'; errorEl.style.display = 'block'; btn.textContent = '[ INITIALIZE AGENT ]'; btn.disabled = false; }
   }
-
   function showApp() { document.getElementById('setup-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; }
-
   function changeKey() {
     localStorage.removeItem('gemini_api_key'); API_KEY = '';
     document.getElementById('api-key-input').value = '';
@@ -435,7 +543,23 @@
     document.getElementById('main-app').style.display = 'none';
   }
 
-  // ===================== GEMINI API =====================
+  // ===================== GEMINI API — with history support =====================
+  async function callGeminiWithHistory(systemPrompt, history) {
+    // Build contents: system context as first user turn, then full history
+    const contents = [
+      { role: 'user', parts: [{ text: systemPrompt + '\n\n[Understood. I am ready to help.]' }] },
+      { role: 'model', parts: [{ text: 'Understood. I am ready to help.' }] },
+      ...history
+    ];
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents }) });
+      const data = await res.json();
+      if (data.error) return `Error: ${data.error.message}`;
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Something went wrong.';
+    } catch { return 'Something went wrong. Please try again.'; }
+  }
+
   async function callGemini(prompt) {
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
@@ -456,24 +580,68 @@
     } catch { return "Something went wrong. Please try again."; }
   }
 
-  function showLoading(el) { el.classList.remove('empty'); el.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>'; }
-
-  // ===================== RENDER OPTIONS =====================
-  function renderOptions(containerId, lines) {
-    document.getElementById(containerId).innerHTML = `<div class="options-grid">${lines.map((line, i) => {
-      const content = line.replace(/^[1-3]\.\s*/, '').trim();
-      return `<div class="option-card">
-        <div class="option-label">// Option ${i + 1}</div>
-        <div class="option-text">${content}</div>
-        <button class="option-copy-btn" onclick="copyText(this)">[ COPY ]</button>
-      </div>`;
-    }).join('')}</div>`;
+  // ===================== CHAT BUBBLE RENDERER =====================
+  function renderBubble(containerId, role, text, scroll = true) {
+    const container = document.getElementById(containerId);
+    const isUser = role === 'user';
+    const bubble = document.createElement('div');
+    bubble.className = `chat-bubble ${isUser ? 'user' : 'ai'}`;
+    bubble.innerHTML = `
+      <span class="bubble-label">${isUser ? '// You' : '// Agent'}</span>
+      <div class="bubble-text">${escapeHtml(text)}</div>
+      ${!isUser ? `<button class="bubble-copy" onclick="copyBubble(this)">[ copy ]</button>` : ''}
+    `;
+    container.appendChild(bubble);
+    if (scroll) container.scrollTop = container.scrollHeight;
+    return bubble;
   }
 
-  function copyText(btn) {
-    navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => {
-      const orig = btn.textContent; btn.textContent = '[ COPIED ✓ ]'; setTimeout(() => btn.textContent = orig, 2000);
+  function renderTypingIndicator(containerId) {
+    const container = document.getElementById(containerId);
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble ai bubble-typing';
+    bubble.id = 'typing-' + containerId;
+    bubble.innerHTML = `
+      <span class="bubble-label">// Agent</span>
+      <div class="bubble-text"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+    `;
+    container.appendChild(bubble);
+    container.scrollTop = container.scrollHeight;
+    return bubble;
+  }
+
+  function removeTypingIndicator(containerId) {
+    const el = document.getElementById('typing-' + containerId);
+    if (el) el.remove();
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function copyBubble(btn) {
+    const text = btn.previousElementSibling.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent; btn.textContent = '[ copied ✓ ]';
+      setTimeout(() => btn.textContent = orig, 2000);
     });
+  }
+
+  // ===================== HISTORY MANAGEMENT =====================
+  function saveHistory(key, history) {
+    try { sessionStorage.setItem(key, JSON.stringify(history)); } catch(e) {}
+  }
+
+  function clearHistory(tab) {
+    if (tab === 're') {
+      reHistory = [];
+      document.getElementById('re-history').innerHTML = '';
+      sessionStorage.removeItem(SESSION_KEY_RE);
+    } else {
+      agHistory = [];
+      document.getElementById('ag-history').innerHTML = '';
+      sessionStorage.removeItem(SESSION_KEY_AG);
+    }
   }
 
   // ===================== TAB SWITCHING =====================
@@ -487,17 +655,42 @@
   // ===================== LANGUAGE =====================
   function setLang(lang, el) { selectedLang = lang; document.querySelectorAll('.lang-toggle .lang-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
 
-  // ===================== REAL ESTATE VA =====================
+  // ===================== REAL ESTATE VA — with memory =====================
   async function askRealEstate() {
-    const q = document.getElementById("realestate-input").value.trim();
-    const resultEl = document.getElementById("realestate-result");
+    const input = document.getElementById('realestate-input');
+    const q = input.value.trim();
     if (!q) return;
-    showLoading(resultEl);
-    const result = await callGemini(REALESTATE_CONTEXT + `\n\nAnswer this question using our company knowledge and templates. Be clear, simple, and practical.\n\nQuestion: ${q}`);
-    resultEl.classList.remove('empty'); resultEl.textContent = result;
+
+    const sendBtn = document.getElementById('re-send-btn');
+    sendBtn.disabled = true;
+    input.value = '';
+    input.style.height = 'auto';
+
+    // Add user message
+    reHistory.push({ role: 'user', parts: [{ text: q }] });
+    renderBubble('re-history', 'user', q);
+    saveHistory(SESSION_KEY_RE, reHistory);
+
+    // Typing indicator
+    renderTypingIndicator('re-history');
+
+    const reply = await callGeminiWithHistory(
+      REALESTATE_CONTEXT + '\n\nAnswer questions using our company knowledge and templates. Be clear, simple, and practical. Keep replies conversational and remember the full conversation context.',
+      reHistory
+    );
+
+    removeTypingIndicator('re-history');
+
+    // Add AI reply
+    reHistory.push({ role: 'model', parts: [{ text: reply }] });
+    renderBubble('re-history', 'model', reply);
+    saveHistory(SESSION_KEY_RE, reHistory);
+
+    sendBtn.disabled = false;
+    input.focus();
   }
 
-  // ===================== CHAT REPLY COACH =====================
+  // ===================== CHAT REPLY COACH — unchanged =====================
   async function suggestReply() {
     const intention = document.getElementById("intention-input").value.trim();
     const context = document.getElementById("reply-context").value;
@@ -531,7 +724,7 @@ Return ONLY:
     } else { replyOptionsEl.innerHTML = `<div style="color:var(--text);line-height:1.7;white-space:pre-wrap">${result}</div>`; }
   }
 
-  // ===================== ENGLISH REVISER =====================
+  // ===================== ENGLISH REVISER — unchanged =====================
   async function reviseEnglish() {
     const text = document.getElementById("english-input").value.trim();
     const optionsEl = document.getElementById("english-options");
@@ -543,17 +736,55 @@ Return ONLY:
     else optionsEl.innerHTML = `<div class="result-box" style="margin-top:14px">${result}</div>`;
   }
 
-  // ===================== ASK ANYTHING =====================
+  // ===================== ASK AGENT — with memory =====================
   async function askAgent() {
-    const q = document.getElementById("chat-input").value.trim();
-    const resultEl = document.getElementById("chat-result");
+    const input = document.getElementById('chat-input');
+    const q = input.value.trim();
     if (!q) return;
-    showLoading(resultEl);
-    const result = await callGemini(AGENT_CONTEXT + "\n\n" + q);
-    resultEl.classList.remove('empty'); resultEl.textContent = result;
+
+    const sendBtn = document.getElementById('ag-send-btn');
+    sendBtn.disabled = true;
+    input.value = '';
+    input.style.height = 'auto';
+
+    // Add user message
+    agHistory.push({ role: 'user', parts: [{ text: q }] });
+    renderBubble('ag-history', 'user', q);
+    saveHistory(SESSION_KEY_AG, agHistory);
+
+    // Typing indicator
+    renderTypingIndicator('ag-history');
+
+    const reply = await callGeminiWithHistory(
+      AGENT_CONTEXT + '\n\nRemember the full conversation and give relevant, contextual answers. Keep responses helpful and clear.',
+      agHistory
+    );
+
+    removeTypingIndicator('ag-history');
+
+    // Add AI reply
+    agHistory.push({ role: 'model', parts: [{ text: reply }] });
+    renderBubble('ag-history', 'model', reply);
+    saveHistory(SESSION_KEY_AG, agHistory);
+
+    sendBtn.disabled = false;
+    input.focus();
   }
 
   // ===================== HELPERS =====================
+  function renderOptions(containerId, lines) {
+    document.getElementById(containerId).innerHTML = `<div class="options-grid">${lines.map((line, i) => {
+      const content = line.replace(/^[1-3]\.\s*/, '').trim();
+      return `<div class="option-card"><div class="option-label">// Option ${i + 1}</div><div class="option-text">${content}</div><button class="option-copy-btn" onclick="copyText(this)">[ COPY ]</button></div>`;
+    }).join('')}</div>`;
+  }
+
+  function copyText(btn) {
+    navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => {
+      const orig = btn.textContent; btn.textContent = '[ COPIED ✓ ]'; setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
   function copyResult(id) {
     navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => {
       const btn = event.target; const orig = btn.textContent;
