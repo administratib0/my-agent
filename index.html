@@ -4,445 +4,392 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI-VA — Personal AI Agent</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎀</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤍</text></svg>">
   <script src="templates.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d0009;
-      --surface: #160010;
-      --surface2: #1e0018;
-      --accent: #ff69b4;
-      --accent2: #ff1493;
-      --accent-dim: rgba(255,105,180,0.12);
-      --accent-glow: rgba(255,105,180,0.5);
-      --text: #ffd6f0;
-      --text2: #cc88b0;
-      --muted: #6b3358;
-      --border: #2a0020;
-      --border2: #4a1040;
-      --red: #ff4466;
-      --red-dim: rgba(255,68,102,0.15);
-      --purple: #c084fc;
-      --purple-dim: rgba(192,132,252,0.12);
+      --bg:        #f7f4f9;
+      --surface:   #ffffff;
+      --surface2:  #fdf5fa;
+      --accent:    #e8176e;
+      --accent2:   #f5428d;
+      --accent-lt: #fce7f0;
+      --accent-dim: rgba(232,23,110,0.08);
+      --text:      #1a1025;
+      --text2:     #6b5876;
+      --muted:     #b09dbe;
+      --border:    #ede5f4;
+      --border2:   #ddd0ea;
+      --shadow:    rgba(150,80,160,0.08);
+      --shadow-md: rgba(150,80,160,0.14);
+      --red:       #e03050;
+      --red-dim:   rgba(224,48,80,0.08);
+      --green:     #16a34a;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-    /* Scanline effect — pink tint */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,105,180,0.012) 2px, rgba(255,105,180,0.012) 4px);
-      pointer-events: none; z-index: 9999;
-    }
-    /* Grid lines */
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: linear-gradient(rgba(255,105,180,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,105,180,0.025) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none; z-index: 0;
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      /* Subtle dot grid */
+      background-image: radial-gradient(circle, #ddd0ea 1px, transparent 1px);
+      background-size: 28px 28px;
     }
 
-    .wrapper { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 40px 24px 80px; }
+    .wrapper { max-width: 900px; margin: 0 auto; padding: 44px 24px 80px; }
 
-    /* ==================== SETUP ==================== */
-    #setup-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
-
+    /* ======== SETUP ======== */
+    #setup-screen {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 24px;
+    }
     .setup-card {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 12px;
-      padding: 52px 44px;
-      max-width: 480px; width: 100%;
+      background: var(--surface); border-radius: 24px;
+      padding: 52px 44px; max-width: 460px; width: 100%;
       text-align: center;
-      box-shadow: 0 0 60px rgba(255,105,180,0.1), 0 0 120px rgba(255,20,147,0.05);
-      position: relative;
+      box-shadow: 0 8px 40px var(--shadow-md), 0 1px 0 var(--border2);
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
     }
-    .setup-card::before {
+    .setup-card::after {
       content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent2), var(--accent), var(--purple), transparent);
-      border-radius: 12px 12px 0 0;
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), #c084fc);
     }
-    .setup-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+    .setup-icon { font-size: 2.8rem; margin-bottom: 18px; display: block; }
     .setup-card h2 {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 1.4rem; font-weight: 400; margin-bottom: 10px;
-      color: var(--accent);
-      text-shadow: 0 0 20px var(--accent-glow);
-      letter-spacing: 3px; text-transform: uppercase;
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;
+      color: var(--text); letter-spacing: -0.3px;
     }
     .setup-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.75; margin-bottom: 28px; }
-    .setup-card a { color: var(--accent); text-decoration: none; }
-    .setup-card a:hover { text-shadow: 0 0 8px var(--accent-glow); }
+    .setup-card a { color: var(--accent); text-decoration: none; font-weight: 500; }
 
-    .key-input-wrap { position: relative; margin-bottom: 14px; }
+    .key-input-wrap { position: relative; margin-bottom: 12px; }
     .key-input-wrap input {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 8px; padding: 14px 50px 14px 16px;
-      color: var(--accent); font-size: 0.88rem; font-family: 'Share Tech Mono', monospace; transition: all 0.2s;
+      width: 100%; background: var(--surface2); border: 1.5px solid var(--border2);
+      border-radius: 12px; padding: 14px 48px 14px 16px;
+      color: var(--text); font-size: 0.88rem; font-family: 'DM Mono', monospace;
+      transition: all 0.2s;
     }
-    .key-input-wrap input::placeholder { color: var(--muted); font-family: 'DM Sans', sans-serif; }
-    .key-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 16px rgba(255,105,180,0.2); }
-    .toggle-key { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
+    .key-input-wrap input::placeholder { color: var(--muted); font-family: 'Figtree', sans-serif; }
+    .key-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,23,110,0.1); }
+    .toggle-key { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
 
     .btn-setup {
-      width: 100%; background: linear-gradient(135deg, var(--accent2), var(--accent));
-      color: #fff; border: none; padding: 14px; border-radius: 8px;
-      font-size: 0.92rem; font-family: 'Share Tech Mono', monospace; cursor: pointer;
-      transition: all 0.3s; margin-bottom: 16px; letter-spacing: 2px; text-transform: uppercase;
-      box-shadow: 0 4px 20px rgba(255,20,147,0.3);
+      width: 100%; background: var(--accent); color: #fff; border: none;
+      padding: 15px; border-radius: 12px; font-size: 0.95rem; font-family: 'Figtree', sans-serif;
+      font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 16px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 16px rgba(232,23,110,0.3);
     }
-    .btn-setup:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(255,20,147,0.45); }
+    .btn-setup:hover { background: #c8115e; box-shadow: 0 6px 24px rgba(232,23,110,0.4); transform: translateY(-1px); }
     .btn-setup:active { transform: translateY(0); }
 
-    .setup-note { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+    .setup-note { font-size: 0.76rem; color: var(--muted); }
     .setup-error {
-      background: var(--red-dim); border: 1px solid rgba(255,68,102,0.35);
-      border-radius: 8px; padding: 12px 16px; color: var(--red);
-      font-size: 0.85rem; margin-bottom: 14px; display: none;
+      background: var(--red-dim); border: 1px solid rgba(224,48,80,0.2);
+      border-radius: 10px; padding: 11px 14px; color: var(--red);
+      font-size: 0.84rem; margin-bottom: 12px; display: none; text-align: left;
     }
 
-    /* ==================== MAIN APP ==================== */
+    /* ======== HEADER ======== */
     #main-app { display: none; }
+    .header { text-align: center; margin-bottom: 36px; }
 
-    .header { text-align: center; margin-bottom: 48px; }
     .header-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--accent-dim); border: 1px solid rgba(255,105,180,0.3);
-      border-radius: 20px; padding: 6px 18px;
-      font-size: 0.70rem; color: var(--accent);
-      letter-spacing: 2px; text-transform: uppercase;
-      font-family: 'Share Tech Mono', monospace; margin-bottom: 20px;
-    }
-    .header-badge .dot {
-      width: 7px; height: 7px; background: var(--accent2);
-      border-radius: 50%; animation: pulse 1.5s infinite;
-      box-shadow: 0 0 8px var(--accent2);
-    }
-    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
-
-    h1 {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: clamp(2.8rem, 7vw, 4.5rem);
-      font-weight: 400; line-height: 1.1; margin-bottom: 10px;
-      background: linear-gradient(135deg, #ff69b4, #ff1493, #c084fc);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(0 0 20px rgba(255,105,180,0.4));
-      letter-spacing: 10px; text-transform: uppercase;
-    }
-    .subtitle { font-size: 0.82rem; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; }
-
-    .header-actions { margin-top: 20px; }
-    .btn-change-key {
-      background: transparent; border: 1px solid var(--border2); color: var(--muted);
-      padding: 7px 18px; border-radius: 20px;
-      font-size: 0.73rem; font-family: 'Share Tech Mono', monospace;
-      cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
-    }
-    .btn-change-key:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 10px rgba(255,105,180,0.15); }
-
-    /* ==================== TABS ==================== */
-    .tabs {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 6px; margin-bottom: 20px;
-    }
-    .tab {
-      padding: 14px 8px; border-radius: 10px; border: 1px solid var(--border2);
-      background: var(--surface); color: var(--muted);
-      cursor: pointer; font-size: 0.68rem; font-family: 'Share Tech Mono', monospace;
-      transition: all 0.25s; text-align: center; line-height: 1.5;
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--accent-lt); border: 1px solid rgba(232,23,110,0.2);
+      border-radius: 20px; padding: 5px 16px; margin-bottom: 18px;
+      font-size: 0.71rem; font-weight: 600; color: var(--accent);
       letter-spacing: 0.5px; text-transform: uppercase;
     }
+    .header-badge .dot {
+      width: 7px; height: 7px; background: var(--accent);
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(0.75);opacity:0.5} }
+
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 4rem); font-weight: 800;
+      letter-spacing: -2px; line-height: 1;
+      color: var(--text); margin-bottom: 8px;
+    }
+    h1 span { color: var(--accent); }
+
+    .subtitle { font-size: 0.83rem; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; }
+    .header-actions { margin-top: 16px; }
+    .btn-change-key {
+      background: var(--surface); border: 1.5px solid var(--border2);
+      color: var(--text2); padding: 7px 18px; border-radius: 20px;
+      font-size: 0.77rem; font-family: 'Figtree', sans-serif; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-change-key:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 2px 10px var(--shadow); }
+
+    /* ======== TABS ======== */
+    .tabs {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; margin-bottom: 16px;
+    }
+    .tab {
+      padding: 14px 8px; border-radius: 14px;
+      border: 1.5px solid var(--border);
+      background: var(--surface); color: var(--text2);
+      cursor: pointer; font-size: 0.72rem; font-family: 'Figtree', sans-serif;
+      font-weight: 600; transition: all 0.2s; text-align: center;
+      line-height: 1.4; text-transform: uppercase; letter-spacing: 0.4px;
+      box-shadow: 0 2px 6px var(--shadow);
+    }
     .tab .tab-icon { font-size: 1.3rem; display: block; margin-bottom: 5px; }
-    .tab:hover { color: var(--accent); background: var(--accent-dim); border-color: rgba(255,105,180,0.3); }
+    .tab:hover { border-color: var(--accent2); color: var(--accent); background: var(--accent-lt); transform: translateY(-1px); box-shadow: 0 4px 12px var(--shadow-md); }
     .tab.active {
-      background: linear-gradient(135deg, rgba(255,20,147,0.15), rgba(255,105,180,0.1));
-      color: var(--accent); border-color: rgba(255,105,180,0.5);
-      box-shadow: 0 0 16px rgba(255,105,180,0.1), inset 0 0 12px rgba(255,105,180,0.05);
+      background: var(--accent); color: #fff; border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(232,23,110,0.3); transform: translateY(-1px);
     }
 
-    /* ==================== CARDS ==================== */
+    /* ======== CARDS ======== */
     .card {
-      background: var(--surface); border-radius: 14px; padding: 32px;
-      border: 1px solid var(--border2); display: none;
-      animation: fadeIn 0.25s ease; position: relative;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+      background: var(--surface); border-radius: 20px;
+      padding: 32px 30px; border: 1.5px solid var(--border);
+      display: none; animation: fadeUp 0.2s ease;
+      box-shadow: 0 4px 24px var(--shadow);
     }
-    .card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,105,180,0.5), transparent);
-      border-radius: 14px 14px 0 0;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
     .card.active { display: block; }
 
-    .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+    .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
     .card-icon {
-      width: 42px; height: 42px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; flex-shrink: 0;
-      background: linear-gradient(135deg, rgba(255,20,147,0.2), rgba(255,105,180,0.15));
-      border: 1px solid rgba(255,105,180,0.25);
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+      background: var(--accent-lt); border: 1.5px solid rgba(232,23,110,0.15);
     }
-    .card h2 {
-      font-family: 'Share Tech Mono', monospace; font-size: 1.05rem;
-      font-weight: 400; color: var(--accent);
-      letter-spacing: 2px; text-transform: uppercase;
-    }
-    .card-desc { font-size: 0.84rem; color: var(--text2); margin-bottom: 22px; margin-left: 56px; line-height: 1.65; }
+    .card h2 { font-size: 1.05rem; font-weight: 700; color: var(--text); letter-spacing: -0.2px; }
+    .card-desc { font-size: 0.84rem; color: var(--text2); margin-bottom: 24px; margin-left: 58px; line-height: 1.65; }
 
     .field-label {
-      font-size: 0.68rem; color: var(--accent2);
-      letter-spacing: 2px; text-transform: uppercase;
+      font-size: 0.71rem; font-weight: 700; color: var(--text2);
+      letter-spacing: 0.8px; text-transform: uppercase;
       margin-bottom: 8px; display: block;
-      font-family: 'Share Tech Mono', monospace;
     }
 
-    /* ==================== INPUTS ==================== */
+    /* ======== INPUTS ======== */
     .textarea-wrap { position: relative; margin-bottom: 14px; }
     .textarea-wrap textarea {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 10px; padding: 14px 46px 14px 16px;
-      color: var(--text); font-size: 0.92rem; font-family: 'DM Sans', sans-serif;
+      width: 100%; background: var(--surface2); border: 1.5px solid var(--border2);
+      border-radius: 12px; padding: 13px 44px 13px 15px;
+      color: var(--text); font-size: 0.91rem; font-family: 'Figtree', sans-serif;
       resize: vertical; transition: all 0.2s; line-height: 1.65; min-height: 110px;
     }
     .textarea-wrap textarea::placeholder { color: var(--muted); }
-    .textarea-wrap textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 14px rgba(255,105,180,0.15); }
+    .textarea-wrap textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,23,110,0.08); background: #fff; }
 
     .btn-clear {
       position: absolute; top: 10px; right: 10px;
-      width: 28px; height: 28px; border-radius: 6px;
-      border: 1px solid rgba(255,68,102,0.35); background: rgba(255,68,102,0.08);
-      color: #ff6688; cursor: pointer; font-size: 0.80rem;
+      width: 28px; height: 28px; border-radius: 8px;
+      border: 1px solid var(--border2); background: var(--surface);
+      color: var(--muted); cursor: pointer; font-size: 0.78rem;
       display: flex; align-items: center; justify-content: center; transition: all 0.2s;
     }
-    .btn-clear:hover { background: rgba(255,68,102,0.2); border-color: #ff4466; }
+    .btn-clear:hover { background: var(--red-dim); border-color: var(--red); color: var(--red); }
 
     select {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 10px; padding: 12px 14px; color: var(--text);
-      font-size: 0.88rem; font-family: 'DM Sans', sans-serif;
-      margin-bottom: 14px; cursor: pointer; transition: all 0.2s;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ff69b4' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 14px center;
-      padding-right: 36px;
+      width: 100%; background: var(--surface2); border: 1.5px solid var(--border2);
+      border-radius: 12px; padding: 12px 36px 12px 14px; color: var(--text);
+      font-size: 0.88rem; font-family: 'Figtree', sans-serif; font-weight: 500;
+      margin-bottom: 14px; cursor: pointer; transition: all 0.2s; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath fill='%23b09dbe' d='M6 7L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
     }
-    select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(255,105,180,0.15); }
-    select option { background: #1e0018; }
+    select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,23,110,0.08); }
+    select option { background: #fff; }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      color: #fff; border: none; padding: 14px 28px;
-      border-radius: 10px; cursor: pointer; font-size: 0.88rem;
-      font-family: 'Share Tech Mono', monospace; transition: all 0.3s;
-      width: 100%; letter-spacing: 2px; text-transform: uppercase;
-      box-shadow: 0 4px 18px rgba(255,20,147,0.25);
+      background: var(--accent); color: #fff; border: none;
+      padding: 14px 24px; border-radius: 12px; cursor: pointer;
+      font-size: 0.90rem; font-family: 'Figtree', sans-serif; font-weight: 600;
+      transition: all 0.2s; width: 100%; letter-spacing: 0.2px;
+      box-shadow: 0 4px 14px rgba(232,23,110,0.25);
     }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,20,147,0.4); }
+    .btn-primary:hover { background: #c8115e; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,23,110,0.35); }
     .btn-primary:active { transform: translateY(0); }
 
     .btn-copy {
-      background: transparent; border: 1px solid rgba(255,105,180,0.3);
-      color: var(--accent); padding: 9px 20px; border-radius: 8px;
-      cursor: pointer; font-size: 0.78rem; font-family: 'Share Tech Mono', monospace;
-      transition: all 0.2s; margin-top: 12px; letter-spacing: 1px;
+      background: var(--surface2); border: 1.5px solid var(--border2);
+      color: var(--text2); padding: 8px 18px; border-radius: 10px;
+      cursor: pointer; font-size: 0.79rem; font-family: 'Figtree', sans-serif;
+      font-weight: 500; transition: all 0.2s; margin-top: 12px;
     }
-    .btn-copy:hover { background: var(--accent-dim); border-color: var(--accent); box-shadow: 0 0 10px rgba(255,105,180,0.15); }
+    .btn-copy:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
 
     .result-box {
-      margin-top: 16px; background: var(--surface2); border-radius: 10px;
-      padding: 18px; border: 1px solid var(--border2);
-      white-space: pre-wrap; font-size: 0.90rem; line-height: 1.85;
+      margin-top: 16px; background: var(--surface2); border-radius: 12px;
+      padding: 16px 18px; border: 1.5px solid var(--border);
+      white-space: pre-wrap; font-size: 0.90rem; line-height: 1.8;
       min-height: 80px; color: var(--text);
     }
-    .result-box.empty { color: var(--muted); font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; }
+    .result-box.empty { color: var(--muted); font-size: 0.80rem; font-style: italic; }
 
-    /* ==================== OPTIONS ==================== */
+    /* ======== OPTIONS ======== */
     .options-grid { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
     .option-card {
-      background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 10px; padding: 18px; transition: all 0.2s; position: relative;
+      background: var(--surface2); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 16px 18px; transition: all 0.2s;
+      position: relative; overflow: hidden;
     }
     .option-card::before {
-      content: ''; position: absolute; left: 0; top: 12px; bottom: 12px;
-      width: 3px; background: linear-gradient(180deg, var(--accent2), var(--accent));
-      border-radius: 0 2px 2px 0; opacity: 0.6;
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+      background: var(--accent); border-radius: 3px 0 0 3px;
+      transform: scaleY(0); transition: transform 0.2s; transform-origin: bottom;
     }
-    .option-card:hover { border-color: rgba(255,105,180,0.4); box-shadow: 0 2px 16px rgba(255,105,180,0.08); }
-    .option-card:hover::before { opacity: 1; }
-    .option-label { font-size: 0.67rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; font-family: 'Share Tech Mono', monospace; }
-    .option-text { color: var(--text); line-height: 1.75; font-size: 0.90rem; white-space: pre-wrap; padding-left: 12px; }
+    .option-card:hover { border-color: rgba(232,23,110,0.3); box-shadow: 0 2px 12px var(--shadow-md); }
+    .option-card:hover::before { transform: scaleY(1); }
+    .option-label { font-size: 0.67rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .option-text { color: var(--text); line-height: 1.75; font-size: 0.90rem; white-space: pre-wrap; }
     .option-copy-btn {
-      margin-top: 12px; background: transparent;
-      border: 1px solid rgba(255,105,180,0.25); color: var(--accent2);
-      padding: 6px 16px; border-radius: 6px; cursor: pointer;
-      font-size: 0.73rem; font-family: 'Share Tech Mono', monospace;
-      transition: all 0.2s; letter-spacing: 1px;
+      margin-top: 10px; background: var(--surface); border: 1.5px solid var(--border2);
+      color: var(--text2); padding: 6px 14px; border-radius: 8px;
+      cursor: pointer; font-size: 0.75rem; font-family: 'Figtree', sans-serif;
+      font-weight: 500; transition: all 0.2s;
     }
-    .option-copy-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+    .option-copy-btn:hover { background: var(--accent-lt); border-color: var(--accent); color: var(--accent); }
 
-    /* ==================== UPLOAD ==================== */
+    /* ======== UPLOAD ======== */
     .upload-zone {
-      border: 2px dashed var(--border2); border-radius: 12px;
-      padding: 32px 20px; text-align: center; cursor: pointer;
+      border: 2px dashed var(--border2); border-radius: 14px;
+      padding: 30px 20px; text-align: center; cursor: pointer;
       transition: all 0.2s; background: var(--surface2); margin-bottom: 14px; position: relative;
     }
-    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: var(--accent-dim); }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: var(--accent-lt); }
     .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .upload-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+    .upload-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
     .upload-text { color: var(--text2); font-size: 0.84rem; line-height: 1.65; }
-    .upload-text strong { color: var(--accent); }
+    .upload-text strong { color: var(--accent); font-weight: 600; }
     .preview-wrap { position: relative; margin-bottom: 14px; display: none; }
-    .preview-wrap img { width: 100%; max-height: 300px; object-fit: contain; border-radius: 10px; border: 1px solid var(--border2); background: var(--surface2); }
+    .preview-wrap img { width: 100%; max-height: 280px; object-fit: contain; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface2); }
     .preview-remove {
-      position: absolute; top: 10px; right: 10px;
-      background: rgba(255,68,102,0.85); color: #fff; border: none;
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(224,48,80,0.9); color: #fff; border: none;
       width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
       font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
     }
-    .preview-remove:hover { background: #ff4466; }
+    .preview-remove:hover { background: var(--red); }
 
-    /* ==================== LAYOUT ==================== */
+    /* ======== LAYOUT ======== */
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
     .col-group { display: flex; flex-direction: column; gap: 8px; }
     .lang-toggle { display: flex; gap: 6px; flex-wrap: wrap; }
     .lang-btn {
-      padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border2);
-      background: transparent; color: var(--muted); font-size: 0.73rem;
-      font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s;
+      padding: 8px 12px; border-radius: 9px; border: 1.5px solid var(--border2);
+      background: var(--surface); color: var(--text2); font-size: 0.75rem;
+      font-family: 'Figtree', sans-serif; font-weight: 500; cursor: pointer; transition: all 0.2s;
     }
-    .lang-btn.active { background: var(--accent-dim); border-color: rgba(255,105,180,0.4); color: var(--accent); }
-    .lang-btn:hover:not(.active) { color: var(--text2); border-color: var(--muted); }
+    .lang-btn.active { background: var(--accent-lt); border-color: var(--accent2); color: var(--accent); font-weight: 600; }
+    .lang-btn:hover:not(.active) { border-color: var(--text2); color: var(--text); }
 
     .suggested-section {
-      background: rgba(255,105,180,0.04); border: 1px solid rgba(255,105,180,0.18);
-      border-radius: 10px; padding: 20px; margin-top: 18px; display: none;
+      background: var(--accent-lt); border: 1.5px solid rgba(232,23,110,0.18);
+      border-radius: 14px; padding: 20px; margin-top: 18px; display: none;
     }
-    .suggested-label {
-      font-size: 0.68rem; color: var(--accent);
-      letter-spacing: 2px; text-transform: uppercase;
-      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
-      font-family: 'Share Tech Mono', monospace;
-    }
-    .divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
-    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
-    .divider span { color: var(--muted); font-size: 0.70rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; }
+    .suggested-label { font-size: 0.71rem; font-weight: 700; color: var(--accent); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 
-    /* ==================== LOADING ==================== */
+    .divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .divider span { color: var(--muted); font-size: 0.72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+
+    /* ======== LOADING ======== */
     .loading-dots { display: inline-flex; gap: 5px; align-items: center; }
-    .loading-dots span { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s infinite; box-shadow: 0 0 8px var(--accent); }
-    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-7px); opacity: 1; } }
+    .loading-dots span { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: bounce 1.1s infinite; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.18s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:0.3} 40%{transform:translateY(-8px);opacity:1} }
 
-    .hint-text { font-size: 0.70rem; color: var(--muted); margin-top: 6px; margin-bottom: 0; font-family: 'Share Tech Mono', monospace; }
-    .footer { text-align: center; margin-top: 52px; color: var(--muted); font-size: 0.70rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
-    .footer span { color: var(--accent2); }
+    .hint-text { font-size: 0.71rem; color: var(--muted); margin-top: 8px; font-weight: 500; }
+    .footer { text-align: center; margin-top: 52px; color: var(--muted); font-size: 0.75rem; font-weight: 500; }
+    .footer strong { color: var(--accent); }
 
-    /* ==================== CHAT HISTORY ==================== */
+    /* ======== CHAT HISTORY ======== */
     .chat-history {
-      min-height: 200px;
-      max-height: 420px;
-      overflow-y: auto;
-      margin-bottom: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding: 4px 2px 4px 0;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-      border-radius: 12px;
-      padding: 16px;
+      min-height: 220px; max-height: 400px; overflow-y: auto;
+      margin-bottom: 14px; display: flex; flex-direction: column; gap: 14px;
+      background: var(--surface2); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 18px;
     }
     .chat-history:empty::before {
-      content: '✨ Start the conversation...';
-      color: var(--muted);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.78rem;
-      display: block;
-      text-align: center;
-      padding: 24px 0;
+      content: 'Start the conversation below ✦';
+      color: var(--muted); font-size: 0.80rem; font-style: italic;
+      display: block; text-align: center; padding: 20px 0;
     }
-    .chat-history::-webkit-scrollbar { width: 4px; }
+    .chat-history::-webkit-scrollbar { width: 5px; }
     .chat-history::-webkit-scrollbar-track { background: transparent; }
-    .chat-history::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    .chat-history::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
     .chat-history::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-    .chat-bubble { display: flex; flex-direction: column; gap: 4px; animation: fadeIn 0.2s ease; }
+    .chat-bubble { display: flex; flex-direction: column; gap: 4px; animation: fadeUp 0.18s ease; }
     .chat-bubble.user { align-items: flex-end; }
     .chat-bubble.ai { align-items: flex-start; }
 
-    .bubble-label { font-size: 0.63rem; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; text-transform: uppercase; }
+    .bubble-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
     .chat-bubble.user .bubble-label { color: var(--muted); }
-    .chat-bubble.ai .bubble-label { color: var(--accent2); }
+    .chat-bubble.ai .bubble-label { color: var(--accent); }
 
     .bubble-text {
-      max-width: 82%;
-      padding: 12px 16px;
+      max-width: 80%; padding: 12px 16px;
       font-size: 0.90rem; line-height: 1.75;
       white-space: pre-wrap; word-break: break-word;
     }
     .chat-bubble.user .bubble-text {
-      background: linear-gradient(135deg, rgba(255,20,147,0.18), rgba(255,105,180,0.12));
-      border: 1px solid rgba(255,105,180,0.3);
-      color: var(--text);
-      border-radius: 14px 14px 4px 14px;
+      background: var(--accent); color: #fff;
+      border-radius: 18px 18px 4px 18px;
+      box-shadow: 0 2px 10px rgba(232,23,110,0.2);
     }
     .chat-bubble.ai .bubble-text {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border2);
-      color: var(--text);
-      border-radius: 14px 14px 14px 4px;
+      background: var(--surface); color: var(--text);
+      border: 1.5px solid var(--border);
+      border-radius: 18px 18px 18px 4px;
+      box-shadow: 0 1px 6px var(--shadow);
     }
+
     .bubble-copy {
-      background: transparent; border: none;
-      color: var(--muted); font-size: 0.68rem;
-      font-family: 'Share Tech Mono', monospace;
-      cursor: pointer; padding: 2px 6px; letter-spacing: 1px; transition: color 0.2s;
+      background: none; border: none; color: var(--muted);
+      font-size: 0.70rem; font-family: 'Figtree', sans-serif;
+      font-weight: 500; cursor: pointer; padding: 2px 4px;
+      transition: color 0.2s;
     }
     .bubble-copy:hover { color: var(--accent); }
 
-    /* Chat input area */
-    .chat-input-area { margin-top: 14px; }
+    .chat-input-area { margin-top: 12px; }
     .chat-input-row { display: flex; gap: 10px; align-items: flex-end; }
     .chat-input-row textarea {
-      flex: 1; background: var(--surface2);
-      border: 1px solid var(--border2); border-radius: 12px;
-      padding: 13px 16px; color: var(--text);
-      font-size: 0.92rem; font-family: 'DM Sans', sans-serif;
+      flex: 1; background: var(--surface2); border: 1.5px solid var(--border2);
+      border-radius: 14px; padding: 13px 16px; color: var(--text);
+      font-size: 0.91rem; font-family: 'Figtree', sans-serif;
       resize: none; transition: all 0.2s; line-height: 1.6;
       min-height: 50px; max-height: 160px;
     }
     .chat-input-row textarea::placeholder { color: var(--muted); }
-    .chat-input-row textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 14px rgba(255,105,180,0.15); }
+    .chat-input-row textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,23,110,0.08); background: #fff; }
 
     .btn-send {
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      border: none; color: #fff;
-      padding: 0 18px; border-radius: 12px; cursor: pointer;
-      font-size: 1.1rem; transition: all 0.25s; flex-shrink: 0;
-      height: 50px; min-width: 52px;
-      box-shadow: 0 3px 14px rgba(255,20,147,0.3);
+      background: var(--accent); border: none; color: #fff;
+      width: 50px; height: 50px; border-radius: 14px; cursor: pointer;
+      font-size: 1.1rem; transition: all 0.2s; flex-shrink: 0;
+      box-shadow: 0 3px 12px rgba(232,23,110,0.28);
       display: flex; align-items: center; justify-content: center;
     }
-    .btn-send:hover { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(255,20,147,0.45); }
-    .btn-send:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+    .btn-send:hover { background: #c8115e; transform: translateY(-1px); box-shadow: 0 5px 18px rgba(232,23,110,0.38); }
+    .btn-send:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    .chat-toolbar {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-    }
-    .chat-toolbar-label { font-size: 0.67rem; color: var(--muted); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
+    .chat-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .chat-toolbar-label { font-size: 0.70rem; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; }
     .btn-clear-chat {
-      background: transparent; border: 1px solid rgba(255,68,102,0.3);
-      color: rgba(255,68,102,0.7); padding: 5px 14px; border-radius: 8px;
-      font-size: 0.67rem; font-family: 'Share Tech Mono', monospace;
-      cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+      background: transparent; border: 1px solid var(--border2);
+      color: var(--muted); padding: 5px 13px; border-radius: 8px;
+      font-size: 0.70rem; font-family: 'Figtree', sans-serif;
+      font-weight: 500; cursor: pointer; transition: all 0.2s;
     }
     .btn-clear-chat:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
 
@@ -452,8 +399,8 @@
       .card { padding: 22px 16px; }
       .card-desc { margin-left: 0; margin-top: 8px; }
       .setup-card { padding: 36px 22px; }
-      .bubble-text { max-width: 92%; }
-      h1 { letter-spacing: 5px; }
+      .bubble-text { max-width: 90%; }
+      h1 { letter-spacing: -1px; }
     }
   </style>
 </head>
@@ -462,16 +409,16 @@
 <!-- SETUP SCREEN -->
 <div id="setup-screen">
   <div class="setup-card">
-    <span class="setup-icon">🎀</span>
-    <h2>// Access Required</h2>
-    <p>Enter your Gemini API key to initialize the agent.<br>Your key is stored locally — never shared.<br><br>No key yet? Get one at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> ✨</p>
+    <span class="setup-icon">🤍</span>
+    <h2>Welcome to AI-VA</h2>
+    <p>Enter your Gemini API key to get started.<br>Stored locally — never shared with anyone.<br><br>No key yet? Get one free at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></p>
     <div class="setup-error" id="setup-error"></div>
     <div class="key-input-wrap">
-      <input type="password" id="api-key-input" placeholder="Paste your Gemini API key here..." />
+      <input type="password" id="api-key-input" placeholder="Paste your Gemini API key..." />
       <button class="toggle-key" onclick="toggleKeyVisibility()" id="toggle-btn">👁</button>
     </div>
-    <button class="btn-setup" onclick="saveApiKey()">✨ INITIALIZE AGENT ✨</button>
-    <p class="setup-note">🔒 Stored in localStorage — your device only.</p>
+    <button class="btn-setup" onclick="saveApiKey()">Initialize Agent →</button>
+    <p class="setup-note">🔒 Stored in localStorage — your device only</p>
   </div>
 </div>
 
@@ -480,9 +427,9 @@
 <div class="wrapper">
 
   <div class="header">
-    <div class="header-badge"><span class="dot"></span>SYSTEM ONLINE &nbsp;·&nbsp; AGENT ACTIVE</div>
-    <h1>AI-VA</h1>
-    <p class="subtitle">Real Estate &nbsp;·&nbsp; Chat Reply &nbsp;·&nbsp; Reviser &nbsp;·&nbsp; Ask Agent</p>
+    <div class="header-badge"><span class="dot"></span>Agent Active</div>
+    <h1>AI<span>-VA</span></h1>
+    <p class="subtitle">Real Estate · Chat Reply · Reviser · Ask Agent</p>
     <div class="header-actions">
       <button class="btn-change-key" onclick="changeKey()">🔑 Change Key</button>
     </div>
@@ -503,21 +450,18 @@
     </button>
   </div>
 
-  <!-- ======================== REAL ESTATE VA ======================== -->
+  <!-- REAL ESTATE VA -->
   <div class="card active" id="tab-realestate">
     <div class="card-header">
       <div class="card-icon">🏠</div>
-      <h2>// Real Estate VA</h2>
+      <h2>Real Estate VA</h2>
     </div>
     <p class="card-desc">Ask anything about real estate — AI remembers your full conversation this session.</p>
-
     <div class="chat-toolbar">
-      <span class="chat-toolbar-label">💬 Conversation — clears when browser closes</span>
+      <span class="chat-toolbar-label">💬 Conversation history — clears when browser closes</span>
       <button class="btn-clear-chat" onclick="clearHistory('re')">🗑 Clear Chat</button>
     </div>
-
     <div class="chat-history" id="re-history"></div>
-
     <div class="chat-input-area">
       <div class="chat-input-row">
         <textarea id="realestate-input" rows="1" placeholder="Ask about real estate, templates, how to reply to leads..."></textarea>
@@ -527,15 +471,15 @@
     </div>
   </div>
 
-  <!-- ======================== CHAT REPLY COACH ======================== -->
+  <!-- CHAT REPLY COACH -->
   <div class="card" id="tab-reply">
     <div class="card-header">
       <div class="card-icon">💬</div>
-      <h2>// Chat Reply Coach</h2>
+      <h2>Chat Reply Coach</h2>
     </div>
     <p class="card-desc">Upload a screenshot or paste a message — get 3 ready-to-send reply options.</p>
 
-    <label class="field-label">📷 Upload screenshot</label>
+    <label class="field-label">Upload Screenshot</label>
     <div class="upload-zone" id="upload-zone">
       <input type="file" id="screenshot-input" accept="image/*" onchange="handleScreenshot(event)" />
       <span class="upload-icon">📷</span>
@@ -546,9 +490,9 @@
       <button class="preview-remove" onclick="removeScreenshot()">✕</button>
     </div>
 
-    <div class="divider"><span>— AND / OR —</span></div>
+    <div class="divider"><span>and / or</span></div>
 
-    <label class="field-label">💭 What do you want to say? (optional)</label>
+    <label class="field-label">What do you want to say? (optional)</label>
     <div class="textarea-wrap">
       <textarea id="intention-input" rows="3" placeholder="e.g. I want to ask if they are still interested in selling..."></textarea>
       <button class="btn-clear" onclick="clearField('intention-input')" title="Clear">✕</button>
@@ -556,7 +500,7 @@
 
     <div class="two-col">
       <div class="col-group">
-        <label class="field-label">🎯 Context</label>
+        <label class="field-label">Context</label>
         <select id="reply-context">
           <option value="real_estate">🏠 Real Estate Lead (Facebook)</option>
           <option value="client">👔 Client / Boss</option>
@@ -564,7 +508,7 @@
         </select>
       </div>
       <div class="col-group">
-        <label class="field-label">🌐 Language style</label>
+        <label class="field-label">Language Style</label>
         <div class="lang-toggle">
           <button class="lang-btn active" onclick="setLang('taglish', this)">🇵🇭 Taglish</button>
           <button class="lang-btn" onclick="setLang('english', this)">🇺🇸 English</button>
@@ -573,47 +517,43 @@
       </div>
     </div>
 
-    <button class="btn-primary" onclick="suggestReply()">✨ Generate Replies</button>
+    <button class="btn-primary" onclick="suggestReply()">Generate Replies →</button>
     <div class="suggested-section" id="reply-suggestion">
       <div class="suggested-label">💌 Choose your reply</div>
       <div id="reply-options"></div>
     </div>
   </div>
 
-  <!-- ======================== ENGLISH REVISER ======================== -->
+  <!-- ENGLISH REVISER -->
   <div class="card" id="tab-english">
     <div class="card-header">
       <div class="card-icon">✍️</div>
-      <h2>// English Reviser</h2>
+      <h2>English Reviser</h2>
     </div>
     <p class="card-desc">Auto-fixes spelling & grammar, then gives you 3 casual natural versions to choose from.</p>
-
-    <label class="field-label">📝 Input text</label>
+    <label class="field-label">Input Text</label>
     <div class="textarea-wrap">
       <textarea id="english-input" rows="7" placeholder="Type or paste anything — messages, emails, captions, scripts..."></textarea>
       <button class="btn-clear" onclick="clearField('english-input')" title="Clear">✕</button>
     </div>
-    <p class="hint-text">↵ Enter to execute</p>
+    <p class="hint-text">↵ Enter to execute &nbsp;·&nbsp; Shift+Enter for new line</p>
     <br>
-    <button class="btn-primary" onclick="reviseEnglish()">✨ Revise Text</button>
+    <button class="btn-primary" onclick="reviseEnglish()">Revise Text →</button>
     <div id="english-options"></div>
   </div>
 
-  <!-- ======================== ASK AGENT ======================== -->
+  <!-- ASK AGENT -->
   <div class="card" id="tab-chat">
     <div class="card-header">
       <div class="card-icon">🤖</div>
-      <h2>// Ask Agent</h2>
+      <h2>Ask Agent</h2>
     </div>
     <p class="card-desc">General questions, tasks, content ideas — AI remembers your full conversation this session.</p>
-
     <div class="chat-toolbar">
-      <span class="chat-toolbar-label">💬 Conversation — clears when browser closes</span>
+      <span class="chat-toolbar-label">💬 Conversation history — clears when browser closes</span>
       <button class="btn-clear-chat" onclick="clearHistory('ag')">🗑 Clear Chat</button>
     </div>
-
     <div class="chat-history" id="ag-history"></div>
-
     <div class="chat-input-area">
       <div class="chat-input-row">
         <textarea id="chat-input" rows="1" placeholder="Ask me anything about your work, clients, or tasks..."></textarea>
@@ -623,7 +563,7 @@
     </div>
   </div>
 
-  <div class="footer">// AI-VA v3.2 — Powered by <span>Gemini</span> &nbsp;·&nbsp; Built with 🩷 for your workflow</div>
+  <div class="footer">AI-VA v3.3 &nbsp;·&nbsp; Powered by <strong>Gemini</strong> &nbsp;·&nbsp; Built with 🩷 for your workflow</div>
 </div>
 </div>
 
@@ -632,7 +572,6 @@
   let selectedLang = 'taglish';
   let screenshotBase64 = null;
   let screenshotMimeType = null;
-
   let reHistory = [];
   let agHistory = [];
   const SESSION_KEY_RE = 'aiva_re_history';
@@ -651,13 +590,8 @@
 
     document.getElementById('api-key-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveApiKey(); });
     document.getElementById('english-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); reviseEnglish(); } });
-
-    document.getElementById('realestate-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askRealEstate(); }
-    });
-    document.getElementById('chat-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAgent(); }
-    });
+    document.getElementById('realestate-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askRealEstate(); } });
+    document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAgent(); } });
 
     ['realestate-input', 'chat-input'].forEach(id => {
       const el = document.getElementById(id);
@@ -670,7 +604,6 @@
     zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) processImage(f); });
   });
 
-  // ===================== SCREENSHOT =====================
   function handleScreenshot(e) { if (e.target.files[0]) processImage(e.target.files[0]); }
   function processImage(file) {
     const reader = new FileReader();
@@ -691,7 +624,6 @@
   }
   function clearField(id) { document.getElementById(id).value = ''; document.getElementById(id).focus(); }
 
-  // ===================== API KEY =====================
   function toggleKeyVisibility() {
     const input = document.getElementById('api-key-input');
     input.type = input.type === 'password' ? 'text' : 'password';
@@ -703,160 +635,120 @@
     errorEl.style.display = 'none';
     if (!key || key.length < 20) { errorEl.textContent = '❌ Please enter a valid API key.'; errorEl.style.display = 'block'; return; }
     const btn = document.querySelector('.btn-setup');
-    btn.textContent = '⏳ Verifying...'; btn.disabled = true;
+    btn.textContent = 'Verifying...'; btn.disabled = true;
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
-        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Say hi." }] }] }) });
+        { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({contents:[{role:"user",parts:[{text:"Say hi."}]}]}) });
       const data = await res.json();
-      if (data.error) { errorEl.textContent = `❌ ${data.error.message}`; errorEl.style.display = 'block'; btn.textContent = '✨ INITIALIZE AGENT ✨'; btn.disabled = false; return; }
+      if (data.error) { errorEl.textContent = `❌ ${data.error.message}`; errorEl.style.display = 'block'; btn.textContent = 'Initialize Agent →'; btn.disabled = false; return; }
       API_KEY = key; localStorage.setItem('gemini_api_key', key); showApp();
-    } catch { errorEl.textContent = '❌ Could not verify. Check your internet.'; errorEl.style.display = 'block'; btn.textContent = '✨ INITIALIZE AGENT ✨'; btn.disabled = false; }
+    } catch { errorEl.textContent = '❌ Could not verify. Check your internet.'; errorEl.style.display = 'block'; btn.textContent = 'Initialize Agent →'; btn.disabled = false; }
   }
   function showApp() { document.getElementById('setup-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; }
   function changeKey() {
     localStorage.removeItem('gemini_api_key'); API_KEY = '';
     document.getElementById('api-key-input').value = '';
     document.getElementById('setup-error').style.display = 'none';
-    document.querySelector('.btn-setup').textContent = '✨ INITIALIZE AGENT ✨';
+    document.querySelector('.btn-setup').textContent = 'Initialize Agent →';
     document.querySelector('.btn-setup').disabled = false;
     document.getElementById('setup-screen').style.display = 'flex';
     document.getElementById('main-app').style.display = 'none';
   }
 
-  // ===================== GEMINI =====================
   async function callGeminiWithHistory(systemPrompt, history) {
     const contents = [
-      { role: 'user', parts: [{ text: systemPrompt + '\n\n[Understood. Ready to help.]' }] },
-      { role: 'model', parts: [{ text: 'Understood. Ready to help.' }] },
+      { role:'user', parts:[{text: systemPrompt + '\n\n[Understood. Ready to help.]'}] },
+      { role:'model', parts:[{text:'Understood. Ready to help.'}] },
       ...history
     ];
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents }) });
+        { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({contents}) });
       const data = await res.json();
       if (data.error) return `Error: ${data.error.message}`;
       return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Something went wrong.';
     } catch { return 'Something went wrong. Please try again.'; }
   }
-
   async function callGemini(prompt) {
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }] }) });
+        { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({contents:[{role:"user",parts:[{text:prompt}]}]}) });
       const data = await res.json();
       if (data.error) return `Error: ${data.error.message}`;
       return data.candidates?.[0]?.content?.parts?.[0]?.text || "Something went wrong.";
     } catch { return "Something went wrong. Please try again."; }
   }
-
   async function callGeminiWithImage(prompt, base64, mimeType) {
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ inline_data: { mime_type: mimeType, data: base64 } }, { text: prompt }] }] }) });
+        { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({contents:[{role:"user",parts:[{inline_data:{mime_type:mimeType,data:base64}},{text:prompt}]}]}) });
       const data = await res.json();
       if (data.error) return `Error: ${data.error.message}`;
       return data.candidates?.[0]?.content?.parts?.[0]?.text || "Something went wrong.";
     } catch { return "Something went wrong. Please try again."; }
   }
 
-  // ===================== BUBBLES =====================
-  function renderBubble(containerId, role, text, scroll = true) {
+  function renderBubble(containerId, role, text, scroll=true) {
     const container = document.getElementById(containerId);
     const isUser = role === 'user';
     const bubble = document.createElement('div');
     bubble.className = `chat-bubble ${isUser ? 'user' : 'ai'}`;
     bubble.innerHTML = `
-      <span class="bubble-label">${isUser ? '👤 You' : '🤖 Agent'}</span>
+      <span class="bubble-label">${isUser ? 'You' : 'Agent'}</span>
       <div class="bubble-text">${escapeHtml(text)}</div>
-      ${!isUser ? `<button class="bubble-copy" onclick="copyBubble(this)">📋 copy</button>` : ''}
+      ${!isUser ? `<button class="bubble-copy" onclick="copyBubble(this)">Copy</button>` : ''}
     `;
     container.appendChild(bubble);
     if (scroll) container.scrollTop = container.scrollHeight;
-    return bubble;
   }
-
   function renderTypingIndicator(containerId) {
     const container = document.getElementById(containerId);
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble ai';
     bubble.id = 'typing-' + containerId;
-    bubble.innerHTML = `
-      <span class="bubble-label">🤖 Agent</span>
-      <div class="bubble-text"><div class="loading-dots"><span></span><span></span><span></span></div></div>
-    `;
+    bubble.innerHTML = `<span class="bubble-label">Agent</span><div class="bubble-text"><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
     container.appendChild(bubble);
     container.scrollTop = container.scrollHeight;
   }
-
-  function removeTypingIndicator(containerId) {
-    const el = document.getElementById('typing-' + containerId);
-    if (el) el.remove();
-  }
-
-  function escapeHtml(text) {
-    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
+  function removeTypingIndicator(containerId) { const el = document.getElementById('typing-' + containerId); if (el) el.remove(); }
+  function escapeHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function copyBubble(btn) {
-    const text = btn.previousElementSibling.textContent;
-    navigator.clipboard.writeText(text).then(() => {
-      const orig = btn.textContent; btn.textContent = '✅ Copied!';
-      setTimeout(() => btn.textContent = orig, 2000);
+    navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => {
+      const o = btn.textContent; btn.textContent = '✓ Copied'; setTimeout(() => btn.textContent = o, 2000);
     });
   }
 
-  // ===================== HISTORY =====================
-  function saveHistory(key, history) {
-    try { sessionStorage.setItem(key, JSON.stringify(history)); } catch(e) {}
-  }
+  function saveHistory(key, history) { try { sessionStorage.setItem(key, JSON.stringify(history)); } catch(e) {} }
   function clearHistory(tab) {
-    if (tab === 're') {
-      reHistory = []; document.getElementById('re-history').innerHTML = '';
-      sessionStorage.removeItem(SESSION_KEY_RE);
-    } else {
-      agHistory = []; document.getElementById('ag-history').innerHTML = '';
-      sessionStorage.removeItem(SESSION_KEY_AG);
-    }
+    if (tab === 're') { reHistory = []; document.getElementById('re-history').innerHTML = ''; sessionStorage.removeItem(SESSION_KEY_RE); }
+    else { agHistory = []; document.getElementById('ag-history').innerHTML = ''; sessionStorage.removeItem(SESSION_KEY_AG); }
   }
 
-  // ===================== TAB SWITCHING =====================
   function switchTab(tab, el) {
     document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
     el.classList.add('active');
   }
-
   function setLang(lang, el) { selectedLang = lang; document.querySelectorAll('.lang-toggle .lang-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
 
-  // ===================== REAL ESTATE =====================
   async function askRealEstate() {
     const input = document.getElementById('realestate-input');
-    const q = input.value.trim();
-    if (!q) return;
-    const sendBtn = document.getElementById('re-send-btn');
-    sendBtn.disabled = true;
-    input.value = ''; input.style.height = 'auto';
-
-    reHistory.push({ role: 'user', parts: [{ text: q }] });
-    renderBubble('re-history', 'user', q);
+    const q = input.value.trim(); if (!q) return;
+    const btn = document.getElementById('re-send-btn');
+    btn.disabled = true; input.value = ''; input.style.height = 'auto';
+    reHistory.push({role:'user',parts:[{text:q}]});
+    renderBubble('re-history','user',q);
     saveHistory(SESSION_KEY_RE, reHistory);
     renderTypingIndicator('re-history');
-
-    const reply = await callGeminiWithHistory(
-      REALESTATE_CONTEXT + '\n\nAnswer using company knowledge and templates. Be clear, practical, and conversational. Remember full context.',
-      reHistory
-    );
-
+    const reply = await callGeminiWithHistory(REALESTATE_CONTEXT + '\n\nAnswer using company knowledge and templates. Be clear, practical, and conversational. Remember full context.', reHistory);
     removeTypingIndicator('re-history');
-    reHistory.push({ role: 'model', parts: [{ text: reply }] });
-    renderBubble('re-history', 'model', reply);
+    reHistory.push({role:'model',parts:[{text:reply}]});
+    renderBubble('re-history','model',reply);
     saveHistory(SESSION_KEY_RE, reHistory);
-    sendBtn.disabled = false;
-    input.focus();
+    btn.disabled = false; input.focus();
   }
 
-  // ===================== CHAT REPLY =====================
   async function suggestReply() {
     const intention = document.getElementById("intention-input").value.trim();
     const context = document.getElementById("reply-context").value;
@@ -865,31 +757,19 @@
     if (!screenshotBase64 && !intention) { alert('Upload a screenshot or type what you want to say!'); return; }
     suggestionEl.style.display = "block";
     replyOptionsEl.innerHTML = '<div class="loading-dots" style="padding:16px 0"><span></span><span></span><span></span></div>';
-
-    const contextMap = { real_estate: "a real estate lead on Facebook. You are a real estate VA.", client: "your client or boss. Professional but warm.", general: "someone in a casual conversation." };
-    const langMap = { taglish: "Natural Taglish (Filipino + English), casual like real Filipino texting.", english: "English only, casual and friendly.", tagalog: "Tagalog only, casual like how Filipinos text." };
-
-    const prompt = REALESTATE_CONTEXT + `\n\nHelp a Filipino VA reply to a conversation. She is talking to ${contextMap[context]}.
-${intention ? `What she wants to say: "${intention}"` : ''}
-Language: ${langMap[selectedLang]}
-${screenshotBase64 ? 'Study the screenshot carefully for full context.' : ''}
-Write 3 different short casual reply options using our templates as reference.
-Return ONLY:
-1. [reply]
-2. [reply]
-3. [reply]`;
-
+    const contextMap = { real_estate:"a real estate lead on Facebook. You are a real estate VA.", client:"your client or boss. Professional but warm.", general:"someone in a casual conversation." };
+    const langMap = { taglish:"Natural Taglish (Filipino + English), casual like real Filipino texting.", english:"English only, casual and friendly.", tagalog:"Tagalog only, casual like how Filipinos text." };
+    const prompt = REALESTATE_CONTEXT + `\n\nHelp a Filipino VA reply to a conversation. She is talking to ${contextMap[context]}.\n${intention ? `What she wants to say: "${intention}"\n` : ''}Language: ${langMap[selectedLang]}\n${screenshotBase64 ? 'Study the screenshot carefully for full context.\n' : ''}Write 3 different short casual reply options using our templates as reference.\nReturn ONLY:\n1. [reply]\n2. [reply]\n3. [reply]`;
     const result = screenshotBase64 ? await callGeminiWithImage(prompt, screenshotBase64, screenshotMimeType) : await callGemini(prompt);
     const lines = result.split('\n').filter(l => l.match(/^[1-3]\./));
     if (lines.length >= 3) {
-      replyOptionsEl.innerHTML = `<div class="options-grid">${lines.map((l, i) => {
-        const c = l.replace(/^[1-3]\.\s*/, '').trim();
-        return `<div class="option-card"><div class="option-label">💌 Option ${i+1}</div><div class="option-text">${c}</div><button class="option-copy-btn" onclick="copyText(this)">📋 Copy Reply</button></div>`;
+      replyOptionsEl.innerHTML = `<div class="options-grid">${lines.map((l,i) => {
+        const c = l.replace(/^[1-3]\.\s*/,'').trim();
+        return `<div class="option-card"><div class="option-label">Option ${i+1}</div><div class="option-text">${c}</div><button class="option-copy-btn" onclick="copyText(this)">Copy Reply</button></div>`;
       }).join('')}</div>`;
-    } else { replyOptionsEl.innerHTML = `<div style="color:var(--text);line-height:1.75;white-space:pre-wrap;padding-left:12px">${result}</div>`; }
+    } else { replyOptionsEl.innerHTML = `<div style="color:var(--text);line-height:1.75;white-space:pre-wrap">${result}</div>`; }
   }
 
-  // ===================== REVISER =====================
   async function reviseEnglish() {
     const text = document.getElementById("english-input").value.trim();
     const optionsEl = document.getElementById("english-options");
@@ -901,52 +781,38 @@ Return ONLY:
     else optionsEl.innerHTML = `<div class="result-box" style="margin-top:16px">${result}</div>`;
   }
 
-  // ===================== ASK AGENT =====================
   async function askAgent() {
     const input = document.getElementById('chat-input');
-    const q = input.value.trim();
-    if (!q) return;
-    const sendBtn = document.getElementById('ag-send-btn');
-    sendBtn.disabled = true;
-    input.value = ''; input.style.height = 'auto';
-
-    agHistory.push({ role: 'user', parts: [{ text: q }] });
-    renderBubble('ag-history', 'user', q);
+    const q = input.value.trim(); if (!q) return;
+    const btn = document.getElementById('ag-send-btn');
+    btn.disabled = true; input.value = ''; input.style.height = 'auto';
+    agHistory.push({role:'user',parts:[{text:q}]});
+    renderBubble('ag-history','user',q);
     saveHistory(SESSION_KEY_AG, agHistory);
     renderTypingIndicator('ag-history');
-
-    const reply = await callGeminiWithHistory(
-      AGENT_CONTEXT + '\n\nRemember the full conversation and give relevant, contextual answers.',
-      agHistory
-    );
-
+    const reply = await callGeminiWithHistory(AGENT_CONTEXT + '\n\nRemember the full conversation and give relevant, contextual answers.', agHistory);
     removeTypingIndicator('ag-history');
-    agHistory.push({ role: 'model', parts: [{ text: reply }] });
-    renderBubble('ag-history', 'model', reply);
+    agHistory.push({role:'model',parts:[{text:reply}]});
+    renderBubble('ag-history','model',reply);
     saveHistory(SESSION_KEY_AG, agHistory);
-    sendBtn.disabled = false;
-    input.focus();
+    btn.disabled = false; input.focus();
   }
 
-  // ===================== HELPERS =====================
   function renderOptions(containerId, lines) {
-    document.getElementById(containerId).innerHTML = `<div class="options-grid">${lines.map((line, i) => {
-      const content = line.replace(/^[1-3]\.\s*/, '').trim();
-      return `<div class="option-card"><div class="option-label">✨ Version ${i + 1}</div><div class="option-text">${content}</div><button class="option-copy-btn" onclick="copyText(this)">📋 Copy</button></div>`;
+    document.getElementById(containerId).innerHTML = `<div class="options-grid">${lines.map((line,i) => {
+      const content = line.replace(/^[1-3]\.\s*/,'').trim();
+      return `<div class="option-card"><div class="option-label">Version ${i+1}</div><div class="option-text">${content}</div><button class="option-copy-btn" onclick="copyText(this)">Copy</button></div>`;
     }).join('')}</div>`;
   }
-
   function copyText(btn) {
     navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => {
-      const orig = btn.textContent; btn.textContent = '✅ Copied!';
-      setTimeout(() => btn.textContent = orig, 2000);
+      const o = btn.textContent; btn.textContent = '✓ Copied!'; setTimeout(() => btn.textContent = o, 2000);
     });
   }
-
   function copyResult(id) {
     navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => {
-      const btn = event.target; const orig = btn.textContent;
-      btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = orig, 2000);
+      const btn = event.target; const o = btn.textContent;
+      btn.textContent = '✓ Copied!'; setTimeout(() => btn.textContent = o, 2000);
     });
   }
 </script>
