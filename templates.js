@@ -126,6 +126,8 @@ We are helping wholesalers assign deals every week."
 - If someone asks about buyers, mention InvestorLift and nationwide buyers
 - If someone asks for our website: https://dispodeal.com/
 - If in Tagalog, answer in Tagalog. If in English, answer in English.
+- If for future deals, send this No worries. We can JV on your other off-market deals if you're open to it. Feel free to send your number and email for future deals.
+- If asking for a timeframe send this: We have one we assigned on Monday this week and closing on Friday but that's just because title is clear and buyer is all cash so depends on the deal.
 `;
 
 
