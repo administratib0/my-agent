@@ -33,7 +33,7 @@
     ============================================= */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html {
-      font-size: clamp(14px, 1.25vw, 18px); /* fluid root — everything scales from here */
+      font-size: clamp(13px, 0.95vw, 16px); /* comfortable on all screens */
       transition: background 0.3s, color 0.3s;
     }
     body {
@@ -298,6 +298,77 @@
     /* MEMORY */
     .memory-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-right: 5px; box-shadow: 0 0 6px var(--green); }
 
+    /* TIMESTAMP */
+    .bubble-time { font-size: 0.68rem; color: var(--muted); margin-top: 0.2rem; padding: 0 0.2rem; font-weight: 500; letter-spacing: 0.02em; }
+
+    /* THINKING LABEL */
+    .thinking-label { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-top: 0.35rem; font-style: italic; animation: thinkPulse 1.4s ease-in-out infinite; }
+    @keyframes thinkPulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+    /* STICKY CHAT INPUT — card becomes flex column, input sticks to bottom */
+    .card.active.chat-card {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 14rem);
+      min-height: 480px;
+    }
+    .card.active.chat-card .chat-history {
+      flex: 1;
+      min-height: 0;
+      max-height: none;
+    }
+    .sticky-input { flex-shrink: 0; }
+
+    /* PINNED NOTES */
+    .notes-panel {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 1.1rem 1.25rem 1rem;
+      margin-bottom: 1.1rem;
+      box-shadow: 0 3px 16px var(--shadow);
+      position: relative;
+    }
+    .notes-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.6rem; gap: 0.5rem;
+    }
+    .notes-title {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.78rem; font-weight: 700; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.07em;
+    }
+    .notes-title span { font-size: 1rem; }
+    .notes-badge {
+      font-size: 0.68rem; background: var(--accent-lt); color: var(--accent);
+      border: 1px solid rgba(232,23,110,0.2); padding: 0.15rem 0.55rem;
+      border-radius: 20px; font-weight: 700; letter-spacing: 0.03em;
+    }
+    .notes-toggle {
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 0.8rem; font-family: 'Figtree', sans-serif; font-weight: 600;
+      padding: 0.2rem 0.5rem; border-radius: 6px; transition: all 0.18s;
+    }
+    .notes-toggle:hover { color: var(--accent); background: var(--accent-lt); }
+    .notes-body { display: none; }
+    .notes-body.open { display: block; }
+    .notes-textarea {
+      width: 100%; background: #fffef0;
+      border: 1.5px solid #e8e0b0;
+      border-radius: 0.75rem; padding: 0.75rem 1rem;
+      color: var(--text); font-size: 0.92rem;
+      font-family: 'Figtree', sans-serif; line-height: 1.7;
+      resize: none; min-height: 6rem; max-height: 12rem;
+      transition: border-color 0.2s; overflow-y: auto;
+    }
+    [data-theme="dark"] .notes-textarea { background: #1e1c0a; border-color: #4a4510; }
+    .notes-textarea:focus { outline: none; border-color: #c8a800; box-shadow: 0 0 0 3px rgba(200,168,0,0.12); }
+    .notes-textarea::placeholder { color: var(--muted); font-style: italic; }
+    .notes-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; }
+    .notes-hint { font-size: 0.72rem; color: var(--muted); font-style: italic; }
+    .notes-saved { font-size: 0.72rem; color: var(--green); font-weight: 600; opacity: 0; transition: opacity 0.3s; }
+    .notes-saved.show { opacity: 1; }
+
     /* MISC */
     .hint-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.625rem; font-weight: 500; }
     .footer { text-align: center; margin-top: 3.75rem; color: var(--muted); font-size: 0.875rem; font-weight: 500; }
@@ -307,16 +378,15 @@
 
     /* =============================================
        RESPONSIVE — mobile adjustments only
-       Most scaling is handled by the fluid root font
     ============================================= */
     @media (max-width: 600px) {
-      html { font-size: 15px; } /* lock to comfortable mobile size */
+      html { font-size: 15px; }
       .wrapper { padding: 2rem 1.2rem 5rem; }
       .card { padding: 1.5rem 1.2rem; }
+      .card.active.chat-card { max-height: calc(100vh - 10rem); min-height: 400px; }
       .card-desc { margin-left: 0; margin-top: 0.5rem; }
       .two-col { grid-template-columns: 1fr; }
       .bubble-text { max-width: 94%; }
-      .chat-history { max-height: 50vh; min-height: 12rem; }
       h1 { letter-spacing: -0.08em; }
     }
   </style>
@@ -356,8 +426,25 @@
     <button class="tab" onclick="switchTab('chat', this)"><span class="tab-icon">🤖</span>Ask AIVA</button>
   </div>
 
+  <!-- PINNED NOTES -->
+  <div class="notes-panel">
+    <div class="notes-header">
+      <div class="notes-title"><span>📌</span> Pinned Notes <span class="notes-badge">AIVA reads this</span></div>
+      <button class="notes-toggle" onclick="toggleNotes()" id="notes-toggle-btn">▼ Expand</button>
+    </div>
+    <div class="notes-body" id="notes-body">
+      <textarea class="notes-textarea" id="notes-textarea"
+        placeholder="Write anything AIVA should always know — client names, budgets, property details, current deals, your preferences...&#10;&#10;Example:&#10;- Client Maria Santos: 3M budget, wants lot in Cavite, hesitant on downpayment&#10;- We sell properties in Laguna and Cavite&#10;- Always follow up within 24 hours"
+        oninput="saveNotes()"></textarea>
+      <div class="notes-footer">
+        <span class="notes-hint">💡 AIVA automatically uses these notes in every reply</span>
+        <span class="notes-saved" id="notes-saved">✓ Saved</span>
+      </div>
+    </div>
+  </div>
+
   <!-- REAL ESTATE VA (merged with reply coach) -->
-  <div class="card active" id="tab-realestate">
+  <div class="card active chat-card" id="tab-realestate">
     <div class="card-header"><div class="card-icon">🏠</div><h2>Real Estate VA</h2></div>
     <p class="card-desc">Ask anything OR paste a conversation — AIVA reads the context, suggests replies, and rates your lead temperature.</p>
     <div class="reply-length-row">
@@ -375,7 +462,7 @@
       <button class="btn-clear-chat" onclick="clearHistory('re')">🗑 Clear</button>
     </div>
     <div class="chat-history" id="re-history"></div>
-    <div class="chat-input-area">
+    <div class="chat-input-area sticky-input">
       <div class="chat-input-row">
         <textarea id="realestate-input" rows="1" placeholder="Ask a question — or paste a lead conversation to get reply suggestions + lead temperature..."></textarea>
         <button class="voice-btn" id="re-voice-btn" onclick="toggleVoice('realestate-input','re-voice-btn')" title="Voice input">🎙️</button>
@@ -422,7 +509,7 @@
       <button class="btn-clear-chat" onclick="clearHistory('ag')">🗑 Clear</button>
     </div>
     <div class="chat-history" id="ag-history"></div>
-    <div class="chat-input-area">
+    <div class="chat-input-area sticky-input">
       <div class="chat-input-row">
         <textarea id="chat-input" rows="1" placeholder="Ask me anything about your work, clients, tasks, or ideas..."></textarea>
         <button class="voice-btn" id="ag-voice-btn" onclick="toggleVoice('chat-input','ag-voice-btn')" title="Voice input">🎙️</button>
@@ -432,7 +519,7 @@
     </div>
   </div>
 
-  <div class="footer">AIVA v1.2 &nbsp;·&nbsp; Powered by <strong>Gemini</strong> &nbsp;·&nbsp; Built with 🩷 for your workflow</div>
+  <div class="footer">AIVA v1.3 &nbsp;·&nbsp; Powered by <strong>Gemini</strong> &nbsp;·&nbsp; Built with 🩷 for your workflow</div>
 </div>
 </div>
 
@@ -442,10 +529,12 @@
   let reHistory = [], agHistory = [];
   let reLength = 'short', agLength = 'short';
   let reviserTone = 'casual';
+  let pinnedNotes = '';
 
   // ===== PERSISTENT STORAGE KEYS =====
   const STORE_KEY_RE = 'aiva_re_history_v2';
   const STORE_KEY_AG = 'aiva_ag_history_v2';
+  const STORE_KEY_NOTES = 'aiva_pinned_notes';
 
   // ===== PERSISTENT MEMORY (survives browser close) =====
   async function saveHistory(key, history) {
@@ -475,6 +564,28 @@
   async function deleteHistory(key) {
     try { await window.storage.delete(key); } catch(e) {}
     try { localStorage.removeItem(key); } catch(e2) {}
+  }
+
+  // ===== NOTES =====
+  let notesSaveTimer = null;
+  function toggleNotes() {
+    const body = document.getElementById('notes-body');
+    const btn = document.getElementById('notes-toggle-btn');
+    const open = body.classList.toggle('open');
+    btn.textContent = open ? '▲ Collapse' : '▼ Expand';
+  }
+  function saveNotes() {
+    pinnedNotes = document.getElementById('notes-textarea').value;
+    localStorage.setItem(STORE_KEY_NOTES, pinnedNotes);
+    clearTimeout(notesSaveTimer);
+    const el = document.getElementById('notes-saved');
+    el.classList.remove('show');
+    notesSaveTimer = setTimeout(() => el.classList.add('show'), 100);
+    setTimeout(() => el.classList.remove('show'), 2500);
+  }
+  function getNotesContext() {
+    if (!pinnedNotes.trim()) return '';
+    return `\n\n📌 PINNED NOTES FROM USER (always use this context when relevant):\n${pinnedNotes.trim()}`;
   }
 
   // ===== THEME =====
@@ -544,7 +655,7 @@
       /buyer|seller|lead|interested|property|magkano|presyo|pa-follow|follow.?up|lote|lot|house|condo/i.test(userMessage);
 
     if (isConversation) {
-      return REALESTATE_CONTEXT + `
+      return REALESTATE_CONTEXT + getNotesContext() + `
 
 You are an expert Filipino Real Estate VA with deep knowledge of sales psychology, lead nurturing, and real estate negotiation.
 
@@ -563,7 +674,7 @@ The user has shared a conversation or lead message. Your job:
 4. 🎯 NEXT STEP — One clear recommended action after sending the reply.`;
     }
 
-    return REALESTATE_CONTEXT + `
+    return REALESTATE_CONTEXT + getNotesContext() + `
 
 You are a smart, experienced Filipino Real Estate VA. You don't just copy templates — you think like a real VA who has handled hundreds of leads.
 
@@ -611,6 +722,10 @@ Generate 3 short follow-up questions. Natural and practical. Return ONLY a JSON 
 
     const saved = localStorage.getItem('gemini_api_key');
     if (saved) { API_KEY = saved; showApp(); await initHistories(); }
+
+    // Load pinned notes
+    pinnedNotes = localStorage.getItem(STORE_KEY_NOTES) || '';
+    if (pinnedNotes) document.getElementById('notes-textarea').value = pinnedNotes;
 
     document.getElementById('api-key-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveApiKey(); });
     document.getElementById('english-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); reviseEnglish(); } });
@@ -691,12 +806,15 @@ Generate 3 short follow-up questions. Natural and practical. Return ONLY a JSON 
   function renderBubble(containerId, role, text, scroll=true, showActions=true) {
     const container = document.getElementById(containerId);
     const isUser = role === 'user';
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
     const bubble = document.createElement('div');
     bubble.className = `chat-bubble ${isUser ? 'user' : 'ai'}`;
     bubble.innerHTML = `
       <span class="bubble-label">${isUser ? 'You' : 'AIVA'}</span>
       <div class="bubble-text">${escapeHtml(text)}</div>
       ${!isUser && showActions ? `<div class="bubble-actions"><button class="bubble-copy" onclick="copyBubble(this)">Copy</button></div>` : ''}
+      ${showActions ? `<span class="bubble-time">${timeStr}</span>` : ''}
     `;
     container.appendChild(bubble);
     if (scroll) container.scrollTop = container.scrollHeight;
@@ -706,7 +824,11 @@ Generate 3 short follow-up questions. Natural and practical. Return ONLY a JSON 
     const container = document.getElementById(containerId);
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble ai'; bubble.id = 'typing-' + containerId;
-    bubble.innerHTML = `<span class="bubble-label">AIVA</span><div class="bubble-text"><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
+    bubble.innerHTML = `
+      <span class="bubble-label">AIVA</span>
+      <div class="bubble-text"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+      <span class="thinking-label">AIVA is thinking...</span>
+    `;
     container.appendChild(bubble); container.scrollTop = container.scrollHeight;
   }
   function removeTypingIndicator(containerId) { const el = document.getElementById('typing-' + containerId); if (el) el.remove(); }
@@ -727,9 +849,17 @@ Generate 3 short follow-up questions. Natural and practical. Return ONLY a JSON 
     }
   }
   function switchTab(tab, el) {
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.card').forEach(c => {
+      c.classList.remove('active');
+      if (tab === 'realestate' || tab === 'chat') {
+        // chat-card class only on chat tabs when active
+      }
+    });
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
+    const card = document.getElementById('tab-' + tab);
+    card.classList.add('active');
+    if (tab === 'realestate' || tab === 'chat') card.classList.add('chat-card');
+    else card.classList.remove('chat-card');
     el.classList.add('active');
   }
 
@@ -778,7 +908,7 @@ Generate 3 short follow-up questions. Natural and practical. Return ONLY a JSON 
     renderBubble('ag-history','user',q);
     await saveHistory(STORE_KEY_AG, agHistory);
     renderTypingIndicator('ag-history');
-    const reply = await callGeminiWithHistory(AGENT_CONTEXT + `\n\nRemember the full conversation. ${getLengthInstruction(agLength)}`, agHistory);
+    const reply = await callGeminiWithHistory(AGENT_CONTEXT + getNotesContext() + `\n\nRemember the full conversation. ${getLengthInstruction(agLength)}`, agHistory);
     removeTypingIndicator('ag-history');
     agHistory.push({role:'model', parts:[{text:reply}]});
     renderBubble('ag-history','model',reply);
