@@ -541,10 +541,6 @@
           <button class="pill-btn active" onclick="setLength('re','short',this)">Short</button>
           <button class="pill-btn" onclick="setLength('re','medium',this)">Normal</button>
           <button class="pill-btn" onclick="setLength('re','long',this)">Detailed</button>
-          <div class="toolbar-sep"></div>
-          <button class="pill-btn active" id="re-lang-taglish" onclick="setLang('taglish',this)">🇵🇭 Taglish</button>
-          <button class="pill-btn" id="re-lang-english" onclick="setLang('english',this)">🇺🇸 EN</button>
-          <button class="pill-btn" id="re-lang-tagalog" onclick="setLang('tagalog',this)">TL</button>
           <div class="toolbar-right">
             <span class="mem-indicator"><span class="mem-dot"></span>Memory ON</span>
             <button class="clear-btn" onclick="clearChat('re')">🗑 Clear</button>
@@ -620,7 +616,6 @@
 <script>
   /* ===== STATE ===== */
   let API_KEY = '';
-  let selectedLang = 'taglish';
   let reHistory = [], agHistory = [];
   let reLength = 'short', agLength = 'short';
   let reviserTone = 'casual';
@@ -696,7 +691,7 @@
     if (feed) feed.scrollTop = feed.scrollHeight;
   }
 
-  /* ===== LENGTH / LANG / TONE ===== */
+  /* ===== LENGTH / TONE ===== */
   function setLength(tab, val, el) {
     if (tab === 're') reLength = val; else agLength = val;
     el.closest('.input-toolbar').querySelectorAll('.pill-btn').forEach(b => {
@@ -714,14 +709,6 @@
     el.closest('.tone-row').querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
   }
-  function setLang(lang, el) {
-    selectedLang = lang;
-    ['taglish','english','tagalog'].forEach(l => {
-      const b = document.getElementById('re-lang-' + l);
-      if (b) b.classList.toggle('active', l === lang);
-    });
-  }
-
   /* ===== VOICE ===== */
   let recog = null, activeVBtn = null;
   function toggleVoice(inputId, btnId) {
@@ -755,7 +742,7 @@
     return new Date().toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true });
   }
   function esc(t) {
-    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
   function appendMsg(feedId, role, text, showMeta=true) {
     const feed = document.getElementById(feedId);
@@ -851,11 +838,6 @@
 
   /* ===== RE PROMPT ===== */
   function buildREPrompt(q) {
-    const langMap = {
-      taglish: 'Natural Taglish (Filipino + English mix), casual like real Filipino texting.',
-      english: 'English only, professional but warm.',
-      tagalog: 'Tagalog only, casual like how Filipinos text.'
-    };
     const isConvo = q.includes('\n') || q.length > 200 ||
       /buyer|seller|lead|interested|property|magkano|presyo|pa-follow|follow.?up|lote|lot|house|condo/i.test(q);
     if (isConvo) {
@@ -870,7 +852,7 @@ The user has shared a conversation or lead message. Your job:
 2. 💡 SITUATION ANALYSIS — 2-3 sentences on what's really happening. What does the lead want? What's the opportunity?
 
 3. 💬 REPLY OPTIONS — 3 options labeled Option 1 / Option 2 / Option 3.
-   Language: ${langMap[selectedLang]}
+   Language: English only, professional but warm.
    Each option has a different angle: rapport / urgency / qualifying question.
 
 4. 🎯 NEXT STEP — One clear recommended action.`;
@@ -881,7 +863,7 @@ You are a smart experienced Filipino Real Estate VA. Think like a real VA who ha
 - Use templates as foundation but reason beyond them
 - Apply real estate best practices and Filipino communication style
 - Be practical and specific
-- Language: ${langMap[selectedLang]}
+ - Language: English only, professional but warm.
 - ${getLengthInstr(reLength)}`;
   }
 
@@ -1026,9 +1008,9 @@ Return ONLY a JSON array: ["q1","q2","q3"]`);
     if (lines.length >= 3) {
       optEl.innerHTML = `<div class="options-list">${lines.map((l,i) => {
         const c = l.replace(/^[1-3]\.\s*/,'').trim();
-        return `<div class="option-card"><div class="option-num">Version ${i+1}</div><div class="option-text">${c}</div><button class="option-copy" onclick="copyOpt(this)">Copy</button></div>`;
+        return `<div class="option-card"><div class="option-num">Version ${i+1}</div><div class="option-text">${esc(c)}</div><button class="option-copy" onclick="copyOpt(this)">Copy</button></div>`;
       }).join('')}</div>`;
-    } else optEl.innerHTML = `<div class="option-card" style="margin-top:1rem"><div class="option-text">${result}</div></div>`;
+    } else optEl.innerHTML = `<div class="option-card" style="margin-top:1rem"><div class="option-text">${esc(result)}</div></div>`;
   }
 
   /* ===== ASK AIVA ===== */
